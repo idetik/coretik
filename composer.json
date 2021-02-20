@@ -1,0 +1,17 @@
+{
+    "name": "idetik/coretik",
+    "description": "Idetik WP theme core",
+    "type": "library",
+    "require": {
+        "johnbillion/extended-cpts": "^4.5",
+        "pimple/pimple": "^3.3",
+        "nesbot/carbon": "^2.45"
+    },
+    "authors": [
+        {
+            "name": "David",
+            "email": "david.daugreilh@idetik.fr"
+        }
+    ],
+    "minimum-stability": "stable"
+}
