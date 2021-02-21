@@ -58,4 +58,9 @@ class Wrapper
             return new self($template_base);
         }
     }
+
+    public function mainTemplatePath()
+    {
+        return self::$main_template;
+    }
 }

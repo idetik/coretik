@@ -1,6 +1,6 @@
 <?php
 
-namespace Coretik\Core\Services\UX\Table;
+namespace Coretik\Services\UX;
 
 class Table
 {

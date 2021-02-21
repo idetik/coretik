@@ -1,6 +1,6 @@
 <?php
 
-namespace Coretik\Core\Services\Admin\SchemaViewer;
+namespace Coretik\Services\SchemaViewer;
 
 class SchemaViewer
 {

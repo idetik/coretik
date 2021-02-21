@@ -14,6 +14,8 @@ use Coretik\Core\Exception\ContainerValueNotFoundException;
 use Psr\Container\ContainerInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Pimple\Container as PimpleContainer;
+use Coretik\Services\UX\Table;
+use Coretik\Services\SchemaViewer\SchemaViewer;
 
 /**
  * Default DI container is Pimple.
@@ -42,10 +44,10 @@ class Container extends PimpleContainer implements ContainerInterface
             return new Models\Wp\Option();
         });
         $this['ux.table'] = $this->factory(function ($container) {
-            return new Services\UX\Table\Table();
+            return new Table();
         });
-        $this['admin.schemaViewer'] = $this->factory(function ($container) {
-            return new Services\Admin\SchemaViewer\SchemaViewer();
+        $this['schemaViewer'] = $this->factory(function ($container) {
+            return new SchemaViewer();
         });
     }
 
