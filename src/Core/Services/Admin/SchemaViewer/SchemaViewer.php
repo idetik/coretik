@@ -1,12 +1,10 @@
 <?php
 
-namespace Coretik\Core\Services\Admin\SchemaViewer;
-
-use function Globalis\WP\Cubi\include_template_part;
+namespace App\Core\Services\Admin\SchemaViewer;
 
 class SchemaViewer
 {
-    const VIEWS = '/src/Services/Admin/SchemaViewer/views/';
+    const VIEWS = __DIR__ . '/views/';
 
     public static function init()
     {
@@ -24,6 +22,6 @@ class SchemaViewer
 
     public static function optionPage()
     {
-        include_template_part(static::VIEWS . 'wrapper');
+        include static::VIEWS . 'wrapper.php';
     }
 }
