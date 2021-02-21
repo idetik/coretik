@@ -1,0 +1,43 @@
+<div class="wrap">
+    <h2>Schéma de l'application <?= get_bloginfo('name') ?></h2>
+
+    <div class="boxes">
+        <div class="boxes__box">
+            <div class="schema-box">
+                <h3>Post types</h3>
+                <?php
+                foreach (Coretik\App::schema()->type('post')->all() as $builder) {
+                    include 'post-type-single.php';
+                }
+                ?>
+            </div>
+            <div class="schema-box">
+                <h3>Taxonomies</h3>
+                <?php
+                foreach (Coretik\App::schema()->type('taxonomy')->all() as $builder) {
+                    include 'taxonomy-single.php';
+                }
+                ?>
+            </div>
+        </div>
+        <div class="boxes__box">
+            <div class="schema-box">
+                <h3>User types</h3>
+                <?php
+                foreach (Coretik\App::schema()->type('user')->all() as $builder) {
+                    include 'user-type-single.php';
+                }
+                ?>
+            </div>
+        </div>
+    </div>
+
+    <?php
+
+    ?>
+    <pre>
+        <?php //var_dump(get_post_types()); ?>
+        <?php //var_dump(get_post_stati()); ?>
+        <?php //var_dump(Coretik\App::schema()->toArray()); ?>
+    </pre>
+</div>

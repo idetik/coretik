@@ -12,5 +12,8 @@
             "name": "David",
             "email": "david.daugreilh@idetik.fr"
         }
-    ]
+    ],
+    "autoload": {
+        "psr-4": { "Coretik\\": ["src"] }
+    }
 }
