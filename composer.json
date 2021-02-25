@@ -2,6 +2,7 @@
     "name": "idetik/coretik",
     "description": "Idetik WP theme core",
     "type": "library",
+    "minimum-stability": "stable",
     "require": {
         "johnbillion/extended-cpts": "^4.5",
         "pimple/pimple": "^3.3",
