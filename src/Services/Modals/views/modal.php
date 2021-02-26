@@ -4,7 +4,7 @@
             class="modal-content__close modal-discard"
             id="close-<?= $id ?>"
             >
-            <i class="icon-cross"></i>
+            <i class="icon-clear"></i>
         </div>
     <?php endif; ?>
     <div class="modal-content__body">
