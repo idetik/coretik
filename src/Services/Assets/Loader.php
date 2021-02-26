@@ -4,45 +4,34 @@ namespace Coretik\Services\Assets;
 
 class Loader
 {
-    protected $assetPath;
-    protected $assetUrl;
-    protected $assetVersion;
+    protected $base;
+    protected $version;
 
-    public function __construct(string $path, string $url, $version_path = false)
+    public function __construct(string $base = '', int $version = 0)
     {
-        $this->assetPath = $path;
-        $this->assetUrl = $url;
-
-        if ($version_path) {
-            if (!file_exists($version_path)) {
-                $this->assetVersion = false;
-            } else {
-                $this->assetVersion = \intval(\file_get_contents($version_path));
-            }
-        }
+        $this->base = $base;
+        $this->version = $version;
     }
 
     public function url($file, $versioning = false)
     {
-        $path = $this->assetUrl . $file;
-
+        $path = get_theme_file_uri($this->base . $file);
         if ($versioning) {
             $version = $this->version();
             if (false != $version && !empty($version)) {
                 $path = str_replace(['.css', '.js'], ['-' . $version . '.css', '-' . $version . '.js'], $path);
             }
         }
-
         return $path;
     }
 
     public function path($file)
     {
-        return $this->assetPath . $file;
+        return get_theme_file_path($this->base . $file);
     }
 
     public function version()
     {
-        return $this->assetVersion;
+        return $this->version;
     }
 }
