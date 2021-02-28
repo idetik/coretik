@@ -266,4 +266,14 @@ final class UserType extends BuilderModelable implements RegistrableInterface
 
         return \array_merge($caps, $tax_caps, $custom_caps);
     }
+
+    public function concern(int $objectId): bool
+    {
+        $data = get_userdata($objectId);
+
+        if (false === $data) {
+            return false;
+        }
+        return \in_array($this->getName(), $data->roles);
+    }
 }

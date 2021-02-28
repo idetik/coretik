@@ -31,7 +31,7 @@ class Anonymous extends Model
         }
 
         if (! \is_null($initializer)) {
-            $this->initialize();
+            $this->initialize($initializer);
         }
         parent::__construct();
     }
@@ -55,13 +55,13 @@ class Anonymous extends Model
                 $this->id = $initializer->term_id;
                 $this->wp_object = $initializer;
                 $this->name = $initializer->taxonomy;
-                $this->adapter = new Adapters\WPTermAdapter();
+                // $this->adapter = new Adapters\WPTermAdapter();
                 break;
             case $initializer instanceof \Closure:
                 $callable = $initializer->bindTo($this);
                 $callable();
             case \is_int($initializer):
-                    $this->initialize($mediator->wpObject($initializer));
+                $this->initialize($this->mediator->wpObject($initializer));
                 break;
             default:
                 throw new \Exception("Unable to initialize model with type of initializer : " . get_class($initializer));

@@ -16,6 +16,7 @@ abstract class BuilderModelable extends Builder implements ModelableInterface
     protected static $models;
 
     abstract public function wpObject(int $id);
+    abstract public function concern(int $objectId): bool;
 
     public function __construct()
     {

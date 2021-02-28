@@ -80,4 +80,9 @@ final class PostType extends BuilderModelable implements RegistrableInterface, T
     {
         return \get_post($id);
     }
+
+    public function concern(int $objectId): bool
+    {
+        return \get_post_type($objectId) === $this->getName();
+    }
 }

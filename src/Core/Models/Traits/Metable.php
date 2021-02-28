@@ -146,7 +146,7 @@ trait Metable
         }
 
         try {
-            $value = $this->adapter->meta($this->resolveMetaKey($key), $this->id, $this->metaDefaultValue($key, $default));
+            $value = $this->adapter->meta($this->resolveMetaKey($key), $this->metaDefaultValue($key, $default));
             return $this->castMeta($key, $value);
         } catch (UndefinedMetaKeyException $e) {
             return $this->metaDefaultValue($key, $default);
@@ -155,7 +155,7 @@ trait Metable
 
     protected function metaDefaultValue(string $key, $default = null)
     {
-        return $default ?? $this->metaDefinition($key)->defaultValue();
+        return $default ?? $this->metaDefinition($key)->defaultValue() ?? null;
     }
 
     protected function castMeta(string $key, $value)

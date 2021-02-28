@@ -28,6 +28,10 @@ class Guard implements HandlerInterface
 
     public function guard($check, $object_id, $meta_key, $meta_value, $prev_value)
     {
+        if (!$this->builder->concern($object_id)) {
+            return $check;
+        }
+
         $model = $this->builder->model((int)$object_id);
 
         if (\in_array('Coretik\Core\Models\Traits\Metable', Classes::classUsesDeep($model))) {

@@ -1,6 +1,6 @@
 <?php
 
-use Soreno\App;
+use Coretik\App;
 
 ?>
 

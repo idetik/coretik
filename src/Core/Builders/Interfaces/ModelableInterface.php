@@ -15,4 +15,5 @@ interface ModelableInterface
     public function wpObject(int $id);
     public function hasFactory(): bool;
     public function hasQuerier(): bool;
+    public function concern(int $objectId): bool;
 }

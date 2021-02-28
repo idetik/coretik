@@ -15,19 +15,35 @@ class Loader
 
     public function url($file, $versioning = false)
     {
-        $path = get_theme_file_uri($this->base . $file);
+        $file = ltrim($this->base . $file, '/');
+        if (empty($file)) {
+            $url = get_stylesheet_directory_uri();
+        } elseif (file_exists(get_stylesheet_directory() . '/' . $file)) {
+            $url = get_stylesheet_directory_uri() . '/' . $file;
+        } else {
+            $url = get_template_directory_uri() . '/' . $file;
+        }
+
         if ($versioning) {
             $version = $this->version();
             if (false != $version && !empty($version)) {
-                $path = str_replace(['.css', '.js'], ['-' . $version . '.css', '-' . $version . '.js'], $path);
+                $url = str_replace(['.css', '.js'], ['-' . $version . '.css', '-' . $version . '.js'], $url);
             }
         }
-        return $path;
+        return $url;
     }
 
     public function path($file)
     {
-        return get_theme_file_path($this->base . $file);
+        $file = ltrim($this->base . $file, '/');
+        if (empty($file)) {
+            $path = get_stylesheet_directory();
+        } elseif (file_exists(get_stylesheet_directory() . '/' . $file)) {
+            $path = get_stylesheet_directory() . '/' . $file;
+        } else {
+            $path = get_template_directory() . '/' . $file;
+        }
+        return $path;
     }
 
     public function version()
