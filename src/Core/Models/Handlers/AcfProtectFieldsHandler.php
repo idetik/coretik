@@ -1,6 +1,6 @@
 <?php
 
-namespace Coretik\Models\Handlers;
+namespace Coretik\Core\Models\Handlers;
 
 use Coretik\Core\Builders\Interfaces\BuilderInterface;
 use Coretik\Core\Builders\Interfaces\HandlerInterface;

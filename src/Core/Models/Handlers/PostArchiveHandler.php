@@ -1,6 +1,6 @@
 <?php
 
-namespace Coretik\Models\Handlers;
+namespace Coretik\Core\Models\Handlers;
 
 use Coretik\Core\Builders\Interfaces\BuilderInterface;
 use Coretik\Core\Builders\Interfaces\ModelableInterface;
@@ -16,13 +16,15 @@ class PostArchiveHandler implements HandlerInterface
             throw new \Exception('Builder doesn\'t implement ModelableInterface');
         }
         $this->builder = $builder;
-        // \add_action('pre_get_posts', [$this, 'setArchiveQuery']);
+        \add_action('pre_get_posts', [$this, 'setArchiveQuery']);
     }
 
     public function freeze(): void
     {
+        \remove_action('pre_get_posts', [$this, 'setArchiveQuery']);
     }
 
+    // @todo TEST
     public function setArchiveQuery($query)
     {
         if (!\is_post_type_archive($this->builder->getName())) {
