@@ -57,7 +57,7 @@ class Menu
         return $menu;
     }
 
-    public static function object(string $theme_location)
+    public function object(string $theme_location)
     {
         $locations = \get_nav_menu_locations();
         if (!in_array($theme_location, array_keys($locations))) {
@@ -67,11 +67,11 @@ class Menu
         return \wp_get_nav_menu_object($menu_id);
     }
 
-    public static function title(string $theme_location): string
+    public function title(string $theme_location): string
     {
         if (!\has_nav_menu($theme_location)) {
             return '';
         }
-        return static::object($theme_location)->name;
+        return $this->object($theme_location)->name;
     }
 }
