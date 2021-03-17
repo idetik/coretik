@@ -15,7 +15,8 @@ class Schema implements ContainerInterface
 
     public function __construct()
     {
-        // $this['post'] = new Builders\BuiltIn('post');
+        $this->register(new Builders\PostTypeBuiltIn('page'));
+        $this->register(new Builders\PostTypeBuiltIn('post'));
     }
 
     public function register(BuilderInterface $builder)

@@ -51,6 +51,14 @@ class Collection implements CollectionInterface
     /**
      * {@inheritdoc}
      */
+    public function first()
+    {
+        return $this->data[0];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function all()
     {
         return $this->data;
