@@ -174,4 +174,12 @@ abstract class Query implements QuerierInterface
     {
         $this->builder = clone $this->builder;
     }
+
+    public function __call($method, $parameters)
+    {
+        if (\method_exists($this->builder, $method)) {
+            \call_user_func([$this->builder, $method], ...$parameters);
+            return $this;
+        }
+    }
 }

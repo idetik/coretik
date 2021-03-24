@@ -32,10 +32,10 @@ class PostModel extends WPModel
         parent::__construct();
     }
 
-    public function newBaseQueryBuilder()
-    {
-        return new Query();
-    }
+    // public function newBaseQueryBuilder()
+    // {
+    //     return new Query();
+    // }
 
     /**
      * Add post type specifics data changes to the model
@@ -88,6 +88,17 @@ class PostModel extends WPModel
     public function permalink(): string
     {
         return \get_permalink($this->id);
+    }
+
+    // @todo fallback
+    public function thumbnailId(): int
+    {
+        return \get_post_thumbnail_id($this->id());
+    }
+
+    public function excerpt(): string
+    {
+        return get_the_excerpt($this->id());
     }
 
     public function get(string $prop)

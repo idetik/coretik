@@ -54,6 +54,7 @@ abstract class BuilderModelable extends Builder implements ModelableInterface
         return \call_user_func($this->querier, $this);
     }
 
+    //@todo à garder?
     public static function query(): QuerierInterface
     {
         return (new static())->newQuery();

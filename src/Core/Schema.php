@@ -7,6 +7,9 @@ use Coretik\Core\Builders\Interfaces\BuilderInterface;
 use Coretik\Core\Builders\Interfaces\ModelableInterface;
 use Coretik\Core\Builders\Interfaces\RegistrableInterface;
 use Coretik\Core\Models\Anonymous;
+use Coretik\Core\Models\Wp\PostModel;
+use Coretik\Core\Models\Wp\TermModel;
+use Coretik\Core\Models\Wp\UserModel;
 
 class Schema implements ContainerInterface
 {
@@ -30,7 +33,15 @@ class Schema implements ContainerInterface
         if ($builder instanceof ModelableInterface) {
             if (!$builder->hasFactory()) {
                 $builder->factory(function ($initializer) use ($builder) {
-                    return new Anonymous($builder, $initializer);
+                    // return new Anonymous($builder, $initializer);
+                    switch ($builder->getType()) {
+                        case 'post':
+                            return new PostModel($initializer);
+                        case 'user':
+                            return new UserModel($initializer);
+                        case 'taxonomy':
+                            return new TermModel($initializer);
+                    }
                 });
             }
             if (!$builder->hasQuerier()) {
