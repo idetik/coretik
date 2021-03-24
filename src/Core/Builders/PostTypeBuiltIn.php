@@ -19,7 +19,10 @@ final class PostTypeBuiltIn extends BuilderModelable implements TaxonomiableInte
         $object = \get_post_type_object($post_type);
         $args = \get_object_vars($object);
         $args['labels'] = \get_object_vars($args['labels']);
+        $args['labels']['singular'] = $args['labels']['singular_name'];
+        $args['labels']['plural'] = $args['labels']['name'];
         $this->args = new Args($args);
+
         parent::__construct();
         $this->handler(new Guard());
         $this->querier(function ($mediator) {
