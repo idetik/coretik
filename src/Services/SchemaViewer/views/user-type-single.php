@@ -68,7 +68,8 @@ $modalArgs = Coretik\App::modals()->factory(function () use ($builder) {
                 </li>
             </ul>
         </li>
-        <li><b>Query</b>: @todo</li>
+        <?php $query = apply_filters('coretik/services/schemaViewer/query', $builder->query(), $builder, $args); ?>
+        <li><b>Query</b>: <code><?php echo get_class($query) ?></code></li>
         <li><b>Handlers</b>: <?= implode(', ', array_map(
             function ($handler) {
                 return '<code>' . get_class($handler) . '</code>';

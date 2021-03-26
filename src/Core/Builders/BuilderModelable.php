@@ -49,16 +49,16 @@ abstract class BuilderModelable extends Builder implements ModelableInterface
         return $this->factory->get($initializer);
     }
 
-    public function newQuery(): QuerierInterface
+    public function query(): QuerierInterface
     {
         return \call_user_func($this->querier, $this);
     }
 
     //@todo à garder?
-    public static function query(): QuerierInterface
-    {
-        return (new static())->newQuery();
-    }
+    // public static function query(): QuerierInterface
+    // {
+    //     return (new static())->newQuery();
+    // }
 
     public function hasFactory(): bool
     {

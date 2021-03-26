@@ -33,7 +33,7 @@ class Schema implements ContainerInterface
         if ($builder instanceof ModelableInterface) {
             if (!$builder->hasFactory()) {
                 $builder->factory(function ($initializer) use ($builder) {
-                    // return new Anonymous($builder, $initializer);
+                    // @todo apply filters
                     switch ($builder->getType()) {
                         case 'post':
                             return new PostModel($initializer);

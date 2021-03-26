@@ -5,7 +5,7 @@ namespace Coretik\Core\Models\Wp;
 use Coretik\Core\Models\Traits\AcfFields;
 use Coretik\Core\Models\Adapters\WPTermAdapter;
 
-class UserModel extends WPModel
+class TermModel extends WPModel
 {
     use AcfFields;
 

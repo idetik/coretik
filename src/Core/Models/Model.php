@@ -15,7 +15,7 @@ abstract class Model implements ModelInterface
     use Traits\Hooks;
 
     protected $id;
-    protected $name;
+    protected $name = '';
     protected $adapter;
     protected $dictionnary;
     protected $state;

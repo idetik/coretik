@@ -6,8 +6,14 @@ use Coretik\Core\Query\Adapters\WPUserAdapter as QueryAdapter;
 
 class User extends Query
 {
-    public function __construct(ModelableInterface $mediator)
+    public function newQueryBuilderInstance(array $defaultArgs = [])
     {
-        parent::__construct(new QueryAdapter(), $mediator);
+        $args = \array_merge($this->getQueryArgsDefault(), $defaultArgs);
+        return new QueryAdapter($args);
+    }
+
+    public function getQueryArgsDefault()
+    {
+        return [];
     }
 }

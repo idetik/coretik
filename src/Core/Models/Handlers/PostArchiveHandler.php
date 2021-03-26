@@ -39,7 +39,7 @@ class PostArchiveHandler implements HandlerInterface
             return false;
         }
         
-        $vars = $this->builder->newQuery()::defaultArgs();
+        $vars = $this->builder->query()::defaultArgs();
         foreach ($vars as $key => $val) {
             $query->set($key, $val);
         }

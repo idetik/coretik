@@ -1,4 +1,5 @@
 <?php
+
 $models = apply_filters('coretik/services/schemaViewer/models', [$builder->model()], $builder, $args);
 
 foreach ($models as $i => $model):
