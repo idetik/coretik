@@ -7,6 +7,7 @@ use Coretik\Core\Builders\Interfaces\TaxonomiableInterface;
 use Coretik\Core\Builders\PostType\Args;
 use Coretik\Core\Query\Post as Query;
 use Coretik\Core\Models\Handlers\Guard;
+use Coretik\Core\Models\Handlers\AcfDefaultMetaHandler;
 
 final class PostTypeBuiltIn extends BuilderModelable implements TaxonomiableInterface
 {
@@ -24,7 +25,10 @@ final class PostTypeBuiltIn extends BuilderModelable implements TaxonomiableInte
         $this->args = new Args($args);
 
         parent::__construct();
-        $this->handler(new Guard());
+        $this->handlers([
+            new Guard(),
+            new AcfDefaultMetaHandler()
+        ]);
         $this->querier(function ($mediator) {
             return new Query($mediator);
         });

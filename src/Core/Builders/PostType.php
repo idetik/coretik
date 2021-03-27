@@ -8,6 +8,8 @@ use Coretik\Core\Builders\Interfaces\TaxonomiableInterface;
 use Coretik\Core\Builders\PostType\Args;
 use Coretik\Core\Builders\PostType\Labels;
 use Coretik\Core\Query\Post as Query;
+use Coretik\Core\Models\Handlers\Guard;
+use Coretik\Core\Models\Handlers\AcfDefaultMetaHandler;
 
 final class PostType extends BuilderModelable implements RegistrableInterface, TaxonomiableInterface
 {
@@ -23,7 +25,10 @@ final class PostType extends BuilderModelable implements RegistrableInterface, T
         $this->args = new Args($args);
         $this->names = $names;
         parent::__construct();
-        $this->handler(new \Coretik\Core\Models\Handlers\Guard());
+        $this->handlers([
+            new Guard(),
+            new AcfDefaultMetaHandler()
+        ]);
         $this->querier(function ($mediator) {
             return new Query($mediator);
         });

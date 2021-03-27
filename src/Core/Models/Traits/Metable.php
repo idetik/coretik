@@ -14,14 +14,15 @@ use Carbon\Carbon;
  */
 trait Metable
 {
-    protected static $metas;
+    protected $metas;
 
     protected function initializeMetable()
     {
-        static::$metas = new Collection();
+        $this->metas = new Collection();
 
         // @todo
         // this->on('saving') => protected meta // ou observers
+        // get_post_meta => hook default value
 
         // if (\property_exists($this, 'metas')) {
         //     $this->declareMetas($this->metas);
@@ -32,9 +33,9 @@ trait Metable
         }
     }
 
-    public static function addMeta(MetaDefinition $meta)
+    public function addMeta(MetaDefinition $meta)
     {
-        static::$metas->set($meta->localName(), $meta);
+        $this->metas->set($meta->localName(), $meta);
     }
 
     protected function declareMeta(string $local_key, string $meta_key = null, $protected = null): MetaDefinition
@@ -57,7 +58,7 @@ trait Metable
             }
         }
 
-        static::addMeta($meta);
+        $this->addMeta($meta);
         return $meta;
     }
 
@@ -76,12 +77,12 @@ trait Metable
      */
     public function metaDefinition($key)
     {
-        return static::$metas->get($this->resolveLocalKey($key));
+        return $this->metas->get($this->resolveLocalKey($key));
     }
 
     public function allMetas()
     {
-        return static::$metas->all();
+        return $this->metas->all();
     }
 
     /**
@@ -108,15 +109,15 @@ trait Metable
     public function metaKeys(bool $local = true): array
     {
         return $local
-                ? static::$metas->keys()
-                : static::$metas->map(function ($item) {
+                ? $this->metas->keys()
+                : $this->metas->map(function ($item) {
                     return $item->key();
                 })->all();
     }
 
     public function protectedMetaKeys(bool $local = true): array
     {
-        $protected = static::$metas->filter(function ($item) {
+        $protected = $this->metas->filter(function ($item) {
             return $item->protected();
         });
         return $local
@@ -201,14 +202,14 @@ trait Metable
     /**
      * Key resolvers
      */
-    public static function getMetaKeyFromLocalKey(string $local_key): string
+    public function getMetaKeyFromLocalKey(string $local_key): string
     {
-        return static::$metas->get($local_key)->key();
+        return $this->metas->get($local_key)->key();
     }
 
-    public static function getLocalKeyFromMetaKey(string $meta_key): string
+    public function getLocalKeyFromMetaKey(string $meta_key): string
     {
-        return static::$metas->keyOf(function ($meta) use ($meta_key) {
+        return $this->metas->keyOf(function ($meta) use ($meta_key) {
             return $meta->key() === $meta_key;
         });
     }
@@ -227,12 +228,12 @@ trait Metable
 
     protected function resolveKey(string $key): array
     {
-        if (static::$metas->has($key)) {
-            return ['local_key' => $key, 'meta_key' => static::getMetaKeyFromLocalKey($key)];
+        if ($this->metas->has($key)) {
+            return ['local_key' => $key, 'meta_key' => $this->getMetaKeyFromLocalKey($key)];
         }
 
         if (\in_array($key, $this->metaKeys(false))) {
-            return ['local_key' => static::getLocalKeyFromMetaKey($key), 'meta_key' => $key];
+            return ['local_key' => $this->getLocalKeyFromMetaKey($key), 'meta_key' => $key];
         }
 
         throw new UndefinedMetaKeyException("Unable to resolve meta key {$key}");
