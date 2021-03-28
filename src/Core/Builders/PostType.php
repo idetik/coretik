@@ -9,7 +9,7 @@ use Coretik\Core\Builders\PostType\Args;
 use Coretik\Core\Builders\PostType\Labels;
 use Coretik\Core\Query\Post as Query;
 use Coretik\Core\Models\Handlers\Guard;
-use Coretik\Core\Models\Handlers\AcfDefaultMetaHandler;
+use Coretik\Core\Models\Handlers\DefaultMetaDataHandler;
 
 final class PostType extends BuilderModelable implements RegistrableInterface, TaxonomiableInterface
 {
@@ -27,7 +27,7 @@ final class PostType extends BuilderModelable implements RegistrableInterface, T
         parent::__construct();
         $this->handlers([
             new Guard(),
-            new AcfDefaultMetaHandler()
+            new DefaultMetaDataHandler()
         ]);
         $this->querier(function ($mediator) {
             return new Query($mediator);

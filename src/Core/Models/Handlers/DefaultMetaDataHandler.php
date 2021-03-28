@@ -5,7 +5,7 @@ namespace Coretik\Core\Models\Handlers;
 use Coretik\Core\Builders\Interfaces\BuilderInterface;
 use Coretik\Core\Builders\Interfaces\HandlerInterface;
 
-class AcfDefaultMetaHandler implements HandlerInterface
+class DefaultMetaDataHandler implements HandlerInterface
 {
     private $builder;
 
