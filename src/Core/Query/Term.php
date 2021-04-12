@@ -18,4 +18,9 @@ class Term extends Query
             'taxonomy' => $this->mediator->getName()
         ];
     }
+
+    public function results(): array
+    {
+        return $this->get()->terms;
+    }
 }
