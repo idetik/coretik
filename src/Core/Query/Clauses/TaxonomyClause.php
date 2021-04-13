@@ -1,8 +1,9 @@
 <?php
 
-namespace Coretik\Core\Query\Clause;
+namespace Coretik\Core\Query\Clauses;
 
 use Coretik\Core\Query\Interfaces\TaxonomyClauseInterface;
+use Coretik\Core\Query\Clauses\WhereClause;
 
 class TaxonomyClause extends WhereClause implements TaxonomyClauseInterface
 {
@@ -12,6 +13,7 @@ class TaxonomyClause extends WhereClause implements TaxonomyClauseInterface
     public function __construct(string $taxonomy, $terms, string $compare = '=', string $field = 'term_id', bool $include_children = true)
     {
         parent::__construct($taxonomy, $terms, $compare);
+        $this->field = $field;
         $this->children = $include_children;
     }
 

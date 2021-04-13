@@ -1,6 +1,6 @@
 <?php
 
-namespace Coretik\Core\Query\Clause;
+namespace Coretik\Core\Query\Clauses;
 
 use Coretik\Core\Query\Interfaces\WhereClauseInterface;
 

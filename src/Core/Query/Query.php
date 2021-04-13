@@ -5,10 +5,10 @@ namespace Coretik\Core\Query;
 use Coretik\Core\Builders\Interfaces\ModelableInterface;
 use Coretik\Core\Query\Interfaces\QuerierInterface;
 use Coretik\Core\Query\Interfaces\QueryBuilderInterface;
-use Coretik\Core\Query\Clause\TaxonomyClause;
-use Coretik\Core\Query\Clause\MetaClause;
-use Coretik\Core\Query\Clause\WhereClause;
-use Coretik\Core\Query\Clause\DateClause;
+use Coretik\Core\Query\Clauses\TaxonomyClause;
+use Coretik\Core\Query\Clauses\MetaClause;
+use Coretik\Core\Query\Clauses\WhereClause;
+use Coretik\Core\Query\Clauses\DateClause;
 use Coretik\Core\Collection;
 use Coretik\App;
 
