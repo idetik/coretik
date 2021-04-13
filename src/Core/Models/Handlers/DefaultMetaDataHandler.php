@@ -4,6 +4,7 @@ namespace Coretik\Core\Models\Handlers;
 
 use Coretik\Core\Builders\Interfaces\BuilderInterface;
 use Coretik\Core\Builders\Interfaces\HandlerInterface;
+use function Globalis\WP\Cubi\str_starts_with;
 
 class DefaultMetaDataHandler implements HandlerInterface
 {
@@ -23,6 +24,10 @@ class DefaultMetaDataHandler implements HandlerInterface
 
     public function loadMeta($value, $object_id, $meta_key, $single, $meta_type)
     {
+        if (str_starts_with($meta_key, '_')) {
+            return $value;
+        }
+
         if (!$this->builder->concern($object_id)) {
             return $value;
         }

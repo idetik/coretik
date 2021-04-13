@@ -96,6 +96,11 @@ class PostModel extends WPModel
         return \get_post_thumbnail_id($this->id());
     }
 
+    public function thumbnailUrl($size): string
+    {
+        return \get_the_post_thumbnail_url($this->id(), $size);
+    }
+
     public function excerpt(): string
     {
         return get_the_excerpt($this->id());

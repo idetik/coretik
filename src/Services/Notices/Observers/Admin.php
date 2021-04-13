@@ -23,7 +23,7 @@ class Admin implements \SplObserver
             return;
         }
 
-        add_action('admin_notices', function () use ($iterator) {
+        \add_action('admin_notices', function () use ($iterator) {
             foreach ($iterator as $notice) {
                 $notice->display();
             }
