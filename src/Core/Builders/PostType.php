@@ -10,6 +10,7 @@ use Coretik\Core\Builders\PostType\Labels;
 use Coretik\Core\Query\Post as Query;
 use Coretik\Core\Models\Handlers\Guard;
 use Coretik\Core\Models\Handlers\DefaultMetaDataHandler;
+use function Globalis\WP\Cubi\is_frontend;
 
 final class PostType extends BuilderModelable implements RegistrableInterface, TaxonomiableInterface
 {
@@ -81,7 +82,31 @@ final class PostType extends BuilderModelable implements RegistrableInterface, T
             $this->args->set('labels', $this->args->get('labels')->all());
         }
 
-        \register_extended_post_type($this->postType, $this->args->all(), $this->names);
+        if ($this->args->get('use_archive_page', false)) {
+            $rewrite = $this->args->get('rewrite');
+            $rewrite['pages'] = false;
+            $this->args->set('rewrite', $rewrite);
+        }
+
+        $post_type = \register_extended_post_type($this->postType, $this->args->all(), $this->names);
+
+        /**
+         * Use archive page
+         * Remove default wp archive rewrite rule for {archive_slug}/ in order to load page template instead
+         */
+        if (!is_frontend() && $this->args()->get('use_archive_page', false)) {
+            global $wp_rewrite;
+            $archive_slug = true === $post_type->args['has_archive'] ? $post_type->args['rewrite']['slug'] : $post_type->args['has_archive'];
+            if ( $post_type->args['rewrite']['with_front'] ) {
+                $archive_slug = substr( $wp_rewrite->front, 1 ) . $archive_slug;
+            } else {
+                $archive_slug = $wp_rewrite->root . $archive_slug;
+            }
+            unset($wp_rewrite->extra_rules_top["{$archive_slug}/?$"]);
+            unset($wp_rewrite->extra_rules_top["{$archive_slug}/{$wp_rewrite->pagination_base}/([0-9]{1,})/?$"]);
+            \add_rewrite_rule("{$archive_slug}/?$", "index.php?pagename=$archive_slug", 'top');
+            \add_rewrite_rule("{$archive_slug}/{$wp_rewrite->pagination_base}/([0-9]{1,})/?$", "index.php?pagename=$archive_slug" . '&paged=$matches[1]', 'top' );
+        }
     }
 
     public function wpObject(int $id)
