@@ -278,6 +278,10 @@ trait Metable
             );
         }
 
+        if ($this->isAcfDateFormat($value)) {
+            return Carbon::instance(Carbon::createFromFormat('Ymd', $value)->startOfDay());
+        }
+
         // If this value is an integer, we will assume it is a UNIX timestamp's value
         // and format a Carbon object from this timestamp. This allows flexibility
         // when defining your date fields as they might be UNIX timestamps here.
@@ -314,6 +318,11 @@ trait Metable
     protected function isStandardDateFormat($value)
     {
         return \preg_match('/^(\d{4})-(\d{1,2})-(\d{1,2})$/', $value);
+    }
+
+    protected function isAcfDateFormat($value)
+    {
+        return \preg_match('/^(\d{4})(\d{1,2})(\d{1,2})$/', $value);
     }
 
     /**

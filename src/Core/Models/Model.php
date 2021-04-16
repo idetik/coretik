@@ -179,7 +179,7 @@ abstract class Model implements ModelInterface
     {
         $method = 'get' . str_replace('_', '', ucwords($prop, '_')) . 'Attribute';
         if (method_exists($this, $method)) {
-            $this->$method($value);
+            return $this->$method();
         } else {
             return $this->get($prop);
         }
