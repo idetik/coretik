@@ -87,7 +87,11 @@ class PostModel extends WPModel
 
     public function permalink(): string
     {
-        return \get_permalink($this->id);
+        $url = $this->meta('redirect');
+        if(empty($url)) {
+            $url = \get_permalink($this->id);
+        }
+        return $url;
     }
 
     // @todo fallback

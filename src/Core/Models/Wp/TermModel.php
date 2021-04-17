@@ -45,6 +45,16 @@ class TermModel extends WPModel
         }
     }
 
+    public function title(): string
+    {
+        return $this->wp_object->name;
+    }
+
+    public function permalink(): string
+    {
+        return \get_term_link($this->wp_object);
+    }
+
     public function get(string $prop)
     {
         if ($this->hasMeta($prop)) {
