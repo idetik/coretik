@@ -27,13 +27,13 @@ class Factory
         return \call_user_func($this->model, null, $this->mediator);
     }
 
-    public function get(int $id)
+    public function get(int $id, $initializer = null)
     {
         try {
             return $this->models->get($id);
         } catch (Exceptions\InstanceNotExistsException $e) {
             try {
-                $model = \call_user_func($this->model, $id, $this->mediator);
+                $model = \call_user_func($this->model, $initializer ?? $id, $this->mediator);
                 $this->models[$id] = $model;
                 return $model;
             } catch (Exceptions\CannotResolveException $e) {

@@ -5,6 +5,7 @@ namespace Coretik\Core\Models\Wp;
 use Coretik\Core\Models\Traits\AcfFields;
 use Coretik\Core\Models\Adapters\WPPostAdapter;
 use Coretik\Core\Query\Post as Query;
+use Coretik\Core\Models\Exceptions\UndefinedMetaKeyException;
 
 class PostModel extends WPModel
 {
@@ -87,10 +88,12 @@ class PostModel extends WPModel
 
     public function permalink(): string
     {
-        $url = $this->meta('redirect');
-        if(empty($url)) {
+        try {
+            $url = $this->meta('redirect');
+        } catch (UndefinedMetaKeyException $e) {
             $url = \get_permalink($this->id);
         }
+
         return $url;
     }
 
