@@ -6,6 +6,8 @@ use Coretik\Core\Query\Adapters\WPTermAdapter as QueryAdapter;
 
 class Term extends Query
 {
+    const PRIMARY_KEY = 'term_id';
+
     public function newQueryBuilderInstance(array $defaultArgs = [])
     {
         $args = \array_merge($this->getQueryArgsDefault(), $defaultArgs);

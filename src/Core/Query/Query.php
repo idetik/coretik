@@ -144,7 +144,7 @@ abstract class Query implements QuerierInterface
 
     public function ids(): array
     {
-        return $this->pluck('ID');
+        return $this->pluck(static::PRIMARY_KEY);
     }
 
     public function models(): \Generator
