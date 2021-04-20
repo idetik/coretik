@@ -27,7 +27,7 @@ class Args extends Collection
         'show_in_quick_edit' => false,
         'show_admin_column'  => true,
         'meta_box_cb'        => false,
-        'labels'              => null,
+        'labels'             => null,
         //'capabilities'       => [],
         'rewrite'            => null,
         'default_term'       => null,
