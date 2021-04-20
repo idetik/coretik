@@ -155,9 +155,9 @@ abstract class Query implements QuerierInterface
         }
     }
 
-    public function collection(): Collection
+    public function collection($models = true): Collection
     {
-        return $this->collect($this->models());
+        return $this->collect($models ? $this->models() : $this->results());
     }
 
     protected function collect($data)

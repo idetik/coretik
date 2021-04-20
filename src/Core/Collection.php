@@ -59,6 +59,16 @@ class Collection implements CollectionInterface
     /**
      * {@inheritdoc}
      */
+    public function last()
+    {
+        $last = end($this->data);
+        reset($this->data);
+        return $last;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function all()
     {
         return $this->data;
@@ -122,6 +132,49 @@ class Collection implements CollectionInterface
         }
 
         return new static(\array_filter($this->data));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function groupBy(callable $group_by, bool $hide_empty = false)
+    {
+        $groups = [];
+        foreach ($this->data as $object) {
+            $group_key = \call_user_func($group_by, $object, $groups);
+            if (!empty($group_key) && $group_key) {
+                $groups[$group_key][] = $object;
+            } elseif (!$hide_empty) {
+                $groups['_others'][] = $object;
+            }
+        }
+        ksort($groups);
+        return new static($groups);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function makeTree(string $parentKey, string $primaryKey): array
+    {
+        $data = $this->data;
+        $groups = [];
+        foreach ($this->data as $object){
+            $groups[$object[$parentKey]][] = $object;
+        }
+        return $this->createTree($groups, $groups[0], $primaryKey);
+    }
+
+    protected function createTree(&$list, $parent, $primaryKey)
+    {
+        $tree = [];
+        foreach ($parent as $k=>$l){
+            if(isset($list[$l[$primaryKey]])){
+                $l['children'] = $this->createTree($list, $list[$l[$primaryKey]], $primaryKey);
+            }
+            $tree[] = $l;
+        } 
+        return $tree;
     }
 
     /**
