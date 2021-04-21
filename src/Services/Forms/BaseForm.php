@@ -10,6 +10,7 @@ abstract class BaseForm implements Handlable
     protected $form_name;
     protected $form;
     protected $data = [];
+    protected $config;
 
     public function __construct(string $id, array $values = [], $template = null, $form_name = null)
     {
@@ -21,6 +22,12 @@ abstract class BaseForm implements Handlable
 
     abstract protected function isValidContext(): bool;
     abstract protected function run(): void;
+
+    public function setConfig(Config $config)
+    {
+        $this->config = $config;
+        return $this;
+    }
 
     public function getName(): string
     {
@@ -81,7 +88,7 @@ abstract class BaseForm implements Handlable
     public function form(): Form
     {
         if (is_null($this->form)) {
-            $this->form = new Form($this->form_id, $this->defaultValues(), $this->template, $this->form_name);
+            $this->form = new Form($this->form_id, $this->defaultValues(), $this->template, $this->form_name, $this->config);
         }
         return $this->form;
     }

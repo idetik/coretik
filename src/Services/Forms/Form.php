@@ -25,15 +25,19 @@ class Form
     protected $display_errors    = true; //Set to false to not display form errors (eg. when we just want to refresh form fields)
     protected $form_name         = null; //Override form name
 
+    protected $config;
+
 
     // @todo config as service
-    public function __construct($id, $values = [], $template = null, $form_name = null)
+    public function __construct($id, $values = [], $template = null, $form_name = null, Config $config = null)
     {
         $this->id = $id;
         $this->template = $template ?? $id; //Can be overridden by setTemplate() if needed
         $this->form_name = $form_name ?? null;
         $this->loadFields();
         $this->setDefaultValues($values);
+
+        $this->config = $config ?? (new Config);
     }
 
     /**
@@ -60,7 +64,7 @@ class Form
      */
     protected function loadFields()
     {
-        $fields_file_name = self::FORMS_TEMPLATES_DIR . $this->template . '/' . self::FORMS_FIELDS_FILE;
+        $fields_file_name = $this->config->get('templateDir') . $this->template . '/' . $this->config->get('formRulesFile');
         $fields_file = locate_template($fields_file_name);
         if (!file_exists($fields_file)) {
             throw new \Exception('Form fields definition file [' . $fields_file_name . '] not found.');
@@ -151,7 +155,7 @@ class Form
         $form = $this;
         $data['form_data'] = $this->view_data; //So that main form data can be accessed in form parts
         extract($data);
-        include locate_template(self::FORMS_TEMPLATES_DIR . $template . '.php');
+        include locate_template($this->config->get('templateDir') . $template . '.php');
         if ($return) {
             return ob_get_clean();
         } else {
@@ -194,7 +198,7 @@ class Form
 
     public function getFormName()
     {
-        return $this->form_name ?? self::FORMS_PREFIX . '-form-' . $this->id;
+        return $this->form_name ?? $this->config->get('formPrefix') . '-form-' . $this->id;
     }
 
     public function setFormName($name)
@@ -303,7 +307,7 @@ class Form
 
     public function nonceField()
     {
-        wp_nonce_field(self::FORMS_PREFIX . '_form_submit_' . $this->id, $this->fieldName('nonce'));
+        wp_nonce_field($this->config->get('formPrefix') . '_form_submit_' . $this->id, $this->fieldName('nonce'));
     }
 
     public function spamField()
@@ -313,7 +317,7 @@ class Form
 
     protected function checkNonce()
     {
-        return isset($_POST[$this->getFormName()]['nonce']) && wp_verify_nonce($_POST[$this->getFormName()]['nonce'], self::FORMS_PREFIX . '_form_submit_' . $this->id);
+        return isset($_POST[$this->getFormName()]['nonce']) && wp_verify_nonce($_POST[$this->getFormName()]['nonce'], $this->config->get('formPrefix') . '_form_submit_' . $this->id);
     }
 
     public function process()
@@ -359,7 +363,7 @@ class Form
             $fields = Utils\force_array($fields);
             foreach ($fields as $field_name) {
                 if (isset($errors[$field_name])) {
-                    $error_class = self::CSS_CLASS_ERROR;
+                    $error_class = $this->config->get('cssClassError');
                     break;
                 }
             }

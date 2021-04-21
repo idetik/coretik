@@ -7,28 +7,25 @@ class Handler
     protected $forms = [];
     protected static $instance = null;
 
-    protected function __construct() {}
+    protected $config;
 
-    public static function instance()
-    {
-        if (!isset(self::$instance)) {
-            self::$instance = new self();
-        }
-        return self::$instance;
+    public function __construct(Config $config = null) {
+        $this->config = $config ?? (new Config);
+        $this->hooks();
     }
 
-    public static function hooks()
+    public function hooks()
     {
-        \add_action('init', [__CLASS__, 'init'], 99);
+        \add_action('init', [$this, 'init'], 99);
     }
 
-    public static function init()
+    public function init()
     {
         if (empty($_REQUEST)) {
             return;
         }
 
-        foreach (static::instance()->forms as $form) {
+        foreach ($this->forms as $form) {
             if ($form instanceof \Closure) {
                 $form = \call_user_func($form);
             }
@@ -58,26 +55,28 @@ class Handler
         }
     }
 
-    public static function attach(Handlable $form)
+    public function attach(Handlable $form)
     {
-        static::instance()->forms[$form->getName()] = $form;
+        $form->setConfig($this->config);
+        $this->forms[$form->getName()] = $form;
     }
 
-    public static function factory(Handlable $form)
+    public function factory(Handlable $form)
     {
-        static::instance()->forms[$form->getName()] = function () use ($form) {
+        $form->setConfig($this->config);
+        $this->forms[$form->getName()] = function () use ($form) {
             return clone $form;
         };
     }
 
-    public static function has(string $name): bool
+    public function has(string $name): bool
     {
-        return !empty(static::instance()->forms[$name]);
+        return !empty($this->forms[$name]);
     }
 
-    public static function get(string $name): Handlable
+    public function get(string $name): Handlable
     {
-        $form = static::instance()->forms[$name];
+        $form = $this->forms[$name];
         if ($form instanceof \Closure) {
             $form = \call_user_func($form);
         }
@@ -100,5 +99,3 @@ class Handler
         }
     }
 }
-
-Handler::hooks();
