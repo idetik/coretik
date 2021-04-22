@@ -34,7 +34,7 @@ class PaymentCardCvc extends Constraint
 
     public function validate($fieldname, $value, $values)
     {
-        if (!Utils\isset_value($value)) {
+        if (!Utils::issetValue($value)) {
             return true;
         }
 
@@ -44,7 +44,7 @@ class PaymentCardCvc extends Constraint
             return true;
         }
 
-        $card_number = \TAR\WP\Forms\Utils\formNormalizeTextWithoutSpaces($card_number);
+        $card_number = Utils::formNormalizeTextWithoutSpaces($card_number);
 
         $validation_card_number = \Freelancehunt\Validators\CreditCard::validCreditCard($card_number);
 
@@ -52,7 +52,7 @@ class PaymentCardCvc extends Constraint
             return true;
         }
 
-        $value = \TAR\WP\Forms\Utils\formNormalizeTextWithoutSpaces($value);
+        $value = Utils::formNormalizeTextWithoutSpaces($value);
 
         return \Freelancehunt\Validators\CreditCard::validCvc($value, $validation_card_number['type']);
     }

@@ -28,16 +28,14 @@ class Form
     protected $config;
 
 
-    // @todo config as service
     public function __construct($id, $values = [], $template = null, $form_name = null, Config $config = null)
     {
+        $this->config = $config ?? (new Config);
         $this->id = $id;
         $this->template = $template ?? $id; //Can be overridden by setTemplate() if needed
         $this->form_name = $form_name ?? null;
         $this->loadFields();
         $this->setDefaultValues($values);
-
-        $this->config = $config ?? (new Config);
     }
 
     /**
@@ -97,7 +95,7 @@ class Form
                 }
             }
 
-            if (!Utils\is_action_refresh() && isset($data['constraints_on_submit'])) {
+            if (!Utils::isActionRefresh() && isset($data['constraints_on_submit'])) {
                 foreach ($data['constraints_on_submit'] as $key => $args) {
                     $constraint = Constraint::factory($key, $args, $this);
                     if (false !== $constraint) {
@@ -360,7 +358,7 @@ class Form
         $error_class = '';
         if ($this->isValidating() && $this->hasErrors()) {
             $errors = $this->validation->getErrors();
-            $fields = Utils\force_array($fields);
+            $fields = Utils::forceArray($fields);
             foreach ($fields as $field_name) {
                 if (isset($errors[$field_name])) {
                     $error_class = $this->config->get('cssClassError');
@@ -375,7 +373,7 @@ class Form
     {
         if ($this->isValidating() && $this->hasErrors()) {
             $errors = $this->validation->getErrors();
-            $fields = Utils\force_array($fields);
+            $fields = Utils::forceArray($fields);
             foreach ($fields as $field_name) {
                 if (isset($errors[$field_name]) && !empty($errors[$field_name])) {
                     return current($errors[$field_name])->getMessage();
@@ -469,7 +467,7 @@ class Form
         unset($posted['form_id']);
         unset($posted['nonce']);
         foreach ($posted as $key => $value) {
-            $data[sanitize_key($key)] = Utils\sanitize_form_field($value);
+            $data[sanitize_key($key)] = Utils::sanitizeFormField($value);
         }
         return $data;
     }

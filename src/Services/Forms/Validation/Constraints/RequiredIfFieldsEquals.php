@@ -42,7 +42,7 @@ class RequiredIfFieldsEquals extends Constraint
             }
         }
         if ($required) {
-            return Utils\isset_value($value);
+            return Utils::issetValue($value);
         } else {
             return true;
         }

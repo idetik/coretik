@@ -28,11 +28,11 @@ class PaymentCardNumber extends Constraint
 
     public function validate($fieldname, $value, $values)
     {
-        if (!Utils\isset_value($value)) {
+        if (!Utils::issetValue($value)) {
             return true;
         }
 
-        $card_number = \TAR\WP\Forms\Utils\formNormalizeTextWithoutSpaces($value);
+        $card_number = Utils::formNormalizeTextWithoutSpaces($value);
 
         $validation = \Freelancehunt\Validators\CreditCard::validCreditCard($card_number);
 

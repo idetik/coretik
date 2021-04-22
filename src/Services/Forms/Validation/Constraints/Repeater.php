@@ -68,7 +68,7 @@ class Repeater extends Constraint
 
     public function validate($fieldname, $value, $values)
     {
-        if (!Utils\isset_value($value)) {
+        if (!Utils::issetValue($value)) {
             return true;
         }
 

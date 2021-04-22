@@ -28,10 +28,10 @@ class RequiredOnSubmit extends Constraint
 
     public function validate($fieldname, $value, $values)
     {
-        if (Utils\is_action_refresh()) {
+        if (Utils::isActionRefresh()) {
             return true;
         }
 
-        return Utils\isset_value($value);
+        return Utils::issetValue($value);
     }
 }

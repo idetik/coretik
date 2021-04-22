@@ -28,11 +28,11 @@ class Integer extends Constraint
 
     public function validate($fieldname, $value, $values)
     {
-        if (!Utils\isset_value($value)) {
+        if (!Utils::issetValue($value)) {
             return true;
         }
 
-        $value = Utils\formRemoveSpaces($value);
+        $value = Utils::formRemoveSpaces($value);
         return !!filter_var($value, FILTER_VALIDATE_INT);
     }
 }

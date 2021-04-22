@@ -28,6 +28,6 @@ class Required extends Constraint
 
     public function validate($fieldname, $value, $values)
     {
-        return Utils\isset_value($value);
+        return Utils::issetValue($value);
     }
 }

@@ -36,13 +36,13 @@ class RequiredIfAllNotSet extends Constraint
     {
         $required = true;
         foreach ($this->conditionnals as $field_name) {
-            if (Utils\isset_value($field_name, $values)) {
+            if (Utils::issetValue($field_name, $values)) {
                 $required = false;
                 break;
             }
         }
         if ($required) {
-            return Utils\isset_value($value);
+            return Utils::issetValue($value);
         } else {
             return true;
         }

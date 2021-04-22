@@ -36,13 +36,13 @@ class RequiredIfOneSet extends Constraint
     {
         $required = false;
         foreach ($this->conditionnals as $field_name) {
-            if (Utils\isset_value($field_name, $values)) {
+            if (Utils::issetValue($field_name, $values)) {
                 $required = true;
                 break;
             }
         }
         if ($required) {
-            return Utils\isset_value($value);
+            return Utils::issetValue($value);
         } else {
             return true;
         }

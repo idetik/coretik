@@ -43,7 +43,7 @@ class PaymentCardExpiry extends Constraint
         $field_month = $this->field_month ?? $fieldname;
         $field_year = $this->field_year ?? $fieldname;
 
-        if ((!Utils\isset_value($values[$field_month])) || (!Utils\isset_value($values[$field_year]))) {
+        if ((!Utils::issetValue($values[$field_month])) || (!Utils::issetValue($values[$field_year]))) {
             return true;
         }
 
