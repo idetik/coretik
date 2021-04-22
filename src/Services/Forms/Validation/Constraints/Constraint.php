@@ -17,10 +17,10 @@ abstract class Constraint
 
     protected static function get($class, array $args = [])
     {
-        $class = apply_filters('coretik/forms/constraint/get', $class, $args);
+        $class = apply_filters('coretik/forms/constraint/get', __NAMESPACE__ . '\\' . $class, $args);
         $class = apply_filters('coretik/forms/constraint/get/' . $class, $class, $args);
 
-        if (\class_exists($class, false)) {
+        if (\class_exists($class, true)) {
             return new $class(...$args);
         }
 
