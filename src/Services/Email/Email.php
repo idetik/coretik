@@ -13,7 +13,7 @@ class Email
     public $to;
     public $subject;
     public $message;
-    public $headers;
+    public $headers = [];
     public $attachments;
 
     protected $templatesDir;
