@@ -96,7 +96,7 @@ class Email
 
     public function useTemplate(string $template, array $data = [])
     {
-        $this->message = Cubi\include_template_part($this->templatesDir . $template, $data + ['email' => $this], true);
+        $this->message = Cubi\include_template_part($this->templatesDir . '/' . $template, $data + ['email' => $this], true);
         return $this;
     }
 
