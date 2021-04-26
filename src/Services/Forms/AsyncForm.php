@@ -42,7 +42,7 @@ abstract class AsyncForm extends BaseForm implements Asyncable
     {
         parent::onValidationError();
         if (static::SCROLL_TO_ERRORS) {
-            $this->data['errors'][] = 'This form contains errors, please check your entries';
+            $this->data['errors'][] = __('Ce formulaire contient des erreurs, veuillez vérifier votre saisie.', 'coretik');
         }
     }
 }

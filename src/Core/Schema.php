@@ -20,6 +20,7 @@ class Schema implements ContainerInterface
     {
         $this->register(new Builders\PostTypeBuiltIn('page'));
         $this->register(new Builders\PostTypeBuiltIn('post'));
+        $this->register(new Builders\User());
     }
 
     public function register(BuilderInterface $builder)

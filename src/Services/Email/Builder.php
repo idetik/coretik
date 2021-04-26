@@ -9,13 +9,6 @@ class Builder
 {
     protected $stylesheetPath;
     protected $basePath;
-    protected $css;
-
-    public function __construct(string $stylesheet_path, string $base_path)
-    {
-        $this->stylesheetPath = $stylesheet_path;
-        $this->basePath = $base_path;
-    }
 
     public function basePath()
     {
@@ -25,5 +18,17 @@ class Builder
     public function stylesheetPath()
     {
         return $this->stylesheetPath;
+    }
+
+    public function setBasePath(string $basePath)
+    {
+        $this->basePath = $basePath;
+        return $this;
+    }
+
+    public function setStylesheetPath(string $stylesheetPath)
+    {
+        $this->stylesheetPath = $stylesheetPath;
+        return $this;
     }
 }
