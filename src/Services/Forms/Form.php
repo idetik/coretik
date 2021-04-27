@@ -544,10 +544,10 @@ class Form
         );
 
         if (\wp_doing_ajax()) {
-            printf('<script>jQuery(function($) {%s});</script>', $query);
+            printf('<script type="text/javascript">jQuery(function($) {%s});</script>', $query);
         } else {
             \add_action('wp_footer', function () use ($query) {
-                printf('<script>jQuery(function($) {%s});</script>', $query);
+                printf('<script type="text/javascript">jQuery(function($) {%s});</script>', $query);
             }, 99);
         }
     }
