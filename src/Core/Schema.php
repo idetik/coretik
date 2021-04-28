@@ -56,7 +56,7 @@ class Schema implements ContainerInterface
 
         if (!in_array($builder->getType(), $this->types)) {
             $this->types[] = $builder->getType();
-            $this->objects[$builder->getType()] = new Collection();
+            $this->objects[$builder->getType()] = new BuilderCollection();
         }
 
         $this->objects[$builder->getType()]->set($builder->getName(), $builder);
