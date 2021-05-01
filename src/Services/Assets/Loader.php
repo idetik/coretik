@@ -17,7 +17,7 @@ class Loader
         $this->handleFamily = !empty($handler) ? $handler : sanitize_title(\get_option('blogname'), 'coretik');
     }
 
-    public function url($file, $versioning = false)
+    public function url($file, $versioning = ASSETS_VERSIONING_SCRIPTS)
     {
         $file = ltrim($this->base . $file, '/');
         if (empty($file)) {
