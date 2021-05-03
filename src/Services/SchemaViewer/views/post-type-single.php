@@ -9,7 +9,7 @@ $modalArgs = Coretik\App::modals()->factory(function ($data) {
 
         if (is_object($value)) {
             $value = get_object_vars($value);
-        } 
+        }
 
         if (is_array($value)) {
             foreach ($value as $subkey => $subval) {

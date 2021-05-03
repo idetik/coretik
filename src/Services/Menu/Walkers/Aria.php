@@ -15,10 +15,10 @@ class Aria extends \Walker_Nav_Menu
             $t = "\t";
             $n = "\n";
         }
-        $indent = str_repeat( $t, $depth );
+        $indent = str_repeat($t, $depth);
 
         // Default class.
-        $classes = array( 'sub-menu' );
+        $classes = [ 'sub-menu' ];
 
         /**
          * Filters the CSS class(es) applied to a menu list element.
@@ -29,8 +29,8 @@ class Aria extends \Walker_Nav_Menu
          * @param stdClass $args    An object of `wp_nav_menu()` arguments.
          * @param int      $depth   Depth of menu item. Used for padding.
          */
-        $class_names = implode( ' ', apply_filters( 'nav_menu_submenu_css_class', $classes, $args, $depth ) );
-        $class_names = $class_names ? ' class="' . esc_attr( $class_names ) . '"' : '';
+        $class_names = implode(' ', apply_filters('nav_menu_submenu_css_class', $classes, $args, $depth));
+        $class_names = $class_names ? ' class="' . esc_attr($class_names) . '"' : '';
 
         $output .= "{$n}{$indent}<ul$class_names role=\"menu\">{$n}";
     }
@@ -50,7 +50,7 @@ class Aria extends \Walker_Nav_Menu
         }
         $indent = ($depth) ? str_repeat($t, $depth) : '';
 
-        $classes   = empty( $item->classes ) ? array() : (array) $item->classes;
+        $classes   = empty($item->classes) ? [] : (array) $item->classes;
         $classes[] = 'menu-item-' . $item->ID;
 
         /**
@@ -62,7 +62,7 @@ class Aria extends \Walker_Nav_Menu
          * @param WP_Post  $item  Menu item data object.
          * @param int      $depth Depth of menu item. Used for padding.
          */
-        $args = apply_filters( 'nav_menu_item_args', $args, $item, $depth );
+        $args = apply_filters('nav_menu_item_args', $args, $item, $depth);
 
         /**
          * Filters the CSS classes applied to a menu item's list item element.
@@ -75,8 +75,8 @@ class Aria extends \Walker_Nav_Menu
          * @param stdClass $args    An object of wp_nav_menu() arguments.
          * @param int      $depth   Depth of menu item. Used for padding.
          */
-        $class_names = implode( ' ', apply_filters( 'nav_menu_css_class', array_filter( $classes ), $item, $args, $depth ) );
-        $class_names = $class_names ? ' class="' . esc_attr( $class_names ) . '"' : '';
+        $class_names = implode(' ', apply_filters('nav_menu_css_class', array_filter($classes), $item, $args, $depth));
+        $class_names = $class_names ? ' class="' . esc_attr($class_names) . '"' : '';
 
         /**
          * Filters the ID applied to a menu item's list item element.
@@ -89,20 +89,20 @@ class Aria extends \Walker_Nav_Menu
          * @param stdClass $args    An object of wp_nav_menu() arguments.
          * @param int      $depth   Depth of menu item. Used for padding.
          */
-        $id = apply_filters( 'nav_menu_item_id', 'menu-item-' . $item->ID, $item, $args, $depth );
-        $id = $id ? ' id="' . esc_attr( $id ) . '"' : '';
+        $id = apply_filters('nav_menu_item_id', 'menu-item-' . $item->ID, $item, $args, $depth);
+        $id = $id ? ' id="' . esc_attr($id) . '"' : '';
 
         $output .= $indent . '<li' . $id . $class_names . ' role="none">';
 
-        $atts           = array();
-        $atts['title']  = ! empty( $item->attr_title ) ? $item->attr_title : '';
-        $atts['target'] = ! empty( $item->target ) ? $item->target : '';
-        if ( '_blank' === $item->target && empty( $item->xfn ) ) {
+        $atts           = [];
+        $atts['title']  = ! empty($item->attr_title) ? $item->attr_title : '';
+        $atts['target'] = ! empty($item->target) ? $item->target : '';
+        if ('_blank' === $item->target && empty($item->xfn)) {
             $atts['rel'] = 'noopener';
         } else {
             $atts['rel'] = $item->xfn;
         }
-        $atts['href']         = ! empty( $item->url ) ? $item->url : '';
+        $atts['href']         = ! empty($item->url) ? $item->url : '';
         $atts['aria-current'] = $item->current ? 'page' : '';
         $atts['role'] = 'menuitem';
         if (static::$isFirst) {
@@ -140,18 +140,18 @@ class Aria extends \Walker_Nav_Menu
          * @param stdClass $args  An object of wp_nav_menu() arguments.
          * @param int      $depth Depth of menu item. Used for padding.
          */
-        $atts = apply_filters( 'nav_menu_link_attributes', $atts, $item, $args, $depth );
+        $atts = apply_filters('nav_menu_link_attributes', $atts, $item, $args, $depth);
 
         $attributes = '';
-        foreach ( $atts as $attr => $value ) {
-            if ( is_scalar( $value ) && '' !== $value && false !== $value ) {
-                $value       = ( 'href' === $attr ) ? esc_url( $value ) : esc_attr( $value );
+        foreach ($atts as $attr => $value) {
+            if (is_scalar($value) && '' !== $value && false !== $value) {
+                $value       = ( 'href' === $attr ) ? esc_url($value) : esc_attr($value);
                 $attributes .= ' ' . $attr . '="' . $value . '"';
             }
         }
 
         /** This filter is documented in wp-includes/post-template.php */
-        $title = apply_filters( 'the_title', $item->title, $item->ID );
+        $title = apply_filters('the_title', $item->title, $item->ID);
 
         /**
          * Filters a menu item's title.
@@ -163,7 +163,7 @@ class Aria extends \Walker_Nav_Menu
          * @param stdClass $args  An object of wp_nav_menu() arguments.
          * @param int      $depth Depth of menu item. Used for padding.
          */
-        $title = apply_filters( 'nav_menu_item_title', $title, $item, $args, $depth );
+        $title = apply_filters('nav_menu_item_title', $title, $item, $args, $depth);
 
         $item_output  = $args->before;
         $item_output .= '<a' . $attributes . '>';
@@ -185,6 +185,6 @@ class Aria extends \Walker_Nav_Menu
          * @param int      $depth       Depth of menu item. Used for padding.
          * @param stdClass $args        An object of wp_nav_menu() arguments.
          */
-        $output .= apply_filters( 'walker_nav_menu_start_el', $item_output, $item, $depth, $args );
+        $output .= apply_filters('walker_nav_menu_start_el', $item_output, $item, $depth, $args);
     }
 }

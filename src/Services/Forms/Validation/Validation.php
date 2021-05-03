@@ -52,7 +52,7 @@ class Validation
             new Callback([
                 'name' => $fieldName,
                 'message' => $message,
-                'callback' => function() {
+                'callback' => function () {
                     return false;
                 }
             ])

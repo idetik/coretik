@@ -2,7 +2,7 @@
 
 $models = apply_filters('coretik/services/schemaViewer/models', [$builder->model()], $builder, $args);
 
-foreach ($models as $i => $model):
+foreach ($models as $i => $model) :
     $id = sprintf('%s-%s', sanitize_title($args['labels']['singular'] ?? $args['labels']['singular_name'] ?? 'Undefined'), $i);
     ?>
     <li>

@@ -35,16 +35,16 @@ class EmailNoBurnerOrDisposable extends Constraint
 
     public static function isBurnerEmailDomain($email)
     {
-        if(is_null(self::$burnersDomains)) {
+        if (is_null(self::$burnersDomains)) {
             $file = ROOT_DIR . '/vendor/wesbos/burner-email-providers/emails.txt';
-            if(!file_exists($file) || !is_readable($file)) {
+            if (!file_exists($file) || !is_readable($file)) {
                 self::$burnersDomains = [];
             } else {
                 self::$burnersDomains = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
             }
         }
 
-        if(empty(self::$burnersDomains)) {
+        if (empty(self::$burnersDomains)) {
             return false;
         }
 

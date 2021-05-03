@@ -20,7 +20,7 @@ class Password extends Constraint
         'least_one_cap'     => ['activate' => false, 'message' => 'Le mot de passe doit contenir au moins une majuscule.', 'args' => false, 'callback' => 'leastOneCap'],
         'confirm_password'  => ['activate' => false, 'message' => 'Le mot de passe est invalide.', 'args' => false, 'callback' => 'confirmPassword'],
     ];
-    
+
 
     public function __construct($password_constraints = [])
     {
@@ -63,7 +63,7 @@ class Password extends Constraint
     {
         return $this->display_message;
     }
-    
+
     public function validate($fieldname, $value, $values)
     {
         if (!Utils::issetValue($value)) {

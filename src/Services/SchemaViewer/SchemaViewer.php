@@ -29,7 +29,7 @@ class SchemaViewer
 
     public static function styles()
     {
-        add_action('admin_head', function() {
+        add_action('admin_head', function () {
             ?>
             <style>
                 <?php include static::STYLES ?>
@@ -42,7 +42,7 @@ class SchemaViewer
     // @todo: TEMP
     public static function scripts()
     {
-        add_action('admin_footer', function() {
+        add_action('admin_footer', function () {
             ?>
             <script>
                 ;(function($) {

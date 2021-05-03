@@ -27,7 +27,7 @@ trait Actions
         if (!array_key_exists($_REQUEST[$action_key], $actions)) {
             return null;
         }
-    
+
         $action = $actions[$_REQUEST[$action_key]];
 
         switch (true) {

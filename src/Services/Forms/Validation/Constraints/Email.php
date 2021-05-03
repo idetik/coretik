@@ -45,7 +45,7 @@ class Email extends Constraint
 
         $value = mb_strtolower($value);
 
-        if(empty(filter_var($value, FILTER_VALIDATE_EMAIL))) {
+        if (empty(filter_var($value, FILTER_VALIDATE_EMAIL))) {
             return false;
         }
 

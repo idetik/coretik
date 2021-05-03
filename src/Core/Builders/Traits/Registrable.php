@@ -10,7 +10,7 @@ trait Registrable
     {
         return !$this->registered;
     }
-    
+
     public function register(): void
     {
         if ($this->registrable()) {

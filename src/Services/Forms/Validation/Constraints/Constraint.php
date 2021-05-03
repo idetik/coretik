@@ -2,7 +2,6 @@
 
 namespace Coretik\Services\Forms\Validation\Constraints;
 
-
 abstract class Constraint
 {
     protected $form = null;

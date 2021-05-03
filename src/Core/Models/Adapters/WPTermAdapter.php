@@ -53,7 +53,7 @@ class WPTermAdapter extends WPAdapter implements MetableAdapterInterface, CRUDIn
         }
         return $term_ids;
     }
-    
+
     public function update(string $taxonomy = '', array $args = [])
     {
         $term_ids = \wp_update_term($this->model->id(), $taxonomy, $args);

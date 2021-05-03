@@ -79,7 +79,7 @@ abstract class Model implements ModelInterface
         }
         return $args;
     }
- 
+
     public function create(): self
     {
         // Not allowed, already exists

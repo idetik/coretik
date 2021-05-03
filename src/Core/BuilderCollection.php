@@ -18,7 +18,7 @@ class BuilderCollection extends Collection
                 return $builder;
             }
         }
-        
+
         throw new ContainerValueNotFoundException(sprintf('Identifier "%s" is not defined.', $id));
     }
 }

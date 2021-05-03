@@ -47,13 +47,13 @@ class Labels extends Collection
         } else {
             $singular_low = $singular;
         }
-    
+
         if (!preg_match('/[A-Z]{2,}/', $plural)) {
             $plural_low = mb_strtolower($plural);
         } else {
             $plural_low = $plural;
         }
-    
+
         if ($this->isFemininus) {
             $un = "une";
             $le = $this->hasApostrophe ? "l'" : "la ";
@@ -85,7 +85,7 @@ class Labels extends Collection
             $aucun = "Aucun";
             $parent = "parent";
         }
-    
+
         $labels = [
             'extended_custom_labels'     => true,
             'singular'                   => $singular,
@@ -133,7 +133,7 @@ class Labels extends Collection
             'view_item'                  => sprintf('Voir %s%s', $le, $singular),
             'view_items'                 => sprintf('Voir les %s', $plural),
         ];
-    
+
         return array_merge($labels, parent::all());
     }
 }

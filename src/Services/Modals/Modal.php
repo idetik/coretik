@@ -74,7 +74,7 @@ class Modal implements ModalInterface
             'is_large' => $this->isLarge(),
         ];
     }
-    
+
     public function render()
     {
         $data = $this->data + $this->toArray();
@@ -91,7 +91,7 @@ class Modal implements ModalInterface
         include $this->tpl_modal;
         \ob_end_flush();
     }
-   
+
     public function __sleep()
     {
         return ['body', 'data'];

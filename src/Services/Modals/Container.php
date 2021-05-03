@@ -63,7 +63,7 @@ class Container
     public function modals()
     {
         include $this->tpl_container;
-        
+
         if (!static::$scriptsLoaded) {
             ?>
             <script>

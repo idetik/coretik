@@ -159,7 +159,7 @@ class Collection implements CollectionInterface
     {
         $data = $this->data;
         $groups = [];
-        foreach ($this->data as $object){
+        foreach ($this->data as $object) {
             $groups[$object[$parentKey]][] = $object;
         }
         return $this->createTree($groups, $groups[0], $primaryKey);
@@ -168,12 +168,12 @@ class Collection implements CollectionInterface
     protected function createTree(&$list, $parent, $primaryKey)
     {
         $tree = [];
-        foreach ($parent as $k=>$l){
-            if(isset($list[$l[$primaryKey]])){
+        foreach ($parent as $k => $l) {
+            if (isset($list[$l[$primaryKey]])) {
                 $l['children'] = $this->createTree($list, $list[$l[$primaryKey]], $primaryKey);
             }
             $tree[] = $l;
-        } 
+        }
         return $tree;
     }
 

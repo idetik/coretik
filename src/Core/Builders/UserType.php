@@ -191,7 +191,7 @@ final class UserType extends BuilderModelable implements RegistrableInterface
             $this->capsMapped->set($cap, $granted);
         }
     }
-    
+
     public function addCaps(array $caps, $granted = true, $override = false)
     {
         foreach ($caps as $cap) {

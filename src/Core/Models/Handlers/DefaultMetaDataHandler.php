@@ -4,6 +4,7 @@ namespace Coretik\Core\Models\Handlers;
 
 use Coretik\Core\Builders\Interfaces\BuilderInterface;
 use Coretik\Core\Builders\Interfaces\HandlerInterface;
+
 use function Globalis\WP\Cubi\str_starts_with;
 
 class DefaultMetaDataHandler implements HandlerInterface

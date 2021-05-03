@@ -2,12 +2,15 @@
 
 namespace Coretik\Core\Utils\Traits;
 
-
 trait Singleton
 {
-    protected function __construct() {}
+    protected function __construct()
+    {
+    }
 
-    final protected function __clone() {}
+    final protected function __clone()
+    {
+    }
 
     final public static function instance()
     {

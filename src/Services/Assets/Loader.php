@@ -72,7 +72,7 @@ class Loader
         );
 
         if ($async) {
-            \add_filter('script_loader_tag', function($tag, $scriptHandle, $src) use ($handle) {
+            \add_filter('script_loader_tag', function ($tag, $scriptHandle, $src) use ($handle) {
                 if ($scriptHandle === $handle) {
                     return $this->makeAsyncTag($tag);
                 }
@@ -84,7 +84,7 @@ class Loader
     public function enqueueModularScript(string $handleItem, string $file, array $deps = [], $ver = null, $in_footer = true, $async = true)
     {
         $this->enqueueScript($handleItem, $file, $deps, $ver, $in_footer, $async);
-        \add_filter('script_loader_tag', function($tag, $scriptHandle, $src) use ($handleItem) {
+        \add_filter('script_loader_tag', function ($tag, $scriptHandle, $src) use ($handleItem) {
             if (str_ends_with($scriptHandle, $handleItem)) {
                 return $this->makeModularTag($tag);
             }
@@ -95,7 +95,7 @@ class Loader
     public function enqueueNoModularScript(string $handleItem, string $file, array $deps = [], $ver = null, $in_footer = true, $async = true)
     {
         $this->enqueueScript($handleItem, $file, $deps, $ver, $in_footer, $async);
-        \add_filter('script_loader_tag', function($tag, $scriptHandle, $src) use ($handleItem) {
+        \add_filter('script_loader_tag', function ($tag, $scriptHandle, $src) use ($handleItem) {
             if (str_ends_with($scriptHandle, $handleItem)) {
                 return $this->makeNoModularTag($tag);
             }

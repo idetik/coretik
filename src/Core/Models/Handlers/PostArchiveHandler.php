@@ -38,7 +38,7 @@ class PostArchiveHandler implements HandlerInterface
         if (!$query->is_main_query()) {
             return false;
         }
-        
+
         $vars = $this->builder->query()::defaultArgs();
         foreach ($vars as $key => $val) {
             $query->set($key, $val);

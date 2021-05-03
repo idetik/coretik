@@ -71,8 +71,12 @@ abstract class BaseForm implements Handlable
         }
     }
 
-    protected function onValidationError() {}
-    protected function onProcessError(Exception $e) {}
+    protected function onValidationError()
+    {
+    }
+    protected function onProcessError(Exception $e)
+    {
+    }
 
     public function view($data = [])
     {

@@ -9,8 +9,9 @@ class Handler
 
     protected $config;
 
-    public function __construct(Config $config = null) {
-        $this->config = $config ?? (new Config);
+    public function __construct(Config $config = null)
+    {
+        $this->config = $config ?? (new Config());
         $this->hooks();
     }
 
@@ -35,7 +36,7 @@ class Handler
                     add_action(sprintf('wp_ajax_%s', $form->wpAjaxAction()), function () use ($form) {
                         static::handleAsyncRequest($form);
                     });
-                    
+
                     if ($form->public()) {
                         add_action(sprintf('wp_ajax_nopriv_%s', $form->wpAjaxAction()), function () use ($form) {
                             static::handleAsyncRequest($form);
@@ -44,10 +45,10 @@ class Handler
                     break;
 
                 case $form instanceof Handlable:
-                    add_action('template_redirect', function() use ($form) {
+                    add_action('template_redirect', function () use ($form) {
                         static::handleRequest($form);
                     });
-                    add_action('admin_init', function() use ($form) {
+                    add_action('admin_init', function () use ($form) {
                         static::handleRequest($form);
                     });
                     break;

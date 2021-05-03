@@ -8,7 +8,7 @@ class FilterValidIterator extends \FilterIterator
     {
         parent::__construct($iterator);
     }
-   
+
     public function accept()
     {
         $notice = $this->getInnerIterator()->current();

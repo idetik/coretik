@@ -40,7 +40,7 @@ class PaymentCardCvc extends Constraint
 
         $card_number = $values[$this->payment_card_number_field] ?? null;
 
-        if(empty($card_number)) {
+        if (empty($card_number)) {
             return true;
         }
 
@@ -48,7 +48,7 @@ class PaymentCardCvc extends Constraint
 
         $validation_card_number = \Freelancehunt\Validators\CreditCard::validCreditCard($card_number);
 
-        if(true !== $validation_card_number['valid'] || $card_number !== $validation_card_number['number']) {
+        if (true !== $validation_card_number['valid'] || $card_number !== $validation_card_number['number']) {
             return true;
         }
 

@@ -111,15 +111,18 @@ class Repeater extends Constraint
                 $is_valid = false;
                 foreach ($row['errors'] as $subfield_name => $constraints) {
                     $this->form->getValidation()->addError(
-                        sprintf('%s[%d][%s]',
+                        sprintf(
+                            '%s[%d][%s]',
                             $fieldname,
                             $index,
                             $subfield_name
-                        ), $constraints);
+                        ),
+                        $constraints
+                    );
                 }
             }
         }
-        
+
         return $is_valid;
     }
 

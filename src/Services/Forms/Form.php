@@ -30,7 +30,7 @@ class Form
 
     public function __construct($id, $values = [], $template = null, $form_name = null, Config $config = null)
     {
-        $this->config = $config ?? (new Config);
+        $this->config = $config ?? (new Config());
         $this->id = $id;
         $this->template = $template ?? $id; //Can be overridden by setTemplate() if needed
         $this->form_name = $form_name ?? null;
@@ -119,7 +119,7 @@ class Form
             $this->default_values = [];
         }
 
-        if(!is_array($values)) {
+        if (!is_array($values)) {
             $values = [];
         }
 
@@ -433,14 +433,14 @@ class Form
             $this->submission_result = $result;
             return $result;
         }
-        
+
         $form_id = $posted_data['form_id'];
         if ($form_id !== $this->id) {
             $result['error'] = 'Wrong form id';
             $this->submission_result = $result;
             return $result;
         }
-        
+
         $posted_data = $this->sanitizeForm($posted_data);
         $validation_result = $this->validate($posted_data);
 

@@ -22,7 +22,7 @@ final class Taxonomy extends BuilderModelable implements RegistrableInterface
     public function __construct(string $taxonomy, $object_type, array $args = [], array $names = [])
     {
         $this->taxonomy = $taxonomy;
-        
+
         foreach (Arr::wrap($object_type) as $object) {
             if ($object_type instanceof TaxonomiableInterface) {
                 $this->addObjectType($object_type);

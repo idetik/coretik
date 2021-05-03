@@ -49,7 +49,7 @@ class PaymentCardExpiry extends Constraint
 
         $timezone  = new \DateTimeZone(get_option('timezone_string'));
         $yesterday = new \DateTime('yesterday', $timezone);
-        $field = \DateTime::createFromFormat('mY', $values[$field_month].$values[$field_year], $timezone);
+        $field = \DateTime::createFromFormat('mY', $values[$field_month] . $values[$field_year], $timezone);
 
         return $yesterday < $field;
     }

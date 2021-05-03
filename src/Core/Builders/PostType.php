@@ -10,6 +10,7 @@ use Coretik\Core\Builders\PostType\Labels;
 use Coretik\Core\Query\Post as Query;
 use Coretik\Core\Models\Handlers\Guard;
 use Coretik\Core\Models\Handlers\DefaultMetaDataHandler;
+
 use function Globalis\WP\Cubi\is_frontend;
 
 final class PostType extends BuilderModelable implements RegistrableInterface, TaxonomiableInterface
@@ -97,15 +98,15 @@ final class PostType extends BuilderModelable implements RegistrableInterface, T
         if (!is_frontend() && $this->args()->get('use_archive_page', false)) {
             global $wp_rewrite;
             $archive_slug = true === $post_type->args['has_archive'] ? $post_type->args['rewrite']['slug'] : $post_type->args['has_archive'];
-            if ( $post_type->args['rewrite']['with_front'] ) {
-                $archive_slug = substr( $wp_rewrite->front, 1 ) . $archive_slug;
+            if ($post_type->args['rewrite']['with_front']) {
+                $archive_slug = substr($wp_rewrite->front, 1) . $archive_slug;
             } else {
                 $archive_slug = $wp_rewrite->root . $archive_slug;
             }
             unset($wp_rewrite->extra_rules_top["{$archive_slug}/?$"]);
             unset($wp_rewrite->extra_rules_top["{$archive_slug}/{$wp_rewrite->pagination_base}/([0-9]{1,})/?$"]);
             \add_rewrite_rule("{$archive_slug}/?$", "index.php?pagename=$archive_slug", 'top');
-            \add_rewrite_rule("{$archive_slug}/{$wp_rewrite->pagination_base}/([0-9]{1,})/?$", "index.php?pagename=$archive_slug" . '&paged=$matches[1]', 'top' );
+            \add_rewrite_rule("{$archive_slug}/{$wp_rewrite->pagination_base}/([0-9]{1,})/?$", "index.php?pagename=$archive_slug" . '&paged=$matches[1]', 'top');
         }
     }
 

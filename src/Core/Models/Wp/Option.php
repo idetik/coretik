@@ -37,7 +37,7 @@ class Option implements CRUDInterface
     {
         \update_option($this->key, $this->value, $this->autoload);
     }
-    
+
     public function exists()
     {
         return !empty($this->get(null));
