@@ -29,7 +29,9 @@
                 <h3>User types</h3>
                 <?php
                 if (Coretik\App::schema()->has('user')) {
-                    foreach (Coretik\App::schema()->type('user')->all() as $builder) {
+                    foreach (Coretik\App::schema()->type('user')->filter(function($builder) {
+                        return $builder->getName() !== 'users';
+                    })->all() as $builder) {
                         include 'user-type-single.php';
                     }
                 }
@@ -41,9 +43,9 @@
     <?php
 
     ?>
-    <pre>
+    <!-- <pre> -->
         <?php //var_dump(get_post_types()); ?>
         <?php //var_dump(get_post_stati()); ?>
         <?php //var_dump(Coretik\App::schema()->toArray()); ?>
-    </pre>
+    <!-- </pre> -->
 </div>
