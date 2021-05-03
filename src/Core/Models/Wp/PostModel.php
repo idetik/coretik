@@ -90,6 +90,9 @@ class PostModel extends WPModel
     {
         try {
             $url = $this->meta('redirect');
+            if (empty($url)) {
+                $url = \get_permalink($this->id);
+            }
         } catch (UndefinedMetaKeyException $e) {
             $url = \get_permalink($this->id);
         }
@@ -97,20 +100,39 @@ class PostModel extends WPModel
         return $url;
     }
 
-    // @todo fallback
+    public function thumbnailFallbackId()
+    {
+        return \apply_filters('coretik/postModel/thumbnail_fallback_id', false);
+    }
+
+    public function hasThumbnailFallback()
+    {
+        return $this->thumbnailFallbackId() !== false;
+    }
+
     public function thumbnailId(): int
     {
+        if (!\has_post_thumbnail($this->id())) {
+            if ($this->hasThumbnailFallback()) {
+                return $this->thumbnailFallbackId();
+            }
+        }
         return \get_post_thumbnail_id($this->id());
     }
 
     public function thumbnailUrl($size): string
     {
+        if (!\has_post_thumbnail($this->id())) {
+            if ($this->hasThumbnailFallback()) {
+                return \wp_get_attachment_image_url($this->thumbnailFallbackId(), $size);
+            }
+        }
         return \get_the_post_thumbnail_url($this->id(), $size);
     }
 
     public function excerpt(): string
     {
-        return get_the_excerpt($this->id());
+        return \get_the_excerpt($this->id());
     }
 
     public function get(string $prop)
