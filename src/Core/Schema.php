@@ -65,12 +65,34 @@ class Schema implements ContainerInterface
 
     public function unregister(BuilderInterface $builder)
     {
-        if ($builder instanceof Builders\Taxonomy) {
-            unregister_taxonomy_for_object_type($builder->getName(), 'post');
-            add_filter('acf/get_taxonomies', function ($taxonomies, $args) use ($builder) {
-                return array_diff($taxonomies, [$builder->getName()]);
-            }, 10, 2);
+        // if ($builder instanceof Builders\Taxonomy) {
+        //     unregister_taxonomy_for_object_type($builder->getName(), 'post');
+        //     add_filter('acf/get_taxonomies', function ($taxonomies, $args) use ($builder) {
+        //         return array_diff($taxonomies, [$builder->getName()]);
+        //     }, 10, 2);
+        // }
+
+        if ($builder instanceof Builders\PostTypeBuiltIn) {
+            switch ($builder->getName()) {
+                case 'post':
+                    \add_action('admin_menu', function() {
+                        \remove_menu_page('edit.php');
+                    });
+                    \add_action('admin_bar_menu', function($wp_admin_bar) {
+                        $wp_admin_bar->remove_node('new-post');
+                    }, 999);
+                    \add_action('wp_dashboard_setup', function() {
+                        \remove_meta_box('dashboard_quick_press', 'dashboard', 'side');
+                    }, 999);
+                    break;
+            }
         }
+
+        if ($builder instanceof Builders\PostType) {
+            \unregister_post_type($builder->getName());
+        }
+
+        $this->objects[$builder->getType()]->remove($builder->getName());
     }
 
     public function has($offset)
