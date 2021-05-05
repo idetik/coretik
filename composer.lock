@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b114bedf38f10301e83fb94f54cb6a30",
+    "content-hash": "7aae48daeef35dc1ea14105e3c7de7dd",
     "packages": [
         {
             "name": "johnbillion/extended-cpts",
@@ -745,6 +745,46 @@
                 }
             ],
             "time": "2021-03-23T23:28:01+00:00"
+        },
+        {
+            "name": "wesbos/burner-email-providers",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/wesbos/burner-email-providers.git",
+                "reference": "bf37381b17daec72b04ea68db37ba0acb6259e35"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/wesbos/burner-email-providers/zipball/bf37381b17daec72b04ea68db37ba0acb6259e35",
+                "reference": "bf37381b17daec72b04ea68db37ba0acb6259e35",
+                "shasum": ""
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Wes Bos & contributors"
+                }
+            ],
+            "description": "A list of burner email providers.",
+            "keywords": [
+                "email"
+            ],
+            "support": {
+                "issues": "https://github.com/wesbos/burner-email-providers/issues",
+                "source": "https://github.com/wesbos/burner-email-providers"
+            },
+            "time": "2021-04-30T13:06:12+00:00"
         }
     ],
     "packages-dev": [
@@ -807,7 +847,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "wesbos/burner-email-providers": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

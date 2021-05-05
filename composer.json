@@ -7,7 +7,8 @@
         "johnbillion/extended-cpts": "^4.5",
         "pimple/pimple": "^3.3",
         "nesbot/carbon": "^2.45",
-        "pelago/emogrifier": "^5.0"
+        "pelago/emogrifier": "^5.0",
+        "wesbos/burner-email-providers": "dev-master"
     },
     "authors": [
         {
