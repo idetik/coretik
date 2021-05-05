@@ -13,7 +13,7 @@ class NoticeError extends Notice
     {
         ?>
         <div class="notice notice-error is-dismissible">
-            <p><?php $this->message ?></p>
+            <p><?= $this->message ?></p>
         </div>
         <?php
     }

@@ -9,13 +9,14 @@ class Container implements \SplSubject, \ArrayAccess, IteratorAggregate
 {
     protected $notices;
     protected $observers;
-    protected $storage;
+    public $storage;
 
     public function __construct(StorageInterface $storage = null)
     {
         $this->observers = new \SplObjectStorage();
-        $this->storage = $storage ?? new Storage();
-        $this->notices = $this->storage->get()->getArrayCopy();
+        // $this->storage = $storage ?? new Storage();
+        // $this->notices = $this->storage->get()->getArrayCopy();
+        $this->notices = [];
     }
 
     public function attach(\SplObserver $observer)
