@@ -162,6 +162,11 @@ class Collection implements CollectionInterface
         foreach ($this->data as $object) {
             $groups[$object[$parentKey]][] = $object;
         }
+
+        if (empty($groups)) {
+            return [];
+        }
+
         return $this->createTree($groups, $groups[0], $primaryKey);
     }
 
