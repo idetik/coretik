@@ -12,6 +12,7 @@ use Coretik\Core\Collection;
 abstract class Model implements ModelInterface
 {
     use Traits\Bootable;
+    use Traits\Initializable;
     use Traits\Hooks;
 
     protected $id;
@@ -39,14 +40,7 @@ abstract class Model implements ModelInterface
             }
         }
         static::bootIfNotBooted();
-        foreach (\Coretik\Core\Utils\Classes::classUsesDeep($this) as $traitNamespace) {
-            $ref = new \ReflectionClass($traitNamespace);
-            $traitName = $ref->getShortName();
-            $initializer = 'initialize' . $traitName;
-            if (method_exists($this, $initializer)) {
-                $this->$initializer();
-            }
-        }
+        $this->initialize();
     }
 
     public function setDictionnary(Dictionnary $dictionnary)
