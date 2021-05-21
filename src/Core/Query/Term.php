@@ -23,6 +23,6 @@ class Term extends Query
 
     public function results(): array
     {
-        return $this->get()->terms;
+        return $this->get()->terms ?? [];
     }
 }
