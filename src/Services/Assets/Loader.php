@@ -74,7 +74,7 @@ class Loader
         if ($async) {
             \add_filter('script_loader_tag', function ($tag, $scriptHandle, $src) use ($handle) {
                 if ($scriptHandle === $handle) {
-                    return $this->makeAsyncTag($tag);
+                    return static::makeAsyncTag($tag);
                 }
                 return $tag;
             }, 10, 3);
@@ -86,7 +86,7 @@ class Loader
         $this->enqueueScript($handleItem, $file, $deps, $ver, $in_footer, $async);
         \add_filter('script_loader_tag', function ($tag, $scriptHandle, $src) use ($handleItem) {
             if (str_ends_with($scriptHandle, $handleItem)) {
-                return $this->makeModularTag($tag);
+                return static::makeModularTag($tag);
             }
             return $tag;
         }, 10, 3);
@@ -97,7 +97,7 @@ class Loader
         $this->enqueueScript($handleItem, $file, $deps, $ver, $in_footer, $async);
         \add_filter('script_loader_tag', function ($tag, $scriptHandle, $src) use ($handleItem) {
             if (str_ends_with($scriptHandle, $handleItem)) {
-                return $this->makeNoModularTag($tag);
+                return static::makeNoModularTag($tag);
             }
             return $tag;
         }, 10, 3);
@@ -106,12 +106,23 @@ class Loader
     public function enqueueStyle(string $handleItem, string $file, array $deps = [], $ver = null, $media = 'all')
     {
         \wp_enqueue_style(
-            sprintf('%s/%s', $this->handleFamily, $handle),
+            sprintf('%s/%s', $this->handleFamily, $handleItem),
             $this->url($file, ASSETS_VERSIONING_SCRIPTS),
             $deps,
             $ver,
             $media
         );
+    }
+
+    public function enqueueDeferredStyle(string $handleItem, string $file, array $deps = [], $ver = null)
+    {
+        $this->enqueueStyle($handleItem, $file, $deps, $ver);
+        \add_filter('style_loader_tag', function ($tag, $scriptHandle, $src) use ($handleItem) {
+            if (str_ends_with($scriptHandle, $handleItem)) {
+                return static::makeDeferredStyleTag($tag);
+            }
+            return $tag;
+        }, 10, 3);
     }
 
     public static function makeAsyncTag($tag)
@@ -129,6 +140,13 @@ class Loader
     public static function makeNoModularTag($tag)
     {
         $tag = str_replace('src=', 'nomodule src=', $tag);
+        return $tag;
+    }
+
+    public static function makeDeferredStyleTag($tag)
+    {
+        //<link rel="stylesheet" href="/path/to/my.css" media="print" onload="this.media='all'; this.onload=null;">
+        $tag = str_replace('media="all"', 'media="print" onload="this.media=\'all\'; this.onload=null;"', $tag);
         return $tag;
     }
 }
