@@ -63,12 +63,19 @@ class WPTermAdapter extends WPAdapter
         $values = $values ?: [0];
         switch ($opt) {
             case 'in':
-                $this->include = array_intersect($this->include, $values);
-                return $this;
+                if (isset($this->include)) {
+                    $values = array_intersect($this->include, $values);
+                }
+                $this->include = $values;
+                break;
             case 'not_in':
-                $this->exclude = array_unique(array_merge($this->exclude, $values));
-                return $this;
+                if (isset($this->exclude)) {
+                    $values = array_unique(array_merge($this->exclude, $values));
+                }
+                $this->exclude = $values;
+                break;
         }
+        return $this;
     }
 
     protected function resolveWhere(WhereClauseInterface $where, $relation)
