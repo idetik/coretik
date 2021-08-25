@@ -21,6 +21,7 @@ abstract class Query implements QuerierInterface
 
     abstract public function getQueryArgsDefault();
     abstract public function newQueryBuilderInstance();
+    abstract public function results(): array;
 
     /**
      * @param ModelableInterface $mediator
@@ -128,11 +129,6 @@ abstract class Query implements QuerierInterface
             $this->run();
         }
         return $this->query;
-    }
-
-    public function results(): array
-    {
-        return $this->get()->posts;
     }
 
     public function pluck(string $col): array

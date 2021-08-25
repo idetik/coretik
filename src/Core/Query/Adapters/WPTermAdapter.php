@@ -54,6 +54,10 @@ class WPTermAdapter extends WPAdapter
 
     public function limit(int $number): self
     {
+        if (-1 === $number) {
+            $number = 0;
+        }
+
         $this->set('number', $number);
         return $this;
     }

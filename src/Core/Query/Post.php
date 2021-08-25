@@ -16,6 +16,11 @@ class Post extends Query
         return new QueryAdapter($args);
     }
 
+    public function results(): array
+    {
+        return $this->get()->posts;
+    }
+
     public function getQueryArgsDefault()
     {
         return [
