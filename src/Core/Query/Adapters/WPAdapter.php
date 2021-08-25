@@ -10,6 +10,7 @@ abstract class WPAdapter implements QueryBuilderInterface
     const PARAMETERS = [];
 
     abstract protected function resolveWhere(WhereClauseInterface $where, $relation);
+    abstract public function addContext(array $values, string $opt, string $context);
 
     public function __construct(array $defaultArgs = [])
     {
@@ -38,27 +39,6 @@ abstract class WPAdapter implements QueryBuilderInterface
     public function orWhere(WhereClauseInterface $where): self
     {
         $this->resolveWhere($where, 'OR');
-        return $this;
-    }
-
-    public function addContext(string $context, array $values, $opt = 'in')
-    {
-        if (!in_array($context . '__' . $opt, static::PARAMETERS)) {
-            throw new \Exception("Invalid contex : " . $context . "__" . $opt);
-        }
-        $values = $values ?: [0];
-        if (isset($this->{$context . '__' . $opt})) {
-            switch ($opt) {
-                case 'in':
-                    $values = array_intersect($this->{$context . '__' . $opt}, $values);
-                    break;
-                case 'not_in':
-                default:
-                    $values = array_unique(array_merge($this->{$context . '__' . $opt}, $values));
-                    break;
-            }
-        }
-        $this->{$context . '__' . $opt} = $values;
         return $this;
     }
 

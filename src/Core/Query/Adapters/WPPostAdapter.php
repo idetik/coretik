@@ -134,6 +134,27 @@ class WPPostAdapter extends WPAdapter
         $this->addTaxQuery($query_group);
     }
 
+    public function addContext(array $values, string $opt = 'in', string $context = 'post')
+    {
+        if (!in_array($context . '__' . $opt, static::PARAMETERS)) {
+            throw new \Exception("Invalid contex : " . $context . "__" . $opt);
+        }
+        $values = $values ?: [0];
+        if (isset($this->{$context . '__' . $opt})) {
+            switch ($opt) {
+                case 'in':
+                    $values = array_intersect($this->{$context . '__' . $opt}, $values);
+                    break;
+                case 'not_in':
+                default:
+                    $values = array_unique(array_merge($this->{$context . '__' . $opt}, $values));
+                    break;
+            }
+            $this->{$context . '__' . $opt} = $values;
+        }
+        return $this;
+    }
+
     protected function resolveWhere(WhereClauseInterface $where, $relation)
     {
         switch (true) {

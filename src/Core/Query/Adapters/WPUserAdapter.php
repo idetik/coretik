@@ -60,6 +60,30 @@ class WPUserAdapter extends WPAdapter
         return $this;
     }
 
+    public function addContext(array $values, string $opt = 'in', string $context = '')
+    {
+        if (!empty($context) && !\in_array($context . '__' . $opt, static::PARAMETERS)) {
+            throw new \Exception("Invalid contex : " . $context . "__" . $opt);
+        }
+
+        $values = $values ?: [0];
+
+        if (!empty($context)) {
+            $values = array_unique(array_merge($this->{$context . '__' . $opt}, $values));
+            $this->{$context . '__' . $opt} = $values;
+            return $this;
+        }
+
+        switch ($opt) {
+            case 'in':
+                $this->include = array_intersect($this->include, $values);
+                return $this;
+            case 'not_in':
+                $this->exclude = array_unique(array_merge($this->exclude, $values));
+                return $this;
+        }
+    }
+
     protected function resolveWhere(WhereClauseInterface $where, $relation)
     {
         switch (true) {
