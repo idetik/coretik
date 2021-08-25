@@ -116,13 +116,13 @@ class Loader
 
     public function enqueueDeferredStyle(string $handleItem, string $file, array $deps = [], $ver = null)
     {
-        $this->enqueueStyle($handleItem, $file, $deps, $ver);
         \add_filter('style_loader_tag', function ($tag, $scriptHandle, $src) use ($handleItem) {
             if (str_ends_with($scriptHandle, $handleItem)) {
                 return static::makeDeferredStyleTag($tag);
             }
             return $tag;
         }, 10, 3);
+        $this->enqueueStyle($handleItem, $file, $deps, $ver);
     }
 
     public static function makeAsyncTag($tag)
@@ -146,7 +146,7 @@ class Loader
     public static function makeDeferredStyleTag($tag)
     {
         //<link rel="stylesheet" href="/path/to/my.css" media="print" onload="this.media='all'; this.onload=null;">
-        $tag = str_replace('media="all"', 'media="print" onload="this.media=\'all\'; this.onload=null;"', $tag);
+        $tag = str_replace('rel="stylesheet"', 'rel="stylesheet" media="print" onload="this.media=\'all\'; this.onload=null;"', $tag);
         return $tag;
     }
 }
