@@ -18,4 +18,9 @@ class User extends Query
     {
         return [];
     }
+
+    public function results(): array
+    {
+        return $this->get()->results;
+    }
 }

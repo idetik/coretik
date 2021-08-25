@@ -150,8 +150,8 @@ class WPPostAdapter extends WPAdapter
                     $values = array_unique(array_merge($this->{$context . '__' . $opt}, $values));
                     break;
             }
-            $this->{$context . '__' . $opt} = $values;
         }
+        $this->{$context . '__' . $opt} = $values;
         return $this;
     }
 
