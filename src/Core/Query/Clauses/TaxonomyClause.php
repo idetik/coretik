@@ -10,7 +10,7 @@ class TaxonomyClause extends WhereClause implements TaxonomyClauseInterface
     protected $field;
     protected $children;
 
-    public function __construct(string $taxonomy, $terms, string $compare = '=', string $field = 'term_id', bool $include_children = true)
+    public function __construct(string $taxonomy, $terms, string $compare = 'IN', string $field = 'term_id', bool $include_children = true)
     {
         parent::__construct($taxonomy, $terms, $compare);
         $this->field = $field;
