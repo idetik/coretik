@@ -12,18 +12,19 @@ abstract class BaseForm implements Handlable
     protected $data = [];
     protected $config;
 
-    public function __construct(string $id, array $values = [], $template = null, $form_name = null)
+    public function __construct(string $id, array $values = [], $template = null, $form_name = null, ConfigInterface $config = null)
     {
         $this->form_id = $id;
         $this->form_values = $values;
         $this->template = $template;
         $this->form_name = $form_name;
+        $this->config = $config;
     }
 
     abstract protected function isValidContext(): bool;
     abstract protected function run(): void;
 
-    public function setConfig(Config $config)
+    public function setConfig(ConfigInterface $config)
     {
         $this->config = $config;
         return $this;

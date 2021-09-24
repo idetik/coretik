@@ -2,35 +2,82 @@
 
 namespace Coretik\Services\Forms;
 
-class Config
+class Config implements ConfigInterface
 {
     protected $templateDir = 'templates/forms/';
     protected $formFile = 'form.php';
     protected $formRulesFile = 'rules.php';
     protected $formPrefix = 'coretik';
     protected $cssClassError = 'form-group-error';
+    protected LocatorInterface $locator;
 
-    public function __construct(array $conf = [])
+    public function getTemplateDir(): string
     {
-        $this->setMultiple($conf);
+        return $this->templateDir;
     }
 
-    public function setMultiple(array $conf)
+    public function setTemplateDir(string $templateDir): self
     {
-        foreach ($conf as $key => $val) {
-            $this->set($key, $val);
+        $this->templateDir = $templateDir;
+        return $this;
+    }
+
+    public function getFormFile(): string
+    {
+        return $this->formFile;
+    }
+
+    public function setFormFile(string $formFile): self
+    {
+        $this->formFile = $formFile;
+        return $this;
+    }
+
+    public function getFormRulesFile(): string
+    {
+        return $this->formRulesFile;
+    }
+
+    public function setFormRulesFile(string $formRulesFile): self
+    {
+        $this->formRulesFile = $formRulesFile;
+        return $this;
+    }
+
+    public function getFormPrefix(): string
+    {
+        return $this->formPrefix;
+    }
+
+    public function setFormPrefix(string $formPrefix): self
+    {
+        $this->formPrefix = $formPrefix;
+        return $this;
+    }
+
+    public function getCssErrorClass(): string
+    {
+        return $this->cssClassError;
+    }
+
+    public function setCssErrorClass(string $cssClassError): self
+    {
+        $this->cssClassError = $cssClassError;
+        return $this;
+    }
+
+    public function locator(): LocatorInterface
+    {
+        if (empty($this->locator)) {
+            $this->setLocator(new Locator($this));
         }
+        return $this->locator;
     }
 
-    public function set(string $key, $val)
+    public function setLocator(LocatorInterface $locator): self
     {
-        if (\property_exists($this, $key)) {
-            $this->$key = $val;
-        }
-    }
-
-    public function get(string $key)
-    {
-        return $this->$key ?? null;
+        $locator->setConfig($this);
+        $this->locator = $locator;
+        return $this;
     }
 }

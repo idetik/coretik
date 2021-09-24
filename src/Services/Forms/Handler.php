@@ -9,7 +9,7 @@ class Handler
 
     protected $config;
 
-    public function __construct(Config $config = null)
+    public function __construct(ConfigInterface $config = null)
     {
         $this->config = $config ?? (new Config());
         $this->hooks();

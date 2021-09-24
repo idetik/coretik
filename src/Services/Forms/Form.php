@@ -28,7 +28,7 @@ class Form
     protected $config;
 
 
-    public function __construct($id, $values = [], $template = null, $form_name = null, Config $config = null)
+    public function __construct($id, $values = [], $template = null, $form_name = null, ConfigInterface $config = null)
     {
         $this->config = $config ?? (new Config());
         $this->id = $id;
@@ -62,16 +62,17 @@ class Form
      */
     protected function loadFields()
     {
-        $fields_file_name = $this->config->get('templateDir') . $this->template . '/' . $this->config->get('formRulesFile');
-        $fields_file = locate_template($fields_file_name);
+        // $fields_file_name = $this->config->get('templateDir') . $this->template . '/' . $this->config->get('formRulesFile');
+        // $fields_file = locate_template($fields_file_name);
+        $fields_file = $this->config->locator()->locateRules($this->template);
         if (!file_exists($fields_file)) {
-            throw new \Exception('Form fields definition file [' . $fields_file_name . '] not found.');
+            throw new \Exception('Form fields definition file [' . $this->template . '] not found.');
             return;
         }
         $form = $this;
         $fields = include $fields_file;
         if (!is_array($fields)) {
-            throw new \Exception('Fields not found in definition file [' . $fields_file_name . '].');
+            throw new \Exception('Fields not found in definition file [' . $this->template . '].');
             return;
         }
 
@@ -153,7 +154,8 @@ class Form
         $form = $this;
         $data['form_data'] = $this->view_data; //So that main form data can be accessed in form parts
         extract($data);
-        include locate_template($this->config->get('templateDir') . $template . '.php');
+        include $this->config->locator()->locatePart($template);
+        // include locate_template($this->config->get('templateDir') . $template . '.php');
         if ($return) {
             return ob_get_clean();
         } else {
@@ -196,7 +198,7 @@ class Form
 
     public function getFormName()
     {
-        return $this->form_name ?? $this->config->get('formPrefix') . '-form-' . $this->id;
+        return $this->form_name ?? $this->config->getFormPrefix() . '-form-' . $this->id;
     }
 
     public function setFormName($name)
@@ -305,7 +307,7 @@ class Form
 
     public function nonceField()
     {
-        wp_nonce_field($this->config->get('formPrefix') . '_form_submit_' . $this->id, $this->fieldName('nonce'));
+        wp_nonce_field($this->config->getFormPrefix() . '_form_submit_' . $this->id, $this->fieldName('nonce'));
     }
 
     public function spamField()
@@ -315,7 +317,7 @@ class Form
 
     protected function checkNonce()
     {
-        return isset($_POST[$this->getFormName()]['nonce']) && wp_verify_nonce($_POST[$this->getFormName()]['nonce'], $this->config->get('formPrefix') . '_form_submit_' . $this->id);
+        return isset($_POST[$this->getFormName()]['nonce']) && wp_verify_nonce($_POST[$this->getFormName()]['nonce'], $this->config->getFormPrefix() . '_form_submit_' . $this->id);
     }
 
     public function process()
@@ -361,7 +363,7 @@ class Form
             $fields = Utils::forceArray($fields);
             foreach ($fields as $field_name) {
                 if (isset($errors[$field_name])) {
-                    $error_class = $this->config->get('cssClassError');
+                    $error_class = $this->config->getCssErrorClass();
                     break;
                 }
             }
