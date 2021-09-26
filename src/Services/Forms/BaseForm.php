@@ -24,10 +24,23 @@ abstract class BaseForm implements Handlable
     abstract protected function isValidContext(): bool;
     abstract protected function run(): void;
 
-    public function setConfig(ConfigInterface $config)
+    public function setConfig(ConfigInterface $config): self
     {
         $this->config = $config;
         return $this;
+    }
+
+    public function setConfigIfNotDefined(ConfigInterface $config): self
+    {
+        if (!$this->hasConfig()) {
+            $this->setConfig($config);
+        }
+        return $this;
+    }
+
+    public function hasConfig(): bool
+    {
+        return !empty($this->config);
     }
 
     public function getName(): string

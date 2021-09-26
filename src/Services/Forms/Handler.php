@@ -58,13 +58,13 @@ class Handler
 
     public function attach(Handlable $form)
     {
-        $form->setConfig($this->config);
+        $form->setConfigIfNotDefined($this->config);
         $this->forms[$form->getName()] = $form;
     }
 
     public function factory(Handlable $form)
     {
-        $form->setConfig($this->config);
+        $form->setConfigIfNotDefined($this->config);
         $this->forms[$form->getName()] = function () use ($form) {
             return clone $form;
         };
