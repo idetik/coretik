@@ -16,14 +16,14 @@ class Guard implements HandlerInterface
         $this->builder = $builder;
         \add_filter('update_post_metadata', [$this, 'guard'], 10, 5);
         // \add_filter('update_user_metadata', [$this, 'guard'], 10, 5);
-        // \add_filter('update_term_metadata', [$this, 'guard'], 10, 5);
+        \add_filter('update_term_metadata', [$this, 'guard'], 10, 5);
     }
 
     public function freeze(): void
     {
         \remove_filter('update_post_metadata', [$this, 'guard']);
         // \remove_filter('update_user_metadata', [$this, 'guard']);
-        // \remove_filter('update_term_metadata', [$this, 'guard']);
+        \remove_filter('update_term_metadata', [$this, 'guard']);
     }
 
     public function guard($check, $object_id, $meta_key, $meta_value, $prev_value)
