@@ -85,13 +85,13 @@ final class Taxonomy extends BuilderModelable implements RegistrableInterface
         \register_extended_taxonomy($this->taxonomy, $this->objectType, $this->args->all(), $this->names);
     }
 
-    public function wpObject(int $id): \WP_Term
+    public function wpObject(int $id): ?\WP_Term
     {
         return \get_term($id, $this->taxonomy);
     }
 
     public function concern(int $objectId): bool
     {
-        return $this->wpObject($objectId)->name === $this->getName();
+        return (bool)\term_exists($objectId, $this->getName());
     }
 }
