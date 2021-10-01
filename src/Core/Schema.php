@@ -85,6 +85,7 @@ class Schema implements ContainerInterface
                     \add_action('wp_dashboard_setup', function () {
                         \remove_meta_box('dashboard_quick_press', 'dashboard', 'side');
                     }, 999);
+                    $this->objects['taxonomy']->remove('category');
                     break;
             }
         }
