@@ -6,6 +6,10 @@ $modalArgs = Coretik\App::modals()->factory(function ($data) {
     $table = Coretik\App::instance()->get('ux.table');
     foreach ($data['args'] as $key => $value) {
         $format = '';
+        if (is_object($value)) {
+            $value = get_object_vars($value);
+        }
+
         if (is_array($value)) {
             foreach ($value as $subkey => $subval) {
                 if (is_int($subkey)) {

@@ -21,6 +21,7 @@ class Schema implements ContainerInterface
         $this->register(new Builders\PostTypeBuiltIn('page'));
         $this->register(new Builders\PostTypeBuiltIn('post'));
         $this->register(new Builders\TaxonomyBuiltIn('category'));
+        $this->register(new Builders\TaxonomyBuiltIn('post_tag'));
         $this->register(new Builders\PostTypeBuiltIn('attachment'));
         $this->register(new Builders\User());
     }
@@ -86,6 +87,7 @@ class Schema implements ContainerInterface
                         \remove_meta_box('dashboard_quick_press', 'dashboard', 'side');
                     }, 999);
                     $this->objects['taxonomy']->remove('category');
+                    $this->objects['taxonomy']->remove('post_tag');
                     break;
             }
         }
