@@ -16,7 +16,7 @@ class CommentModel extends WPModel
 
         switch (true) {
             case $initializer instanceof \WP_Comment:
-                $this->id = $initializer->ID;
+                $this->id = $initializer->comment_ID;
                 $this->wp_object = $initializer;
                 break;
             case \is_int($initializer):
