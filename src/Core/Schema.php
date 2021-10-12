@@ -10,6 +10,7 @@ use Coretik\Core\Models\Anonymous;
 use Coretik\Core\Models\Wp\PostModel;
 use Coretik\Core\Models\Wp\TermModel;
 use Coretik\Core\Models\Wp\UserModel;
+use Coretik\Core\Models\Wp\CommentModel;
 
 class Schema implements ContainerInterface
 {
@@ -24,6 +25,7 @@ class Schema implements ContainerInterface
         $this->register(new Builders\TaxonomyBuiltIn('post_tag'));
         $this->register(new Builders\PostTypeBuiltIn('attachment'));
         $this->register(new Builders\User());
+        $this->register(new Builders\Comment());
     }
 
     public function register(BuilderInterface $builder)
@@ -45,6 +47,8 @@ class Schema implements ContainerInterface
                             return new UserModel($initializer);
                         case 'taxonomy':
                             return new TermModel($initializer);
+                        case 'comment':
+                            return new CommentModel($initializer);
                     }
                 });
             }

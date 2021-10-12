@@ -39,6 +39,18 @@
                 }
                 ?>
             </div>
+            <div class="schema-box">
+                <h3>Comments</h3>
+                <?php
+                if (Coretik\App::schema()->has('comment')) {
+                    foreach (
+                        Coretik\App::schema()->type('comment')->all() as $builder
+                    ) {
+                        include 'comment-single.php';
+                    }
+                }
+                ?>
+            </div>
         </div>
     </div>
 
