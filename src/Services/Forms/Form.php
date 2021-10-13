@@ -62,8 +62,6 @@ class Form
      */
     protected function loadFields()
     {
-        // $fields_file_name = $this->config->get('templateDir') . $this->template . '/' . $this->config->get('formRulesFile');
-        // $fields_file = locate_template($fields_file_name);
         $fields_file = $this->config->locator()->locateRules($this->template);
         if (!file_exists($fields_file)) {
             throw new \Exception('Form fields definition file [' . $this->template . '] not found.');

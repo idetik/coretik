@@ -61,7 +61,7 @@ class CommentModel extends WPModel
         return \get_comment_author($this->id());
     }
 
-    public function date(string $format = 'j M Y'): string
+    public function date(string $format = 'j M Y, G\hi'): string
     {
         return \date_i18n($format, \get_comment_date('U', $this->id()));
     }
