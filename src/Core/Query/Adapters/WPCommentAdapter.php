@@ -24,6 +24,7 @@ class WPCommentAdapter extends WPAdapter
         'karma',
         'number',
         'offset',
+        'paged',
         'no_found_rows',
         'orderby',
         'order',
