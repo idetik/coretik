@@ -72,6 +72,7 @@ class WPCommentAdapter extends WPAdapter
 
     public function page(int $page): self
     {
+        $this->set('no_found_rows', false);
         $this->set('paged', $page ?: 1);
         return $this;
     }
