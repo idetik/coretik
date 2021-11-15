@@ -37,10 +37,6 @@ class Aria extends \Walker_Nav_Menu
 
     public function start_el(&$output, $item, $depth = 0, $args = null, $id = 0)
     {
-        // var_dump($item);
-        // var_dump($depth);
-        // var_dump($args);
-
         if (isset($args->item_spacing) && 'discard' === $args->item_spacing) {
             $t = '';
             $n = '';
@@ -94,6 +90,8 @@ class Aria extends \Walker_Nav_Menu
 
         $output .= $indent . '<li' . $id . $class_names . ' role="none">';
 
+        $balise = (!empty($item->url) && substr($item->url, 0, 1) != '#') ? 'a' : 'span';
+
         $atts           = [];
         $atts['title']  = ! empty($item->attr_title) ? $item->attr_title : '';
         $atts['target'] = ! empty($item->target) ? $item->target : '';
@@ -102,7 +100,11 @@ class Aria extends \Walker_Nav_Menu
         } else {
             $atts['rel'] = $item->xfn;
         }
-        $atts['href']         = ! empty($item->url) ? $item->url : '';
+
+        if('a' == $balise) {
+            $atts['href'] = !empty($item->url) ? $item->url : '';
+        }
+
         $atts['aria-current'] = $item->current ? 'page' : '';
         $atts['role'] = 'menuitem';
         if (static::$isFirst) {
@@ -166,9 +168,9 @@ class Aria extends \Walker_Nav_Menu
         $title = apply_filters('nav_menu_item_title', $title, $item, $args, $depth);
 
         $item_output  = $args->before;
-        $item_output .= '<a' . $attributes . '>';
+        $item_output .= '<' . $balise . $attributes . '>';
         $item_output .= $args->link_before . $title . $args->link_after;
-        $item_output .= '</a>';
+        $item_output .= '</' . $balise . '>';
         $item_output .= $args->after;
 
         /**
