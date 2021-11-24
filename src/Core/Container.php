@@ -61,7 +61,7 @@ class Container extends PimpleContainer implements ContainerInterface
      * @throws InvalidArgumentException         Thrown when an offset cannot be found in the Pimple container
      * @throws ContainerValueNotFoundException  No entry was found for this identifier.
      */
-    public function get($id)
+    public function get(string $id)
     {
         if (!$this->offsetExists($id)) {
             throw new ContainerValueNotFoundException(sprintf('Identifier "%s" is not defined.', $id));
@@ -96,7 +96,7 @@ class Container extends PimpleContainer implements ContainerInterface
      *
      * @return boolean
      */
-    public function has($id)
+    public function has(string $id): bool
     {
         return $this->offsetExists($id);
     }

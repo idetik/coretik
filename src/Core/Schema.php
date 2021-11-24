@@ -103,12 +103,12 @@ class Schema implements ContainerInterface
         $this->objects[$builder->getType()]->remove($builder->getName());
     }
 
-    public function has($offset)
+    public function has(string $offset): bool
     {
         return isset($this->objects[$offset]);
     }
 
-    public function get($offset, $type = null)
+    public function get(string $offset, $type = null)
     {
         if (!empty($type)) {
             return $this->objects[$type]->get($offset) ?? null;

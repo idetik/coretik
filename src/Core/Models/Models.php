@@ -2,10 +2,9 @@
 
 namespace Coretik\Core\Models;
 
-use Psr\Container\ContainerInterface;
 use Coretik\Core\Model;
 
-class Models implements ContainerInterface, \ArrayAccess, \IteratorAggregate
+class Models implements ModelsInterface, \ArrayAccess, \IteratorAggregate
 {
     protected $objects;
 
@@ -52,7 +51,7 @@ class Models implements ContainerInterface, \ArrayAccess, \IteratorAggregate
         return $this->offsetGet($offset);
     }
 
-    public function has($offset)
+    public function has(int $offset): bool
     {
         return $this->offsetExists($offset);
     }

@@ -5,9 +5,9 @@ namespace Coretik\Core\Builders;
 use Coretik\Core\Models\Model;
 use Coretik\Core\Query\Interfaces\QuerierInterface;
 use Coretik\Core\Models\Factory;
+use Coretik\Core\Models\ModelsInterface as ContainerInterface;
 use Coretik\Core\Models\Models as ModelsContainer;
 use Coretik\Core\Builders\Interfaces\ModelableInterface;
-use Psr\Container\ContainerInterface;
 
 abstract class BuilderModelable extends Builder implements ModelableInterface
 {

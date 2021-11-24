@@ -2,7 +2,7 @@
 
 namespace Coretik\Core\Models;
 
-use Psr\Container\ContainerInterface;
+use Coretik\Core\Models\ModelsInterface as ContainerInterface;
 use Coretik\Core\Interfaces\CollectionInterface;
 use Coretik\Core\Builders\Interfaces\ModelableInterface;
 
