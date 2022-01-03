@@ -34,6 +34,7 @@ abstract class BuilderModelable extends Builder implements ModelableInterface
     public function factory(callable $factory)
     {
         $this->factory = new Factory($factory, $this, $this->models());
+        return $this;
     }
 
     public function querier(callable $querier)
