@@ -29,12 +29,13 @@ class Form
     protected $config;
 
 
-    public function __construct($id, $values = [], $template = null, $form_name = null, ConfigInterface $config = null)
+    public function __construct($id, $values = [], $template = null, $form_name = null, ConfigInterface $config = null, array $metas = [])
     {
         $this->config = $config ?? (new Config());
         $this->id = $id;
         $this->template = $template ?? $id; //Can be overridden by setTemplate() if needed
         $this->form_name = $form_name ?? null;
+        $this->setMetas($metas);
         $this->loadFields();
         $this->setDefaultValues($values);
     }
@@ -58,7 +59,7 @@ class Form
         $this->display_errors = $display_errors;
     }
 
-    public function setMeta(array $data)
+    public function setMetas(array $data)
     {
         foreach ($data as $key => $value) {
             $this->addMeta($key, $value);

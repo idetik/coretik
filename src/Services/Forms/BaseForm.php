@@ -44,8 +44,8 @@ abstract class BaseForm implements Handlable
         if (!$this->initialized) {
             if (method_exists($this, 'initialize')) {
                 $this->initialize();
-                $this->initialized = true;
             }
+            $this->initialized = true;
         }
     }
 
@@ -116,7 +116,7 @@ abstract class BaseForm implements Handlable
     {
         if (is_null($this->form)) {
             $this->initializeIfNot();
-            $this->form = new Form($this->form_id, $this->defaultValues(), $this->template, $this->form_name, $this->config);
+            $this->form = new Form($this->form_id, $this->defaultValues(), $this->template, $this->form_name, $this->config, $this->data);
         }
         return $this->form;
     }
