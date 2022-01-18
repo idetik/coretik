@@ -24,6 +24,7 @@ class Form
     protected $default_values    = []; //Default fields values
     protected $display_errors    = true; //Set to false to not display form errors (eg. when we just want to refresh form fields)
     protected $form_name         = null; //Override form name
+    protected $metas             = [];
 
     protected $config;
 
@@ -55,6 +56,25 @@ class Form
     public function setDisplayErrors($display_errors)
     {
         $this->display_errors = $display_errors;
+    }
+
+    public function setMeta(array $data)
+    {
+        foreach ($data as $key => $value) {
+            $this->addMeta($key, $value);
+        }
+        return $this;
+    }
+
+    public function addMeta(string $key, $value)
+    {
+        $this->metas[$key] = $value;
+        return $this;
+    }
+
+    public function getMeta(string $key)
+    {
+        return $this->metas[$key] ?? null;
     }
 
     /**

@@ -11,6 +11,7 @@ abstract class BaseForm implements Handlable
     protected $form;
     protected $data = [];
     protected $config;
+    protected $initialized = false;
 
     public function __construct(string $id, array $values = [], $template = null, $form_name = null, ConfigInterface $config = null)
     {
@@ -38,6 +39,16 @@ abstract class BaseForm implements Handlable
         return $this;
     }
 
+    protected function initializeIfNot()
+    {
+        if (!$this->initialized) {
+            if (method_exists($this, 'initialize')) {
+                $this->initialize();
+                $this->initialized = true;
+            }
+        }
+    }
+
     public function hasConfig(): bool
     {
         return !empty($this->config);
@@ -54,9 +65,7 @@ abstract class BaseForm implements Handlable
             return false;
         }
 
-        if (method_exists($this, 'initialize')) {
-            $this->initialize();
-        }
+        $this->initializeIfNot();
 
         if (!$this->form()->isSubmitting()) {
             return false;
@@ -106,6 +115,7 @@ abstract class BaseForm implements Handlable
     public function form(): Form
     {
         if (is_null($this->form)) {
+            $this->initializeIfNot();
             $this->form = new Form($this->form_id, $this->defaultValues(), $this->template, $this->form_name, $this->config);
         }
         return $this->form;
