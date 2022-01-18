@@ -8,13 +8,6 @@ use Coretik\Services\Forms\Validation\Validator;
 
 class Form
 {
-
-    const FORMS_TEMPLATES_DIR = 'templates/forms/';
-    const FORMS_FORM_FILE     = 'form.php';
-    const FORMS_FIELDS_FILE   = 'rules.php';
-    const FORMS_PREFIX        = 'coretik';
-    const CSS_CLASS_ERROR     = 'form-group-error';
-
     protected $id                = ''; //id (=slug) of the form
     protected $template          = ''; //template used to render the form (without .php)
     protected $fields            = []; //form fields with constraints
@@ -38,6 +31,11 @@ class Form
         $this->setMetas($metas);
         $this->loadFields();
         $this->setDefaultValues($values);
+    }
+
+    public function id()
+    {
+        return $this->id;
     }
 
     /**
