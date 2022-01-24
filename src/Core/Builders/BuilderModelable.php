@@ -40,6 +40,7 @@ abstract class BuilderModelable extends Builder implements ModelableInterface
     public function querier(callable $querier)
     {
         $this->querier = $querier;
+        return $this;
     }
 
     public function model($id = null, $initializer = null): Model
