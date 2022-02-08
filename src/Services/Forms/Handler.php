@@ -45,9 +45,11 @@ class Handler
                     break;
 
                 case $form instanceof Handlable:
-                    add_action('template_redirect', function () use ($form) {
+                    $hook = defined($form::class . '::HOOK') ? $form::HOOK : 'template_redirect';
+                    $priority = defined($form::class . '::PRIORITY') ? $form::PRIORITY : 10;
+                    add_action($hook, function () use ($form) {
                         static::handleRequest($form);
-                    });
+                    }, $priority);
                     add_action('admin_init', function () use ($form) {
                         static::handleRequest($form);
                     });
