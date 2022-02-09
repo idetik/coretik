@@ -137,6 +137,20 @@ class Collection implements CollectionInterface
     /**
      * {@inheritdoc}
      */
+    public function each(callable $callback)
+    {
+        foreach ($this as $key => $item) {
+            if ($callback($item, $key) === false) {
+                break;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function groupBy(callable $group_by, bool $hide_empty = false)
     {
         $groups = [];
