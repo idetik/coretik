@@ -29,25 +29,29 @@ abstract class Builder implements BuilderInterface
     public function attach(string $name, callable $service)
     {
         $this->services[$name] = $service;
+        return $this;
     }
 
-    public function handler(HandlerInterface $handler): void
+    public function handler(HandlerInterface $handler): self
     {
         $this->handlers->attach($handler);
+        return $this;
     }
 
-    public function handlers(array $handlers): void
+    public function handlers(array $handlers): self
     {
         foreach ($handlers as $handler) {
             $this->handler($handler);
         }
+        return $this;
     }
 
-    public function runHandlers(): void
+    public function runHandlers(): self
     {
         foreach ($this->handlers as $handler) {
             $handler->handle($this);
         }
+        return $this;
     }
 
     public function removeHandlers()

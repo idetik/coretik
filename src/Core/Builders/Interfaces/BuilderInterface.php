@@ -7,6 +7,6 @@ interface BuilderInterface
     public function priority(): int;
     public function getName(): string;
     public function getType(): string;
-    public function handler(HandlerInterface $handler): void;
-    public function runHandlers(): void;
+    public function handler(HandlerInterface $handler): self;
+    public function runHandlers(): self;
 }
