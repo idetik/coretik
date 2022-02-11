@@ -264,7 +264,7 @@ final class UserType extends BuilderModelable implements RegistrableInterface
             // '', // Custom cap used in page options
         ];
 
-        return \array_merge($caps, $tax_caps, $custom_caps);
+        return \apply_filters('coretik/core/builders/usertype/default_wp_caps', \array_merge($caps, $tax_caps, $custom_caps), $caps, $tax_caps, $custom_caps);
     }
 
     public function concern(int $objectId): bool
