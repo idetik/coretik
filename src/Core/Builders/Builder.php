@@ -69,7 +69,7 @@ abstract class Builder implements BuilderInterface
     public function __call($method, $args = [])
     {
         if ($this->services->has($method)) {
-            return \call_user_func($this->services->get($method), $args);
+            return \call_user_func($this->services->get($method), ...$args);
         }
     }
 }

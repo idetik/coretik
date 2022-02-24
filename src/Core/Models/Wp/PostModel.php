@@ -33,11 +33,6 @@ class PostModel extends WPModel
         parent::__construct();
     }
 
-    // public function newBaseQueryBuilder()
-    // {
-    //     return new Query();
-    // }
-
     /**
      * Add post type specifics data changes to the model
      */
@@ -48,12 +43,11 @@ class PostModel extends WPModel
         foreach ($this->metaKeys() as $key) {
             if (\property_exists($this, $key)) {
                 if (!$this->isProtectedMeta($key)) {
-                    $changes['meta_input'][$key] = $this->castMeta($key, $this->$key);
+                    $changes['meta_input'][$this->resolveMetaKey($key)] = $this->castMeta($key, $this->$key);
                 }
             }
         }
-        // @todo taxonomies
-        // ['tax_input']
+        // @todo taxonomies ['tax_input']
         return $changes;
     }
 
@@ -75,11 +69,6 @@ class PostModel extends WPModel
     {
         return \get_post_status($this->id());
     }
-
-    // public function slug(): string
-    // {
-    //     return $this->wp_object->post_name;
-    // }
 
     public function title(): string
     {
