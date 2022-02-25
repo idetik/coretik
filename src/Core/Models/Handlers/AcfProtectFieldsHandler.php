@@ -22,10 +22,20 @@ class AcfProtectFieldsHandler implements HandlerInterface
 
     public function prepareFields()
     {
-        $model = $this->builder->model();
+        if (!function_exists('acfe_get_post_id') || empty(\acfe_get_post_id())) {
+            return;
+        }
+
+        $model_id = (int)\acf_decode_post_id(\acfe_get_post_id())['id'];
+        if (!$this->builder->concern($model_id)) {
+            return $value;
+        }
+
+        $model = $this->builder->model($model_id);
         $protected_fields = $model->protectedMetaKeys(false);
+
         foreach ($protected_fields as $field_name) {
-            add_filter('acf/load_field/name=' . $field_name, [$this, 'lockField']);
+            \add_filter('acf/load_field/name=' . $field_name, [$this, 'lockField']);
         }
     }
 
@@ -35,8 +45,10 @@ class AcfProtectFieldsHandler implements HandlerInterface
         if (!$model->isProtectedMeta($field['name'])) {
             return $field;
         }
+
         switch ($field['type']) {
             case 'checkbox':
+            case 'radio':
                 $field['disabled'] = \array_keys($field['choices']);
                 break;
             case 'post_object':
@@ -61,6 +73,7 @@ class AcfProtectFieldsHandler implements HandlerInterface
                 break;
             case 'true_false':
             case 'time_picker':
+            case 'button_group':
                 $field['disabled'] = 1;
                 // Warning : True / false acf field don't support attr "disabled"
                 \add_action('admin_footer', function () use ($field) {
