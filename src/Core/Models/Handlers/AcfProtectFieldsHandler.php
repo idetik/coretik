@@ -41,7 +41,8 @@ class AcfProtectFieldsHandler implements HandlerInterface
 
     public function lockField($field)
     {
-        $model = $this->builder->model(\get_the_id());
+        $model_id = (int)\acf_decode_post_id(\acfe_get_post_id())['id'];
+        $model = $this->builder->model($model_id);
         if (!$model->isProtectedMeta($field['name'])) {
             return $field;
         }
