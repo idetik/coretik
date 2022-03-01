@@ -59,7 +59,7 @@ class Utils
         if (false === $in_array) {
             return isset($value) && null !== $value && '' !== $value;
         } else {
-            return is_array($in_array) && isset($in_array[$value]) && isset_value($in_array[$value]);
+            return is_array($in_array) && isset($in_array[$value]) && static::issetValue($in_array[$value]);
         }
         return false;
     }
