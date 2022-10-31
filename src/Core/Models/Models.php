@@ -13,7 +13,7 @@ class Models implements ModelsInterface, \ArrayAccess, \IteratorAggregate
         $this->objects = [];
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         if (is_null($offset)) {
             $this->objects[$value->getId()] = $value;
@@ -22,17 +22,17 @@ class Models implements ModelsInterface, \ArrayAccess, \IteratorAggregate
         }
     }
 
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         return isset($this->objects[$offset]);
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         unset($this->objects[$offset]);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         if (is_int($offset) && $this->offsetExists($offset)) {
             return $this->objects[$offset];
@@ -41,7 +41,7 @@ class Models implements ModelsInterface, \ArrayAccess, \IteratorAggregate
         throw new Exceptions\InstanceNotExistsException("{$offset} is not instanciate.");
     }
 
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->objects);
     }

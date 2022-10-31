@@ -36,7 +36,7 @@ class Registry extends \SplObjectStorage
         $instance->save()->cleanup();
     }
 
-    public function getHash($o)
+    public function getHash(object $o): string
     {
         return md5(serialize($o));
     }
@@ -86,7 +86,7 @@ class Registry extends \SplObjectStorage
         }
     }
 
-    public function __serialize()
+    public function __serialize(): array
     {
         $this->prev = null;
         return parent::__serialize();
