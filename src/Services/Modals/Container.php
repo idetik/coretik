@@ -2,8 +2,6 @@
 
 namespace Coretik\Services\Modals;
 
-// use function Globalis\WP\Cubi\include_template_part;
-
 class Container
 {
     protected $hasOpen = false;

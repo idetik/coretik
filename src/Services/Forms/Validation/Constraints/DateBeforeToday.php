@@ -6,7 +6,6 @@ use Coretik\Services\Forms\Utils;
 
 class DateBeforeToday extends Constraint
 {
-
     private $name            = 'date-before-today';
     private $message         = "La date doit être inférieure à la date d'aujourd'hui.";
     private $display_message = true;

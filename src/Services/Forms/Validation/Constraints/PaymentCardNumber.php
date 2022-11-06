@@ -6,7 +6,6 @@ use Coretik\Services\Forms\Utils;
 
 class PaymentCardNumber extends Constraint
 {
-
     private $name    = 'payment-card-number';
     private $message = 'Invalid card number';
     private $display_message = true;

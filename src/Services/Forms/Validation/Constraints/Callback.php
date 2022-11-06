@@ -4,7 +4,6 @@ namespace Coretik\Services\Forms\Validation\Constraints;
 
 class Callback extends Constraint
 {
-
     private $name;
     private $message;
     private $display_message = true;

@@ -6,7 +6,6 @@ use Coretik\Services\Forms\Utils;
 
 class EmailNoBurnerOrDisposable extends Constraint
 {
-
     private $name    = 'email-no-burner-or-disposable';
     private $message = "Sorry, we don't allow disposable email addresses. Please try a different email account.";
     private $display_message = true;

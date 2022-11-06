@@ -6,7 +6,6 @@ use Coretik\Services\Forms\Utils;
 
 class EmailExists extends Constraint
 {
-
     private $name    = 'email-exists';
     private $message = "Cette adresse email n'existe pas.";
     private $display_message = true;

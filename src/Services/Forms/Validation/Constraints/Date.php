@@ -6,7 +6,6 @@ use Coretik\Services\Forms\Utils;
 
 class Date extends Constraint
 {
-
     private $name    = 'date';
     private $message = 'La date est invalide.';
     private $display_message = true;

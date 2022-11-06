@@ -6,7 +6,6 @@ use Coretik\Services\Forms\Utils;
 
 class MaxSize extends Constraint
 {
-
     private $name    = 'max';
     private $message = 'Trop long.';
     private $display_message = true;

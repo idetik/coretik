@@ -101,7 +101,7 @@ class Aria extends \Walker_Nav_Menu
             $atts['rel'] = $item->xfn;
         }
 
-        if('a' == $balise) {
+        if ('a' == $balise) {
             $atts['href'] = !empty($item->url) ? $item->url : '';
         }
 

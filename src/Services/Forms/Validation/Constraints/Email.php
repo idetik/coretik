@@ -6,7 +6,6 @@ use Coretik\Services\Forms\Utils;
 
 class Email extends Constraint
 {
-
     private $name    = 'email';
     private $message = 'L\'adresse email est invalide.';
     private $display_message = true;

@@ -6,7 +6,6 @@ use Coretik\Services\Forms\Utils;
 
 class EmailCheck extends Constraint
 {
-
     private $name    = 'email-check';
     private $message = 'Les adresses e-mail ne correspondent pas.';
     private $display_message = true;

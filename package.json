@@ -1,0 +1,30 @@
+{
+    "name": "@idetik-group/coretik",
+    "version": "0.4.9",
+    "description": "Wordpress coretik",
+    "scripts": {
+        "semantic-release": "semantic-release"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/idetik-fr/coretik.git"
+    },
+    "author": "David Daugreilh, @idetik",
+    "license": "ISC",
+    "devDependencies": {
+        "@semantic-release/changelog": "^5.0.1",
+        "@semantic-release/git": "^9.0.0",
+        "@semantic-release/gitlab": "^6.0.9",
+        "@semantic-release/release-notes-generator": "^9.0.2",
+        "semantic-release": "^17.4.3"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "browserslist": [
+        ">0.2% in FR",
+        "not dead",
+        "not op_mini all",
+        "not IE <= 11"
+    ]
+}

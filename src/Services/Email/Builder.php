@@ -2,7 +2,6 @@
 
 namespace Coretik\Services\Email;
 
-use Globalis\WP\Cubi;
 use Pelago\Emogrifier\CssInliner;
 
 class Builder

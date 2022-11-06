@@ -6,7 +6,6 @@ use Coretik\Services\Forms\Utils;
 
 class RequiredIfFieldsNotEquals extends Constraint
 {
-
     private $name = 'required-if-fields-not-equals';
     private $message = 'Ce champs est requis.';
     private $display_message = false;

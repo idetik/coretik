@@ -7,7 +7,6 @@ use Coretik\Core\Models\Interfaces\CRUDInterface;
 
 class WPUserAdapter extends WPAdapter implements MetableAdapterInterface, CRUDInterface
 {
-
     public function meta(string $key, $default = false, bool $single = true)
     {
         return \get_user_meta($this->model->id(), $key, $single) ?: $default;

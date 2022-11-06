@@ -6,7 +6,6 @@ use Coretik\Services\Forms\Utils;
 
 class EqualsField extends Constraint
 {
-
     private $name    = 'equals-field';
     private $message = 'Le champ doit être égal au champ %field_equal_label%.';
     private $display_message = true;

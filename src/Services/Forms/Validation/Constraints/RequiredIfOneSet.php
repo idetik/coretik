@@ -6,7 +6,6 @@ use Coretik\Services\Forms\Utils;
 
 class RequiredIfOneSet extends Constraint
 {
-
     private $name = 'required-if-one-set';
     private $message = 'Ce champs est requis.';
     private $display_message = false;

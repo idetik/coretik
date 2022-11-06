@@ -6,7 +6,6 @@ use Coretik\Services\Forms\Utils;
 
 class Phone extends Constraint
 {
-
     private $name    = 'phone';
     private $message = 'Le numéro de téléphone est invalide.';
     private $display_message = true;

@@ -3,7 +3,6 @@
 namespace Coretik\Core\Query;
 
 use Coretik\Core\Query\Adapters\WPCommentAdapter as QueryAdapter;
-use Globalis\WP\Cubi;
 
 class Comment extends Query
 {
@@ -34,7 +33,7 @@ class Comment extends Query
     {
         return [
             "approve",
-            "hold",                                                                                                                                                                                                                                                                                                     
+            "hold",
         ];
     }
 }

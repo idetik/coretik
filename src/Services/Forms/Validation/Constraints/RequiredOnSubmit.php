@@ -6,7 +6,6 @@ use Coretik\Services\Forms\Utils;
 
 class RequiredOnSubmit extends Constraint
 {
-
     private $name    = 'required-on-submit';
     private $message = 'Ce champs est requis';
     private $display_message = false;

@@ -8,7 +8,6 @@ use Coretik\Services\Forms\Validator;
 
 class Repeater extends Constraint
 {
-
     private $name    = 'repeater';
     private $message = 'Ce champs contient des erreurs.';
     private $display_message = false;

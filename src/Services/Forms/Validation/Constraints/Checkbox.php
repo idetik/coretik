@@ -6,7 +6,6 @@ use Coretik\Services\Forms\Utils;
 
 class Checkbox extends Constraint
 {
-
     private $name    = 'checkbox';
     private $message = 'Ce choix n\'est pas valide.';
     private $display_message = false;

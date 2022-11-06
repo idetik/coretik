@@ -6,7 +6,6 @@ use Coretik\Services\Forms\Utils;
 
 class RequiredIfAllNotSet extends Constraint
 {
-
     private $name = 'required-if-all-not-set';
     private $message = 'Ce champs est requis.';
     private $display_message = false;

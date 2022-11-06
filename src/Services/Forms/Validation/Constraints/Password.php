@@ -6,7 +6,6 @@ use Coretik\Services\Forms\Utils;
 
 class Password extends Constraint
 {
-
     private $name    = 'password';
     private $message = 'Le mot de passe est invalide.';
     private $display_message = true;

@@ -6,7 +6,6 @@ use Coretik\Services\Forms\Utils;
 
 class Numeric extends Constraint
 {
-
     private $name    = 'numeric';
     private $message = 'La valeur doit être numérique.';
     private $display_message = true;

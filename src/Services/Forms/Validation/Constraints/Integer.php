@@ -6,7 +6,6 @@ use Coretik\Services\Forms\Utils;
 
 class Integer extends Constraint
 {
-
     private $name    = 'integer';
     private $message = 'La valeur doit être un nombre entier.';
     private $display_message = true;

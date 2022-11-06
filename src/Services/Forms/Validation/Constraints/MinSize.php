@@ -6,7 +6,6 @@ use Coretik\Services\Forms\Utils;
 
 class MinSize extends Constraint
 {
-
     private $name    = 'min';
     private $message = 'Trop court.';
     private $display_message = true;

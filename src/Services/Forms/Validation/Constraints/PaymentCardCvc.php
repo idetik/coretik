@@ -6,7 +6,6 @@ use Coretik\Services\Forms\Utils;
 
 class PaymentCardCvc extends Constraint
 {
-
     private $name    = 'payment-card-cvc';
     private $message = 'Invalid card CVC';
     private $display_message = true;

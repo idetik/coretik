@@ -6,7 +6,6 @@ use Coretik\Services\Forms\Utils;
 
 class EmailAvailable extends Constraint
 {
-
     private $name    = 'email-available';
     private $message = 'Cette adresse email existe déjà.';
     private $display_message = true;

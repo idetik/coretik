@@ -6,7 +6,6 @@ use Coretik\Services\Forms\Utils;
 
 class PasswordCheck extends Constraint
 {
-
     private $name    = 'password-check';
     private $message = 'Les mots de passe ne correspondent pas.';
     private $password_field;

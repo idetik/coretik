@@ -6,7 +6,6 @@ use Coretik\Services\Forms\Utils;
 
 class PaymentCardExpiry extends Constraint
 {
-
     private $name    = 'payment-card-expiry';
     private $message = 'This card expiry date has already passed';
     private $display_message = true;
