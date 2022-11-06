@@ -7,17 +7,10 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/idetik-fr/coretik.git"
+        "url": "https://github.com/idetik/coretik.git"
     },
     "author": "David Daugreilh, @idetik",
     "license": "ISC",
-    "devDependencies": {
-        "@semantic-release/changelog": "^5.0.1",
-        "@semantic-release/git": "^9.0.0",
-        "@semantic-release/gitlab": "^6.0.9",
-        "@semantic-release/release-notes-generator": "^9.0.2",
-        "semantic-release": "^17.4.3"
-    },
     "publishConfig": {
         "access": "public"
     },
@@ -26,5 +19,12 @@
         "not dead",
         "not op_mini all",
         "not IE <= 11"
-    ]
+    ],
+    "devDependencies": {
+        "@semantic-release/changelog": "^6.0.1",
+        "@semantic-release/git": "^10.0.1",
+        "@semantic-release/github": "^8.0.6",
+        "@semantic-release/release-notes-generator": "^10.0.3",
+        "semantic-release": "^19.0.5"
+    }
 }
