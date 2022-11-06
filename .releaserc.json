@@ -3,12 +3,19 @@
     "plugins": [
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
-      "@semantic-release/changelog",
-      ["@semantic-release/github", {
-        "assets": [
-          {"path": "package.json", "label": "chore(release): ${nextRelease.version} \n\n${nextRelease.notes}"},
-          {"path": "CHANGELOG.md", "label": "chore(release): ${nextRelease.version} \n\n${nextRelease.notes}"}
-        ]
-      }]
+      [
+        "@semantic-release/changelog",
+        {
+          "changelogFile": "CHANGELOG.md"
+        }
+      ],
+      "@semantic-release/github",
+      [
+        "@semantic-release/git",
+        {
+          "assets": ["package.json", "CHANGELOG.md"],
+          "message": "chore(release): ${nextRelease.version} \n\n${nextRelease.notes}"
+        }
+      ]
     ]
   }
