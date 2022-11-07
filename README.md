@@ -32,11 +32,11 @@ $container['menu'] = function ($container) {
 App::run($container);
 ```
 
-### Schema : declare post type and other wp objects
+### Schema : declare post type and others WP objects
 
 ```
 use Coretik\Core\Builders\Taxonomy;
-use Coretik\Core\Builders\PostType as PostTypeModel;
+use Coretik\Core\Builders\PostType;
 use Coretik\Core\Collection;
 
 use THEME\NAMESPACE\PostTypeModel;
