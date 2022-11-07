@@ -1,3 +1,14 @@
+## [1.1.1](https://github.com/idetik/coretik/compare/v1.1.0...v1.1.1) (2022-11-07)
+
+
+### Bug Fixes
+
+* Add services autoloaded in default container ([68fcb2d](https://github.com/idetik/coretik/commit/68fcb2d6b23ab807dba2ead11233f75c04c07d03))
+* clean code & sniff ([ae1d433](https://github.com/idetik/coretik/commit/ae1d433c096e69d7e35338db44975508be6b6647))
+* Enhance schema & add filters ([1b7cda6](https://github.com/idetik/coretik/commit/1b7cda60e207d6d6035749f4e79766a1542b7b69))
+* service form refacto ([161b2c1](https://github.com/idetik/coretik/commit/161b2c1ae52771f77c3b7537d65528db474c72fd))
+* use app function helper ([3cd34b1](https://github.com/idetik/coretik/commit/3cd34b135721ef92ff101b53d6c420418ddc7881))
+
 # [1.1.0](https://github.com/idetik/coretik/compare/v1.0.3...v1.1.0) (2022-11-07)
 
 
