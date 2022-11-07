@@ -38,8 +38,6 @@ class SchemaViewer
         }, 99);
     }
 
-
-    // @todo: TEMP
     public static function scripts()
     {
         add_action('admin_footer', function () {
@@ -52,7 +50,6 @@ class SchemaViewer
                         var classes = $(this).data('toggle-classes');
                         classes = classes.length ? classes : 'active';
                         $toggleComponent.toggleClass(classes);
-                        // $(this).toggleClass(classes);
                     });
                 })(jQuery);
             </script>

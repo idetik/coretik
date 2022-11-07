@@ -34,10 +34,6 @@ foreach ($models as $i => $model) :
             </li>
             <!-- <li><b>Queue</b>: @todo</li> -->
         </ul>
-        <!-- <form action="<?//= add_query_arg('load-model', $builder->getName()) ?>">
-            <label for="field-id-model_id">Model id: </label>
-            <input type="number" name="model_id" id="field-id-model_id"/>
-        </form> -->
     </li>
     <?php
 endforeach;
