@@ -4,9 +4,9 @@
     "type": "library",
     "minimum-stability": "stable",
     "require": {
-        "johnbillion/extended-cpts": "^4.5",
+        "johnbillion/extended-cpts": "^5.0",
         "pimple/pimple": "^3.3",
-        "nesbot/carbon": "^2.45",
+        "nesbot/carbon": "^2.62",
         "pelago/emogrifier": "^6.0",
         "wesbos/burner-email-providers": "dev-master",
         "globalis/wp-cubi-helpers": "^1.0"

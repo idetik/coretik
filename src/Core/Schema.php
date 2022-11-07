@@ -6,11 +6,14 @@ use Psr\Container\ContainerInterface;
 use Coretik\Core\Builders\Interfaces\BuilderInterface;
 use Coretik\Core\Builders\Interfaces\ModelableInterface;
 use Coretik\Core\Builders\Interfaces\RegistrableInterface;
-use Coretik\Core\Models\Anonymous;
 use Coretik\Core\Models\Wp\PostModel;
 use Coretik\Core\Models\Wp\TermModel;
 use Coretik\Core\Models\Wp\UserModel;
 use Coretik\Core\Models\Wp\CommentModel;
+use Coretik\Core\Query\Post as PostQuery;
+use Coretik\Core\Query\User as UserQuery;
+use Coretik\Core\Query\Term as TermQuery;
+use Coretik\Core\Query\Comment as CommentQuery;
 
 class Schema implements ContainerInterface
 {
@@ -37,25 +40,53 @@ class Schema implements ContainerInterface
         }
 
         if ($builder instanceof ModelableInterface) {
+
+            // Set model factory if empty
             if (!$builder->hasFactory()) {
                 $builder->factory(function ($initializer) use ($builder) {
-                    // @todo apply filters
+
+                    $factory = \apply_filters('coretik/schema/factory', null, $initializer, $builder);
+                    if (!empty($factory)) {
+                        return $factory;
+                    }
+
                     switch ($builder->getType()) {
                         case 'post':
-                            return new PostModel($initializer);
+                            return \apply_filters('coretik/schema/factory/post', new PostModel($initializer), $initializer, $builder);
                         case 'user':
-                            return new UserModel($initializer);
+                            return \apply_filters('coretik/schema/factory/user', new UserModel($initializer), $initializer, $builder);
                         case 'taxonomy':
-                            return new TermModel($initializer);
+                            return \apply_filters('coretik/schema/factory/taxonomy', new TermModel($initializer), $initializer, $builder);
                         case 'comment':
-                            return new CommentModel($initializer);
+                            return \apply_filters('coretik/schema/factory/comment', new CommentModel($initializer), $initializer, $builder);
+                        default:
+                            return \apply_filters('coretik/schema/factory/' . $builder->getType(), null, $initializer, $builder);
                     }
                 });
             }
+
+            // Set model querier if empty
             if (!$builder->hasQuerier()) {
-                // $builder->factory(function () {
-                //     return new Coretik\Core\Models\Anonymous($builder->getName());
-                // });
+                $builder->querier(function ($builder) {
+
+                    $querier = \apply_filters('coretik/schema/querier', null, $builder);
+                    if (!empty($querier)) {
+                        return $querier;
+                    }
+
+                    switch ($builder->getType()) {
+                        case 'post':
+                            return \apply_filters('coretik/schema/querier/post', new PostQuery($builder), $builder);
+                        case 'user':
+                            return \apply_filters('coretik/schema/querier/user', new UserQuery($builder), $builder);
+                        case 'taxonomy':
+                            return \apply_filters('coretik/schema/querier/taxonomy', new TermQuery($builder), $builder);
+                        case 'comment':
+                            return \apply_filters('coretik/schema/querier/comment', new Comment($builder), $builder);
+                        default:
+                            return \apply_filters('coretik/schema/querier/' . $builder->getType(), null, $builder);
+                    }
+                });
             }
         }
 
@@ -71,13 +102,6 @@ class Schema implements ContainerInterface
 
     public function unregister(BuilderInterface $builder)
     {
-        // if ($builder instanceof Builders\Taxonomy) {
-        //     unregister_taxonomy_for_object_type($builder->getName(), 'post');
-        //     add_filter('acf/get_taxonomies', function ($taxonomies, $args) use ($builder) {
-        //         return array_diff($taxonomies, [$builder->getName()]);
-        //     }, 10, 2);
-        // }
-
         if ($builder instanceof Builders\PostTypeBuiltIn) {
             switch ($builder->getName()) {
                 case 'post':
