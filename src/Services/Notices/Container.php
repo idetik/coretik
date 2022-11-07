@@ -2,21 +2,54 @@
 
 namespace Coretik\Services\Notices;
 
+use Coretik\Services\Notices\Connection\UserConnection;
+use Coretik\Services\Notices\Connection\NoConnection;
 use ArrayIterator;
 use IteratorAggregate;
+use SplSubject;
+use ArrayAccess;
 
-class Container implements \SplSubject, \ArrayAccess, IteratorAggregate
+class Container implements SplSubject, ArrayAccess, IteratorAggregate
 {
     protected $notices;
     protected $observers;
-    public $storage;
+    protected $storage;
 
-    public function __construct(StorageInterface $storage = null)
+    public function __construct(?StorageInterface $storage = null)
     {
         $this->observers = new \SplObjectStorage();
-        // $this->storage = $storage ?? new Storage();
-        // $this->notices = $this->storage->get()->getArrayCopy();
-        $this->notices = [];
+
+        if (empty($storage)) {
+            if (\is_user_logged_in()) {
+                $this->setStorage(new UserConnection((int) \get_current_user_id()));
+            } elseif (app()->has('session')) {
+                $this->setStorage(new SessionConnection(app()->get('session')));
+            }
+        } else {
+            $this->setStorage($storage);
+        }
+
+        if (empty($this->storage)) {
+            $this->setStorage(new NoConnection());
+        }
+
+        $this->notices = $this->storage->get()->getArrayCopy();
+    }
+
+    public function storage(): StorageInterface
+    {
+        return $this->storage;
+    }
+
+    public function setStorage(StorageInterface $storage): self
+    {
+        $this->storage = $storage;
+        return $this;
+    }
+
+    public function listen(): void
+    {
+        $this->notify();
     }
 
     public function attach(\SplObserver $observer)

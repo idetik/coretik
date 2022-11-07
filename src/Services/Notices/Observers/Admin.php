@@ -6,28 +6,32 @@ use Coretik\Services\Notices\Iterators\FilterValidIterator;
 
 class Admin implements \SplObserver
 {
-    // @todo :
-    // !Did action hook notice => hook admin notice
-    // Sinon => bdd option notice
-    // param persistant ?
     public function update(\SplSubject $container)
     {
-        $iterator = new FilterValidIterator($container->getIterator());
-        // if ($iterator->count() === 0) {
-        //     $container->storage->set($iterator);
-        //     return;
-        // }
+        if (!\is_admin()) {
+            return;
+        }
 
-        // if (\did_action('admin_notices')) {
-        //     $container->storage->set($iterator->getInnerIterator());
-        //     return;
-        // }
+        if (0 === $container->getIterator()->count()) {
+            return;
+        }
 
-        \add_action('admin_notices', function () use ($iterator) {
-            foreach ($iterator as $notice) {
+
+        $alive_notices = new FilterValidIterator($container->getIterator());
+        
+        if (iterator_count($alive_notices) === 0 || \did_action('admin_notices')) {
+            $alive_notices_array = \iterator_to_array($alive_notices);
+            $container->storage()->set(new \ArrayIterator($alive_notices_array));
+            return;
+        }
+
+        \add_action('admin_notices', function () use ($alive_notices, $container) {
+            foreach ($alive_notices as $notice) {
                 $notice->display();
             }
+
+            $updated = new FilterValidIterator($alive_notices->getInnerIterator());
+            $container->storage()->set(new \ArrayIterator(iterator_to_array($updated)));
         });
-        // $container->storage->set(new \ArrayIterator([]));
     }
 }
