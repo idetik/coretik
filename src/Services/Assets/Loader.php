@@ -9,15 +9,25 @@ class Loader
     protected $base;
     protected $version;
     protected $handleFamily;
+    protected $useScriptVersion = false;
+    protected $useStyleVersion = false;
 
     public function __construct(string $base = '', int $version = 0, string $handler = '')
     {
         $this->base = $base;
         $this->version = $version;
         $this->handleFamily = !empty($handler) ? $handler : sanitize_title(\get_option('blogname'), 'coretik');
+
+        if (defined('ASSETS_VERSIONING_SCRIPTS')) {
+            $this->useScriptVersion = ASSETS_VERSIONING_SCRIPTS;
+        }
+
+        if (defined('ASSETS_VERSIONING_STYLES')) {
+            $this->useStyleVersion = ASSETS_VERSIONING_STYLES;
+        }
     }
 
-    public function url($file, $versioning = ASSETS_VERSIONING_SCRIPTS)
+    public function url($file, ?bool $versioning = null)
     {
         $file = ltrim($this->base . $file, '/');
         if (empty($file)) {
@@ -28,7 +38,7 @@ class Loader
             $url = get_template_directory_uri() . '/' . $file;
         }
 
-        if ($versioning) {
+        if ($versioning ?? $this->useScriptVersion) {
             $version = $this->version();
             if (false != $version && !empty($version)) {
                 $url = str_replace(['.css', '.js'], ['-' . $version . '.css', '-' . $version . '.js'], $url);
@@ -65,7 +75,7 @@ class Loader
         $handle = sprintf('%s/%s', $this->handleFamily, $handleItem);
         \wp_enqueue_script(
             $handle,
-            $this->url($file, ASSETS_VERSIONING_SCRIPTS),
+            $this->url($file, $this->useScriptVersion),
             $deps,
             $ver,
             $in_footer
@@ -107,7 +117,7 @@ class Loader
     {
         \wp_enqueue_style(
             sprintf('%s/%s', $this->handleFamily, $handleItem),
-            $this->url($file, ASSETS_VERSIONING_SCRIPTS),
+            $this->url($file, $this->useStyleVersion),
             $deps,
             $ver,
             $media
@@ -145,7 +155,6 @@ class Loader
 
     public static function makeDeferredStyleTag($tag)
     {
-        //<link rel="stylesheet" href="/path/to/my.css" media="print" onload="this.media='all'; this.onload=null;">
         $tag = str_replace('rel="stylesheet"', 'rel="stylesheet" media="print" onload="this.media=\'all\'; this.onload=null;"', $tag);
         return $tag;
     }
