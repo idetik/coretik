@@ -8,6 +8,6 @@
         </div>
     <?php endif; ?>
     <div class="modal-content__body">
-        <?= $content ?>
+        <?= $body ?>
     </div>
 </div>

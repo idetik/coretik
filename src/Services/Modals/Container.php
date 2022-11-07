@@ -10,11 +10,14 @@ class Container
     protected $tpl_container = __DIR__ . '/views/container.php';
     protected $tpl_modal = __DIR__ . '/views/modal.php';
 
-    public function __construct(string $tpl_container = '', string $tpl_modal = '')
+    public function __construct(string $tpl_container = '', string $tpl_modal = '', bool $load_scripts = true)
     {
         $this->modals = new \SplObjectStorage();
-        \add_action('admin_footer', [$this, 'modals']);
-        \add_action('wp_footer', [$this, 'modals']);
+
+        if ($load_scripts) {
+            \add_action('admin_footer', [$this, 'modals']);
+            \add_action('wp_footer', [$this, 'modals']);
+        }
 
         if (!empty($tpl_container)) {
             $this->tpl_container = locate_template($tpl_container . '.php');

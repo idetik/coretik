@@ -6,26 +6,27 @@ use function Globalis\WP\Cubi\include_template_part;
 
 class Modal implements ModalInterface
 {
-    const TPL_WRAPPER = 'templates/modals/modal';
-
     protected $isOpen;
     protected $body;
     protected $data;
     protected $id;
     protected $closable = true;
     protected $large = false;
-    protected $tpl_modal;
+    protected $template_file_modal;
 
     /**
-     * @param string|callable $body
+     * @param string|callable $body - Template filename or print body content in callable 
+     * @param array $data - Data passed to body template or callable
+     * @param bool $open - Set modal open
+     * @param bool $template_file_modal - Template modal wrapper filename, with $body var to place inside
      */
-    public function __construct($body, array $data, bool $open = false, string $tpl_modal = '')
+    public function __construct(callable|string $body, array $data, bool $open = false, string $template_file_modal = '')
     {
         $this->body = $body;
         $this->data = $data;
         $this->isOpen = $open;
         $this->id = $data['id'] ?? (\is_string($body) ? \uniqid(\basename($body) . '-') : \uniqid());
-        $this->tpl_modal = $tpl_modal;
+        $this->template_file_modal = $template_file_modal;
     }
 
     public function id()
@@ -84,12 +85,14 @@ class Modal implements ModalInterface
         } else {
             include_template_part($this->body, $data);
         }
-        $content = \ob_get_clean();
+        $body = \ob_get_clean();
 
-        \ob_start();
-        extract($data);
-        include $this->tpl_modal;
-        \ob_end_flush();
+        if (!empty($this->template_file_modal) && \file_exists($this->template_file_modal)) {
+            \ob_start();
+            extract($data);
+            include $this->template_file_modal;
+            \ob_end_flush();
+        }
     }
 
     public function __sleep()
