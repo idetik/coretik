@@ -24,7 +24,6 @@ class PostArchiveHandler implements HandlerInterface
         \remove_action('pre_get_posts', [$this, 'setArchiveQuery']);
     }
 
-    // @todo TEST
     public function setArchiveQuery($query)
     {
         if (!\is_post_type_archive($this->builder->getName())) {

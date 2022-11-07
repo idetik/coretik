@@ -37,7 +37,6 @@ class Factory
                 $this->models[$id] = $model;
                 return $model;
             } catch (Exceptions\CannotResolveException $e) {
-                // $this->models[$id] = 'false';
                 throw $e;
             }
         }

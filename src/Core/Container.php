@@ -40,7 +40,7 @@ class Container extends PimpleContainer implements ContainerInterface
         parent::__construct($values);
 
         $this['schema'] = function ($container) {
-            return new TemplateWrapper();
+            return new Schema();
         };
         $this['option'] = $this->factory(function ($container) {
             return new Models\Wp\Option();

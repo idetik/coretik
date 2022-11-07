@@ -18,7 +18,7 @@ class UserConnection implements StorageInterface
 
     public function get(): ArrayIterator
     {
-        return \get_user_meta($this->user_id, static::KEY, true) ?: new ArrayIterator;
+        return \get_user_meta($this->user_id, static::KEY, true) ?: new ArrayIterator();
     }
 
     public function set(ArrayIterator $iterator)

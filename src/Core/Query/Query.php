@@ -103,10 +103,6 @@ abstract class Query implements QuerierInterface
             $this->cache()->set($hash, $this->builder->query());
         }
 
-        // if ($this->prefetch) {
-            //\Globalis\WP\Cubi\mysql_prefetch_objects($queries[$hash]->posts, [], [], true);
-        // }
-
         $this->query = $this->cache()->get($hash);
     }
 

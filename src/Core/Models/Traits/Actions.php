@@ -49,10 +49,6 @@ trait Actions
         if (!empty(array_diff($required, array_keys($_REQUEST)))) {
             $message = sprintf('Paramètre(s) requis: %s', implode(', ', array_diff($required, array_keys($_REQUEST))));
             $action->onError(new CoreActions\Exception($message));
-            // if (\is_admin()) {
-            //     static::addNotice($message, 'error');
-            // } else {
-            // }
             return;
         }
 
@@ -65,11 +61,7 @@ trait Actions
         try {
             $action->run($params);
         } catch (CoreActions\Exception $e) {
-            if (\is_admin()) {
-                static::addNotice($e->getMessage(), 'error');
-            } else {
-                $action->onError($e);
-            }
+            $action->onError($e);
         }
     }
 }

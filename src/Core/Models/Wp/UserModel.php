@@ -18,12 +18,10 @@ class UserModel extends WPModel
             case $initializer instanceof \WP_User:
                 $this->id = $initializer->ID;
                 $this->wp_object = $initializer;
-                // $this->name = $initializer->post_type;
                 break;
             case \is_int($initializer):
                 $this->id = $initializer;
                 $this->wp_object = $this->adapter->get($initializer);
-                // $this->name = $this->wp_object->post_type;
                 break;
             default:
                 break;

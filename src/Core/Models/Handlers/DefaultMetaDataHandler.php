@@ -14,8 +14,7 @@ class DefaultMetaDataHandler implements HandlerInterface
     public function handle(BuilderInterface $builder): void
     {
         $this->builder = $builder;
-        add_filter("default_post_metadata", [$this, 'loadMeta'], 10, 5);
-        // add_filter("default_post_metadata", $value, $object_id, $meta_key, $single, $meta_type);
+        \add_filter("default_post_metadata", [$this, 'loadMeta'], 10, 5);
     }
 
     public function freeze(): void

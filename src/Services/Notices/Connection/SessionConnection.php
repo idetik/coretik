@@ -19,7 +19,7 @@ class SessionConnection implements StorageInterface
     public function get(): ArrayIterator
     {
         if (!$this->session->has(static::KEY)) {
-            return new ArrayIterator;
+            return new ArrayIterator();
         }
 
         return $this->session->get(static::KEY);

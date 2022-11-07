@@ -34,21 +34,8 @@ class PostDictionnary extends Collection implements DictionnaryInterface
             'guid', // (string) Global Unique ID for referencing the post. Default empty.
             'post_category', // (array) Array of category IDs. Defaults to value of the 'default_category' option.
             // 'tags_input', // (array) Array of tag names, slugs, or IDs. Default empty.
-            // 'tax_input', // (array) Array of taxonomy terms keyed by their taxonomy name. Default empty.
+            'tax_input', // (array) Array of taxonomy terms keyed by their taxonomy name. Default empty.
             // 'meta_input', // (array) Array of post meta values keyed by their post meta key. Default empty.
         ]);
     }
-
-    // public function protect()
-    // {
-    //     $this->isProtected = true;
-    //     return $this;
-    // }
-
-    // public function protectWith(callable $rule)
-    // {
-    //     $this->protect();
-    //     $this->rules[] = $rule;
-    //     return $this;
-    // }
 }

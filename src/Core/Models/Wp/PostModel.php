@@ -47,7 +47,7 @@ class PostModel extends WPModel
                 }
             }
         }
-        // @todo taxonomies ['tax_input']
+
         return $changes;
     }
 

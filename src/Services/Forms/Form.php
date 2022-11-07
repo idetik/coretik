@@ -214,7 +214,6 @@ abstract class Form implements Handlable
                 }
 
                 $this->setDefaultValue($field_name, $prefilled_value);
-
             } elseif (isset($data['default_value'])) {
                 $this->setDefaultValue($field_name, $data['default_value']);
             }
@@ -478,19 +477,29 @@ abstract class Form implements Handlable
     }
 
     // Trigger before form view or before form process
-    protected function initialize() {}
+    protected function initialize()
+    {
+    }
 
     // Trigger on form success
-    protected function onSuccess() {}
+    protected function onSuccess()
+    {
+    }
 
     // Error trigger when validating local rules
-    protected function onValidationError() {}
+    protected function onValidationError()
+    {
+    }
 
     // Error trigger during form processing
-    protected function onProcessingError(Exception $e) {}
+    protected function onProcessingError(Exception $e)
+    {
+    }
 
     // Error trigger on any form error
-    protected function onError() {}
+    protected function onError()
+    {
+    }
 
     public function isRefreshing()
     {
@@ -691,7 +700,7 @@ abstract class Form implements Handlable
 
     public function isSpam()
     {
-        if($this->isRefreshing()) {
+        if ($this->isRefreshing()) {
             return false;
         }
 
@@ -710,7 +719,8 @@ abstract class Form implements Handlable
         return isset($_POST['form_coretik_confirm']) && in_array($_POST['form_coretik_confirm'], ['on', true, 'true', 1, '1']);
     }
 
-    public function hasWordsInBlacklist($fields) {
+    public function hasWordsInBlacklist($fields)
+    {
         if (!is_string($fields) && !is_array($fields)) {
             return false;
         }
@@ -759,8 +769,8 @@ abstract class Form implements Handlable
     {
         $trackingParameters = [];
 
-        foreach($this->getValues() as $key => $value) {
-            if(is_string($value) && mb_strlen($value) <= 100) {
+        foreach ($this->getValues() as $key => $value) {
+            if (is_string($value) && mb_strlen($value) <= 100) {
                 $trackingParameters[$key] = $value;
             }
         }
@@ -798,7 +808,8 @@ abstract class Form implements Handlable
         return $value;
     }
 
-    public function getWordsInBlacklist() {
+    public function getWordsInBlacklist()
+    {
         return [
             ".ru",
             "18+",

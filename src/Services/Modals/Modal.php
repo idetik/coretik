@@ -15,7 +15,7 @@ class Modal implements ModalInterface
     protected $template_file_modal;
 
     /**
-     * @param string|callable $body - Template filename or print body content in callable 
+     * @param string|callable $body - Template filename or print body content in callable
      * @param array $data - Data passed to body template or callable
      * @param bool $open - Set modal open
      * @param bool $template_file_modal - Template modal wrapper filename, with $body var to place inside

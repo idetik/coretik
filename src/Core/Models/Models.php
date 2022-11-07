@@ -3,8 +3,12 @@
 namespace Coretik\Core\Models;
 
 use Coretik\Core\Model;
+use ArrayAccess;
+use IteratorAggregate;
+use Traversable;
+use ArrayIterator;
 
-class Models implements ModelsInterface, \ArrayAccess, \IteratorAggregate
+class Models implements ModelsInterface, ArrayAccess, IteratorAggregate
 {
     protected $objects;
 
@@ -41,9 +45,9 @@ class Models implements ModelsInterface, \ArrayAccess, \IteratorAggregate
         throw new Exceptions\InstanceNotExistsException("{$offset} is not instanciate.");
     }
 
-    public function getIterator(): \Traversable
+    public function getIterator(): Traversable
     {
-        return new \ArrayIterator($this->objects);
+        return new ArrayIterator($this->objects);
     }
 
     public function get($offset)

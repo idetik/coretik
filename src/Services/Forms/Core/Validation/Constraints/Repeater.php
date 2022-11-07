@@ -21,7 +21,7 @@ class Repeater extends Constraint
         'fields'             => ['activate' => false, 'message' => '', 'args' => true, 'callback' => 'fields']
     ];
 
-    public function __construct($constraints = [], $form)
+    public function __construct($constraints, $form)
     {
         $this->form = $form;
 

@@ -40,7 +40,6 @@ class Schema implements ContainerInterface
         }
 
         if ($builder instanceof ModelableInterface) {
-
             // Set model factory if empty
             if (!$builder->hasFactory()) {
                 $builder->factory(function ($initializer) use ($builder) {

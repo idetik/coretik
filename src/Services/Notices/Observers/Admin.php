@@ -18,7 +18,7 @@ class Admin implements \SplObserver
 
 
         $alive_notices = new FilterValidIterator($container->getIterator());
-        
+
         if (iterator_count($alive_notices) === 0 || \did_action('admin_notices')) {
             $alive_notices_array = \iterator_to_array($alive_notices);
             $container->storage()->set(new \ArrayIterator($alive_notices_array));

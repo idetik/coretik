@@ -7,8 +7,6 @@ use Coretik\Core\Models\Interfaces\ModelInterface;
 use Coretik\Core\Models\Interfaces\DictionnaryInterface as Dictionnary;
 use Coretik\Core\Collection;
 
-// todo jsonable ?
-
 abstract class Model implements ModelInterface
 {
     use Traits\Bootable;
@@ -20,11 +18,6 @@ abstract class Model implements ModelInterface
     protected $adapter;
     protected $dictionnary;
     protected $state;
-
-    // @todo observers
-    // @todo States
-
-    // abstract public function newBaseQueryBuilder();
 
     /**
      * Construct
@@ -62,7 +55,6 @@ abstract class Model implements ModelInterface
     /**
      * CRUD
      */
-    // @todo protected dictionnary fields ?
     public function changes(): array
     {
         $args = [];
@@ -133,37 +125,6 @@ abstract class Model implements ModelInterface
         }
     }
 
-    /**
-     * Queries
-     */
-    // public function newQueryBuilder($query)
-    // {
-    //     return new Builder($query);
-    // }
-
-    // public function newQuery()
-    // {
-    //     return $this->newQueryBuilder(
-    //         $this->newBaseQueryBuilder()
-    //     )->setModel($this);
-    // }
-
-
-
-    // protected static function baseQuery($args = [])
-    // {
-    //     return new Query\Base($args);
-    // }
-    // public static function query($args = [])
-    // {
-    //     $args = wp_parse_args($args, [
-    //         'posts_per_page' => get_option('posts_per_page'),
-    //         'post_type'      => static::POST_TYPE,
-    //     ]);
-
-    //     return static::baseQuery($args)->setCollector([static::class, 'collect']);
-    // }
-
     public function get(string $prop)
     {
         // return $this->wp_object->$prop;
@@ -188,43 +149,4 @@ abstract class Model implements ModelInterface
             $this->$prop = $value;
         }
     }
-
-    /**
-     * Relationhips Ideas
-     */
-    // // Post to post
-    // public function hasOne()
-    // {
-    //     // has child
-    // }
-    // public function hasMany()
-    // {
-    //     // has childs
-    // }
-    // public function belongsTo()
-    // {
-    //     // has parent
-    // }
-    // public function belongsToMany()
-    // {
-    //     // use taxonomy term pivot ?
-    // }
-
-    // // Metable Model to Metable model
-    // public function hasOne($model_class)
-    // {
-    //     // build meta with key <thisName>_thisId_related_<modelName>_modelId
-    // }
-    // public function hasMany()
-    // {
-    //     // has childs
-    // }
-    // public function belongsTo()
-    // {
-    //     // has parent
-    // }
-    // public function belongsToMany()
-    // {
-    //     // has parents
-    // }
 }

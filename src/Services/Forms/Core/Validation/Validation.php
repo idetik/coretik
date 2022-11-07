@@ -100,13 +100,10 @@ class Validation
             $fieldNames[] = $fieldName;
 
             if (!$validator->validate($fieldName, $this->validationData[$fieldName] ?? null, $this->validationData)) {
-                
                 //Validation KO
                 $this->isValid = false;
                 $this->errors[$fieldName] = $validator->getViolations();
-
             } else {
-
                 // Validation OK
                 $form_name = $this->form->getFormName();
                 if ($validator->hasFileConstraint() && !empty($_FILES[$form_name]['tmp_name'][$fieldName])) {
@@ -119,7 +116,6 @@ class Validation
                         'content' => \base64_encode($data)
                     ];
                 }
-
             }
         }
 

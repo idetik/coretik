@@ -11,7 +11,7 @@ class NoConnection implements StorageInterface
 
     public function get(): ArrayIterator
     {
-        return $this->notices ?? new ArrayIterator;
+        return $this->notices ?? new ArrayIterator();
     }
 
     public function set(ArrayIterator $iterator)

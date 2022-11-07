@@ -20,14 +20,6 @@ trait Metable
     {
         $this->metas = new Collection();
 
-        // @todo
-        // this->on('saving') => protected meta // ou observers
-        // get_post_meta => hook default value
-
-        // if (\property_exists($this, 'metas')) {
-        //     $this->declareMetas($this->metas);
-        // }
-
         if (!$this->adapter instanceof MetableAdapterInterface) {
             throw new AdapterNotFoundException('Adapter of "' . __CLASS__ . '" does not implement MetableAdapterInterface.');
         }

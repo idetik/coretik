@@ -2,7 +2,6 @@
 
 namespace Coretik\Core\Models;
 
-// @todo interface
 class MetaDefinition
 {
     protected $key;
