@@ -2,7 +2,6 @@
 
 namespace Coretik\Core\Builders\Users;
 
-use Coretik\App;
 
 class CacheBuster
 {
@@ -10,11 +9,11 @@ class CacheBuster
 
     public static function get(): string
     {
-        return App::option(static::CACHE_KEY, '');
+        return app()->option(static::CACHE_KEY, '');
     }
 
     public static function set(string $hash)
     {
-        App::instance()->option->set(static::CACHE_KEY, $hash, true);
+        app()->option->set(static::CACHE_KEY, $hash, true);
     }
 }

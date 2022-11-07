@@ -2,7 +2,6 @@
 
 namespace Coretik\Core\Builders\Users;
 
-use Coretik\App;
 
 class Registry extends \SplObjectStorage
 {
@@ -43,11 +42,11 @@ class Registry extends \SplObjectStorage
 
     public function save()
     {
-        $this->prev = App::option(static::OPTION_KEY);
-        App::instance()->option->set(static::OPTION_KEY, $this, false);
+        $this->prev = app()->option(static::OPTION_KEY);
+        app()->option->set(static::OPTION_KEY, $this, false);
         CacheBuster::set($this->hash());
         $this->cleanup();
-        App::notices()->success('Roles & capabilities updated.');
+        app()->notices()->success('Roles & capabilities updated.');
         return $this;
     }
 

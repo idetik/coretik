@@ -1,9 +1,9 @@
 <?php
 $args = $builder->args();
 
-$modalArgs = Coretik\App::modals()->factory(function ($data) {
+$modalArgs = app()->modals()->factory(function ($data) {
     $array = [];
-    $table = Coretik\App::instance()->get('ux.table');
+    $table = app()->get('ux.table');
     foreach ($data['args'] as $key => $value) {
         $format = '';
 
@@ -49,7 +49,7 @@ $modalArgs = Coretik\App::modals()->factory(function ($data) {
             <b>Taxonomies</b>: 
             <?php
             foreach ($builder->taxonomies() as $taxonomy_name) {
-                printf('<a href="%s">%s</a>', '#' . $taxonomy_name, Coretik\App::schema($taxonomy_name)->args()->get('labels')['singular']);
+                printf('<a href="%s">%s</a>', '#' . $taxonomy_name, app()->schema($taxonomy_name)->args()->get('labels')['singular']);
             }
             ?>
         </li>

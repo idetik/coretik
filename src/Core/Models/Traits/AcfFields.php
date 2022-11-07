@@ -5,7 +5,6 @@ namespace Coretik\Core\Models\Traits;
 use Coretik\Core\Utils\Classes;
 use Coretik\Core\Models\Exceptions\AdapterNotFoundException;
 use Coretik\Core\Models\Interfaces\MetableAdapterInterface;
-use Coretik\App;
 use Carbon\Carbon;
 
 trait AcfFields
@@ -33,7 +32,7 @@ trait AcfFields
         return $this->asDateTime(\DateTime::createFromFormat(
             $object['return_format'],
             $object['value'],
-            App::get('settings')->timezone
+            app()->get('settings')->timezone
         ));
     }
 

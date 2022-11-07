@@ -20,10 +20,10 @@
                 <li><b>Metas</b>: 
                     <?php
                     $model = $builder->model();
-                    $table = Coretik\App::instance()->get('ux.table');
+                    $table = app()->instance()->get('ux.table');
                     $table->setColumns(['Nom', 'Clé (meta_key)', ''])->setData(array_map(function ($def) {
 
-                        $modal = Coretik\App::modals()->factory(function ($args) {
+                        $modal = app()->modals()->factory(function ($args) {
                             include 'meta-definition.php';
                         }, ['def' => $def]);
 

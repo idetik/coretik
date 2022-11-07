@@ -10,7 +10,6 @@ use Coretik\Core\Query\Clauses\MetaClause;
 use Coretik\Core\Query\Clauses\WhereClause;
 use Coretik\Core\Query\Clauses\DateClause;
 use Coretik\Core\Collection;
-use Coretik\App;
 
 abstract class Query implements QuerierInterface
 {

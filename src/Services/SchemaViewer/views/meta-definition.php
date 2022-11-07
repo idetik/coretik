@@ -1,6 +1,6 @@
 <?php
 
-$table = Coretik\App::instance()->get('ux.table');
+$table = app()->get('ux.table');
 $def = $args['def'];
 $data = [];
 $data[] = ['Clé', $def->key()];

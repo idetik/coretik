@@ -1,10 +1,4 @@
-<?php
-
-use Coretik\App;
-
-?>
-
-<div class="modal-container <?= App::modals()->hasOpen() ? 'modal--open' : '' ?>">
+<div class="modal-container <?= app()->modals()->hasOpen() ? 'modal--open' : '' ?>">
     <div class="modal-overlay"></div>
-    <?php App::modals()->render(); ?>
+    <?php app()->modals()->render(); ?>
 </div>
