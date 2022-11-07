@@ -1,3 +1,23 @@
+# [1.1.0](https://github.com/idetik/coretik/compare/v1.0.3...v1.1.0) (2022-11-07)
+
+
+### Bug Fixes
+
+* remove old gitlab ci file ([abc184d](https://github.com/idetik/coretik/commit/abc184d4f2caf1f71304eb4ff298c13a02a9c4b5))
+* service modals: clean & doc ([92eaed9](https://github.com/idetik/coretik/commit/92eaed94d20192c6219a7f42711d20b6bf740272))
+* service Notices ([4a565f3](https://github.com/idetik/coretik/commit/4a565f3b91e01b1c787f1cf3947dac7d6b6e7eb2))
+* service SchemaViewer clean ([ee43a29](https://github.com/idetik/coretik/commit/ee43a29aeec9c866f5fe576e5547732590397deb))
+
+
+### Features
+
+* add helper file and config the autoloader ([dcde3f2](https://github.com/idetik/coretik/commit/dcde3f2ecf95c2ce9d69dc34756dde8af6fc5b45))
+
+
+### Performance Improvements
+
+* clean & fix service assets ([102af77](https://github.com/idetik/coretik/commit/102af77a3ec54474bd2bb2201f033a555dd38b7e))
+
 ## [1.0.3](https://github.com/idetik/coretik/compare/v1.0.2...v1.0.3) (2022-11-07)
 
 
