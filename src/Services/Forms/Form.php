@@ -2,12 +2,18 @@
 
 namespace Coretik\Services\Forms;
 
-use Coretik\Services\Forms\Validation\Constraints\Constraint;
-use Coretik\Services\Forms\Validation\Validation;
-use Coretik\Services\Forms\Validation\Validator;
+use Coretik\Services\Forms\Core\Validation\Constraints\Constraint;
+use Coretik\Services\Forms\Core\Validation\Validation;
+use Coretik\Services\Forms\Core\Validation\Validator;
+use Coretik\Services\Forms\Core\Handlable;
+use Coretik\Services\Forms\Core\Utils;
+use Coretik\Services\Forms\Core\Exception;
+use Coretik\Services\Forms\Core\ConfigInterface;
+use Coretik\Services\Forms\Core\Container as Forms;
 
-class Form
+abstract class Form implements Handlable
 {
+    protected $initialized       = false;
     protected $id                = ''; //id (=slug) of the form
     protected $template          = ''; //template used to render the form (without .php)
     protected $fields            = []; //form fields with constraints
@@ -18,24 +24,83 @@ class Form
     protected $display_errors    = true; //Set to false to not display form errors (eg. when we just want to refresh form fields)
     protected $form_name         = null; //Override form name
     protected $metas             = [];
+    protected $persistentMetaKey = [];
+    protected static $instances = [];
+    protected $context = [];
 
+    protected $akismet_is_spam = null;
     protected $config;
 
-
-    public function __construct($id, $values = [], $template = null, $form_name = null, ConfigInterface $config = null, array $metas = [])
+    public function __construct(string $id, array $values = [], $template = null, $form_name = null, ?ConfigInterface $config = null, array $metas = [])
     {
         $this->config = $config ?? (new Config());
         $this->id = $id;
         $this->template = $template ?? $id; //Can be overridden by setTemplate() if needed
-        $this->form_name = $form_name ?? null;
+        $this->form_name = $form_name;
         $this->setMetas($metas);
         $this->loadFields();
         $this->setDefaultValues($values);
     }
 
+    abstract public function getRules(): array;
+    abstract protected function isValidContext(): bool;
+    abstract protected function run(): void;
+
     public function id()
     {
         return $this->id;
+    }
+
+    public function hasConfig(): bool
+    {
+        return !empty($this->config);
+    }
+
+    public function setConfig(ConfigInterface $config): self
+    {
+        $this->config = $config;
+        return $this;
+    }
+
+    public function setConfigIfNotDefined(ConfigInterface $config): self
+    {
+        if (!$this->hasConfig()) {
+            $this->setConfig($config);
+        }
+        return $this;
+    }
+
+    // run before view or before process
+    protected function initializeIfNot()
+    {
+        if (!$this->initialized) {
+            $this->initialize();
+            $this->initialized = true;
+        }
+    }
+
+    public function isRunnable(): bool
+    {
+        if (!$this->isValidContext()) {
+            return false;
+        }
+
+        $this->initializeIfNot();
+
+        if (!$this->isSubmitting()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function humanize(string $field): string
+    {
+        switch ($field) {
+            default:
+                $label = $this->fieldLabel($field);
+                return !empty($label) ? $label : $field;
+        }
     }
 
     /**
@@ -57,23 +122,36 @@ class Form
         $this->display_errors = $display_errors;
     }
 
-    public function setMetas(array $data)
+    // Metas for templating helpers
+    public function setMetas(array $data, $persistent = false)
     {
         foreach ($data as $key => $value) {
-            $this->addMeta($key, $value);
+            $this->addMeta($key, $value, $persistent);
         }
         return $this;
     }
 
-    public function addMeta(string $key, $value)
+    public function addMeta(string $key, $value, $persistent = false)
     {
         $this->metas[$key] = $value;
+        if ($persistent) {
+            $this->persistentMetaKey[] = $key;
+        }
         return $this;
     }
 
     public function getMeta(string $key)
     {
-        return $this->metas[$key] ?? null;
+        $this->initializeIfNot();
+
+        if (array_key_exists($key, $this->metas)) {
+            $meta = $this->metas[$key];
+            if (\is_callable($meta)) {
+                $meta = \call_user_func($meta);
+            }
+        }
+
+        return $meta ?? (\array_key_exists('persistent-data', $_REQUEST) ? \esc_attr(\wp_unslash($_REQUEST['persistent-data'][$key])) : null);
     }
 
     /**
@@ -81,15 +159,10 @@ class Form
      */
     protected function loadFields()
     {
-        $fields_file = $this->config->locator()->locateRules($this->template);
-        if (!file_exists($fields_file)) {
-            throw new \Exception('Form fields definition file [' . $this->template . '] not found.');
-            return;
-        }
         $form = $this;
-        $fields = include $fields_file;
+        $fields = $this->getRules();
         if (!is_array($fields)) {
-            throw new \Exception('Fields not found in definition file [' . $this->template . '].');
+            throw new \Exception('Fields not found in definition class [' . __CLASS__ . '].');
             return;
         }
 
@@ -100,11 +173,15 @@ class Form
                 continue;
             }
 
+            $has_email_constraint = false;
             $field = [];
             $field['name'] = $data['name'];
             $field['constraints'] = [];
             if (isset($data['constraints'])) {
                 foreach ($data['constraints'] as $key => $args) {
+                    if ('email' === $key) {
+                        $has_email_constraint = true;
+                    }
                     $constraint = Constraint::factory($key, $args, $this);
                     if (false !== $constraint) {
                         $field['constraints'][$key] = $constraint;
@@ -125,8 +202,21 @@ class Form
 
             $this->fields[$field_name] = $field;
 
-            if (isset($data['default_value'])) {
-                $this->setDefaultValues([$field_name => $data['default_value'] ]);
+            if (!empty($_GET) && array_key_exists($field_name, $_GET)) {
+                $prefilled_value = esc_attr($_GET[$field_name]);
+
+                if ($has_email_constraint) {
+                    $prefilled_value = Utils::formNormalizeSpaces($prefilled_value);
+                    $prefilled_value = str_replace(" ", "+", $prefilled_value);
+                    $prefilled_value = sanitize_email($prefilled_value);
+                } else {
+                    $prefilled_value = Utils::formSanitizeText($prefilled_value);
+                }
+
+                $this->setDefaultValue($field_name, $prefilled_value);
+
+            } elseif (isset($data['default_value'])) {
+                $this->setDefaultValue($field_name, $data['default_value']);
             }
         }
     }
@@ -142,37 +232,67 @@ class Form
         }
 
         foreach ($values as $field => $value) {
-            if (isset($this->fields[$field])) {
-                $this->default_values[$field] = $value;
-            }
+            $this->setDefaultValue($field, $value);
         }
     }
 
-    public function getDefaultValues()
+    public function setDefaultValue($field, $value)
     {
-        return $this->default_values;
+        if (isset($this->fields[$field])) {
+            $this->default_values[$field] = $value;
+        }
+        return $this;
+    }
+
+    public function hasDefaultValue($field)
+    {
+        return isset($this->default_values[$field]);
+    }
+
+    public function getDefaultValue($field)
+    {
+        return $this->default_values[$field] ?? null;
     }
 
     /**
      * Display or return the whole form's HTML.
      */
-    public function view($data = [], $return = false)
+    public function view($data = [], bool $return = false)
     {
+        $this->initializeIfNot();
         $this->view_data = $data;
-        return $this->viewPart($this->template . '/form', $data, $return);
+
+        if (!$this->isSubmitting() && !$this->isRefreshing()) {
+            \do_action('coretik/form/first-view', $this->id(), $this);
+            \do_action('coretik/form/' . $this->id() . '/first-view', $this);
+        }
+
+        return $this->includeTemplatePart(
+            $this->config->locator()->locateTemplate($this->template),
+            $data,
+            $return
+        );
     }
 
     /**
      * Display or return a form part using the given template
      */
-    public function viewPart($template, $data = [], $return = false)
+    public function viewPart($part, array $data = [], bool $return = false)
+    {
+        return $this->includeTemplatePart(
+            $this->config->locator()->locatePart($part),
+            $data,
+            $return
+        );
+    }
+
+    protected function includeTemplatePart($file, array $data = [], bool $return = false)
     {
         ob_start();
         $form = $this;
         $data['form_data'] = $this->view_data; //So that main form data can be accessed in form parts
         extract($data);
-        include $this->config->locator()->locatePart($template);
-        // include locate_template($this->config->get('templateDir') . $template . '.php');
+        include $file;
         if ($return) {
             return ob_get_clean();
         } else {
@@ -223,20 +343,13 @@ class Form
         return $this->form_name = $name;
     }
 
-    /**
-     * Open some private attributes to public access (for convenience in templates):
-     */
-    public function __get($key)
-    {
-        $value = null;
-        if (in_array($key, ['id'])) {
-            $value = $this->{$key};
-        }
-        return $value;
-    }
-
     public function setValue($field, $val)
     {
+        if ($this->isRefreshing()) {
+            $_POST[$this->getFormName()][$field] = $val;
+            return true;
+        }
+
         if (!$this->isValidating()) {
             return false;
         }
@@ -293,8 +406,8 @@ class Form
                 return is_array($data) ? $data : esc_attr($data);
             }
         } else {
-            if (isset($this->default_values[$field])) {
-                $data = $this->default_values[$field];
+            if ($this->hasDefaultValue($field)) {
+                $data = $this->getDefaultValue($field);
                 if (!empty($matches[1])) {
                     for ($i = 0; $i < count($matches); $i++) {
                         if (!isset($matches[1][$i])) {
@@ -319,12 +432,12 @@ class Form
 
     protected function getActionUrl()
     {
-        return get_permalink();
+        return \get_permalink();
     }
 
     public function nonceField()
     {
-        wp_nonce_field($this->config->getFormPrefix() . '_form_submit_' . $this->id, $this->fieldName('nonce'));
+        \wp_nonce_field($this->config->getFormPrefix() . '_form_submit_' . $this->id, $this->fieldName('nonce'));
     }
 
     public function spamField()
@@ -342,6 +455,46 @@ class Form
         if ($this->isSubmitting()) {
             $this->processPostedData();
         }
+
+        if (Utils::isActionRefresh()) {
+            return;
+        }
+
+        if ($this->submittedOk()) {
+            try {
+                $this->run();
+                $this->onSuccess();
+            } catch (Exception $e) {
+                if (!empty($e->getMessage())) {
+                    $this->view_data['errors'][] = $e->getMessage();
+                }
+                $this->onProcessingError($e);
+                $this->onError();
+            }
+        } else {
+            $this->onValidationError();
+            $this->onError();
+        }
+    }
+
+    // Trigger before form view or before form process
+    protected function initialize() {}
+
+    // Trigger on form success
+    protected function onSuccess() {}
+
+    // Error trigger when validating local rules
+    protected function onValidationError() {}
+
+    // Error trigger during form processing
+    protected function onProcessingError(Exception $e) {}
+
+    // Error trigger on any form error
+    protected function onError() {}
+
+    public function isRefreshing()
+    {
+        return Utils::isActionRefresh();
     }
 
     public function isSubmitting()
@@ -434,7 +587,7 @@ class Form
         $posted_data = $_POST[$form_name];
 
         if ($this->isSpam()) {
-            $result['error'] = 'Honeypot field was filled';
+            $result['error'] = 'Anti-robots spam validation failed';
             $this->submission_result = $result;
             sleep(10);
             $this->setDisplayErrors(false);
@@ -460,13 +613,17 @@ class Form
             return $result;
         }
 
+        if ($this->isRefreshing()) {
+            return ['ok' => true];
+        }
+
         $posted_data = $this->sanitizeForm($posted_data);
         $validation_result = $this->validate($posted_data);
 
         if ($validation_result['is_valid']) {
             $result['ok'] = true;
             $result['data'] = $validation_result['data'];
-            do_action('coretik/forms/valid_form_submitted', $form_id, $posted_data, $result['data']);
+            do_action('ifocop/forms/valid_form_submitted', $form_id, $posted_data, $result['data']);
         } else {
             $result['error'] = 'Validation failed';
             $result['validation_errors'] = $validation_result['errors'];
@@ -493,7 +650,7 @@ class Form
 
     public function validate($posted)
     {
-        $this->validation = new Validation();
+        $this->validation = new Validation($this);
 
         if (empty($posted)) {
             //If for example there are only checkboxes in fields, nothing is posted...
@@ -534,11 +691,50 @@ class Form
 
     public function isSpam()
     {
+        if($this->isRefreshing()) {
+            return false;
+        }
+
         if (is_user_logged_in()) {
             return false;
         } else {
             return isset($_POST['form_coretik_confirm']) && in_array($_POST['form_coretik_confirm'], ['on', true, 'true', 1, '1']);
         }
+
+        return $this->honeyPotChecked()
+            || $this->hasWordsInBlacklist($_POST[$this->getFormName()]);
+    }
+
+    public function honeyPotChecked()
+    {
+        return isset($_POST['form_coretik_confirm']) && in_array($_POST['form_coretik_confirm'], ['on', true, 'true', 1, '1']);
+    }
+
+    public function hasWordsInBlacklist($fields) {
+        if (!is_string($fields) && !is_array($fields)) {
+            return false;
+        }
+
+        if (is_string($fields)) {
+            $fields = [$fields];
+        }
+
+        $blacklist = $this->getWordsInBlacklist();
+
+        foreach ($fields as $string) {
+            if (is_string($string) && !empty($string)) {
+                $string = mb_strtolower($string);
+                $string = remove_accents($string);
+
+                foreach ($blacklist as $word) {
+                    if (false !== mb_strripos($string, $word)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     public function fieldExists($fieldname)
@@ -553,6 +749,25 @@ class Form
         return $this;
     }
 
+    protected function redirectTo(string $url, int $status = 302): void
+    {
+        \wp_safe_redirect($url, $status, '');
+        exit;
+    }
+
+    public function embedToUrl(string $url)
+    {
+        $trackingParameters = [];
+
+        foreach($this->getValues() as $key => $value) {
+            if(is_string($value) && mb_strlen($value) <= 100) {
+                $trackingParameters[$key] = $value;
+            }
+        }
+
+        return \add_query_arg($trackingParameters, $url);
+    }
+
     public function triggerJsEvent($event, $data = [])
     {
         $query = sprintf(
@@ -563,11 +778,171 @@ class Form
         );
 
         if (\wp_doing_ajax()) {
-            printf('<script type="text/javascript">jQuery(function($) {%s});</script>', $query);
+            printf('<script>jQuery(function($) {%s});</script>', $query);
         } else {
             \add_action('wp_footer', function () use ($query) {
-                printf('<script type="text/javascript">jQuery(function($) {%s});</script>', $query);
+                printf('<script>jQuery(function($) {%s});</script>', $query);
             }, 99);
         }
+    }
+
+     /**
+     * Open some private attributes to public access (for convenience in templates):
+     */
+    public function __get($key)
+    {
+        $value = null;
+        if (in_array($key, ['id'])) {
+            $value = $this->{$key};
+        }
+        return $value;
+    }
+
+    public function getWordsInBlacklist() {
+        return [
+            ".ru",
+            "18+",
+            "18yo",
+            "aceteminophen",
+            "adderall",
+            "adidas",
+            "adipex",
+            "advicer",
+            "baccarrat",
+            "bdsm",
+            "bitch",
+            "blackjack",
+            "bllogspot",
+            "blowjob",
+            "bondage",
+            "boobs",
+            "booker",
+            "breast",
+            "byob",
+            "canabis",
+            "carisoprodol",
+            "casino",
+            "cephalaxin",
+            "cialis",
+            "citalopram",
+            "clomid",
+            "cock",
+            "coolhu",
+            "cougar",
+            "cumshot",
+            "cyclen",
+            "cyclobenzaprine",
+            "cymbalta",
+            "dating",
+            "discount",
+            "discreetordering",
+            "doxycycline",
+            "enlarge",
+            "ephedra",
+            "erotic",
+            "famous",
+            "fetish",
+            "fioricet",
+            "fuck",
+            "gambling",
+            "gang-bang",
+            "gangbang",
+            "gloryhole",
+            "hair-loss",
+            "handjob",
+            "holdem",
+            "horny",
+            "hottest",
+            "hqtube",
+            "hydrocodone",
+            "incest",
+            "interacial",
+            "jrcreations",
+            "lacoste",
+            "ladies",
+            "ladyboy",
+            "lesbian",
+            "lesbo",
+            "levitra",
+            "lexapro",
+            "lipitor",
+            "loan",
+            "lorazepam",
+            "lottery",
+            "louboutin",
+            "lunestra",
+            "luxury",
+            "macinstruct",
+            "marijuana",
+            "massage",
+            "meridia",
+            "mortgage",
+            "mp3",
+            "mp4",
+            "naked",
+            "naughty",
+            "nike",
+            "nsfw",
+            "nude",
+            // "orgy",
+            "ottawavalleyag",
+            "ownsthis",
+            "oxycodone",
+            "oxycontin",
+            "p0rn",
+            "paxil",
+            "paypal",
+            "penis",
+            "percocet",
+            "phentermine",
+            "pictures",
+            "pills",
+            "pokemon",
+            "poker",
+            "porn",
+            "poze",
+            "propecia",
+            "proxyfree",
+            "prozac",
+            "punhisment",
+            "purchase",
+            "pussies",
+            "pussy",
+            "rebook",
+            "rental",
+            "ringtones",
+            "russian",
+            "sex",
+            "shemale",
+            "shit",
+            "slot-machine",
+            "slut",
+            "spank",
+            "submissive",
+            "teen",
+            "tits",
+            "titties",
+            "torrent",
+            "toys",
+            "tramadol",
+            "ultram",
+            "valium",
+            "valtrex",
+            "viagra",
+            "vicodin",
+            "vicoprofen",
+            "vioxx",
+            "vuitton",
+            "wuitton",
+            "xanax",
+            "xenical",
+            "young",
+            "zolus",
+            "Б",
+            "д",
+            "ж",
+            "и",
+            "Ч",
+        ];
     }
 }

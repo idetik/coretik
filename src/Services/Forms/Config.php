@@ -2,11 +2,13 @@
 
 namespace Coretik\Services\Forms;
 
+use Coretik\Services\Forms\Core\ConfigInterface;
+use Coretik\Services\Forms\Core\LocatorInterface;
+use Coretik\Services\Forms\Core\Locator;
+
 class Config implements ConfigInterface
 {
     protected $templateDir = 'templates/forms/';
-    protected $formFile = 'form.php';
-    protected $formRulesFile = 'rules.php';
     protected $formPrefix = 'coretik';
     protected $cssClassError = 'form-group-error';
     protected LocatorInterface $locator;
@@ -19,28 +21,6 @@ class Config implements ConfigInterface
     public function setTemplateDir(string $templateDir): self
     {
         $this->templateDir = $templateDir;
-        return $this;
-    }
-
-    public function getFormFile(): string
-    {
-        return $this->formFile;
-    }
-
-    public function setFormFile(string $formFile): self
-    {
-        $this->formFile = $formFile;
-        return $this;
-    }
-
-    public function getFormRulesFile(): string
-    {
-        return $this->formRulesFile;
-    }
-
-    public function setFormRulesFile(string $formRulesFile): self
-    {
-        $this->formRulesFile = $formRulesFile;
         return $this;
     }
 
