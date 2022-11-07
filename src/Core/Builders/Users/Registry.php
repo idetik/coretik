@@ -2,7 +2,6 @@
 
 namespace Coretik\Core\Builders\Users;
 
-
 class Registry extends \SplObjectStorage
 {
     const OPTION_KEY = 'app_users_registry';

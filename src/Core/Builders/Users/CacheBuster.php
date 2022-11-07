@@ -2,7 +2,6 @@
 
 namespace Coretik\Core\Builders\Users;
 
-
 class CacheBuster
 {
     const CACHE_KEY = 'app_users_cache_buster';
