@@ -16,6 +16,8 @@ use Psr\Container\ContainerExceptionInterface;
 use Pimple\Container as PimpleContainer;
 use Coretik\Services\UX\Table;
 use Coretik\Services\SchemaViewer\SchemaViewer;
+use Coretik\Services\Templating\Wrapper as TemplateWrapper;
+use Coretik\Services\Modals\Container as Modals;
 
 /**
  * Default DI container is Pimple.
@@ -38,7 +40,7 @@ class Container extends PimpleContainer implements ContainerInterface
         parent::__construct($values);
 
         $this['schema'] = function ($container) {
-            return new Schema();
+            return new TemplateWrapper();
         };
         $this['option'] = $this->factory(function ($container) {
             return new Models\Wp\Option();
@@ -49,6 +51,12 @@ class Container extends PimpleContainer implements ContainerInterface
         $this['schemaViewer'] = $this->factory(function ($container) {
             return new SchemaViewer();
         });
+        $this['templating.wrapper'] = function ($container) {
+            return new TemplateWrapper();
+        };
+        $this['modals'] = function ($container) {
+            return new Modals();
+        };
     }
 
     /**
