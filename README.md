@@ -8,7 +8,6 @@ To manage models, queries, services and more...
 
 
 ## Get started
-
 ### Dependency Injection Container
 
 Declare dependencies in your theme :
@@ -78,4 +77,79 @@ $myPostType_tax = new Taxonomy(
 app()->schema()->register($myPostType);
 app())>schema()->register($myPostType_tax);
 
+```
+
+### Querying models
+#### Simple query
+
+One way to query all wp_post filtered by default query args, and browse result models :
+
+See `src/Core/Query/Post::getQueryArgsDefault()`
+
+```
+$models = app()->schema('post')->query()->models();
+
+foreach ($models as $model) {
+    echo $model->title();
+}
+```
+#### Others query
+See `src/Core/Query/Adapters` folder. 
+
+
+### Set a custom query class for object
+#### Setup
+
+```
+use Coretik\Core\Query\Post as PostQuery;
+
+class MyPostQuery enxtends PostQuery
+{
+    public function myCustomFilter()
+    {
+        $this->where([...]);
+        return $this;
+    }
+}
+
+$postSchema = app()->schema('post');
+$postSchema->querier(fn ($builder) => new MyPostQuery($builder));
+```
+
+#### Usage
+
+```
+$models = app()->schema('post')->query()->myCustomFilter()->models();
+
+foreach ($models as $model) {
+    echo $model->title();
+}
+```
+
+### Set a custom model class for object
+#### Setup
+
+```
+use Coretik\Core\Models\Wp\PostModel;
+
+class MyPostModel enxtends PostModel
+{
+    public function foo()
+    {
+        [...]
+    }
+}
+
+$postSchema = app()->schema('post');
+$postSchema->factory(fn ($initializer) => new MyPostModel($initializer));
+```
+
+#### Usage
+
+```
+$models = app()->schema('post')->query()->myCustomFilter()->models();
+
+foreach ($models as $model) {
+    echo $model->foo();
+}
 ```
