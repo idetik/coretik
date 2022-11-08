@@ -16,6 +16,7 @@ class App
         }
 
         $this->container = $container;
+        $this->init();
     }
 
     public static function instance()
@@ -27,6 +28,39 @@ class App
     {
         if (empty(static::$instance)) {
             static::$instance = new static($containers);
+        }
+    }
+
+    protected function init()
+    {
+        if ($this->container->has('schemaViewer') && \apply_filters('coretik/app/init/schemaViewer', true)) {
+            \add_action('admin_menu', [$this->get('schemaViewer'), 'init']);
+        }
+
+        if ($this->container->has('templating.wrapper') && \apply_filters('coretik/app/init/templating.wrapper', true)) {
+            \add_filter('template_include', [$this->get('templating.wrapper'), 'wrap'], 109);
+        }
+
+        if ($this->container->has('menu') && \apply_filters('coretik/app/init/menu', true)) {
+            $this->menu();
+        }
+
+        if ($this->container->has('forms') && \apply_filters('coretik/app/init/forms', true)) {
+            \add_action('init', function () {
+                $singletons = $this->get('forms.singletons');
+                if (!empty($singletons)) {
+                    foreach ($singletons as $classname) {
+                        $this->forms()->attach(new $classname());
+                    }
+                }
+
+                $factories = $this->get('forms.factories');
+                if ($factories) {
+                    foreach ($factories as $classname) {
+                        $this->forms()->factory(new $classname());
+                    }
+                }
+            });
         }
     }
 
