@@ -45,6 +45,10 @@ class App
             $this->menu();
         }
 
+        if ($this->container->has('notices') && \apply_filters('coretik/app/init/notices', true)) {
+            app()->get('notices.container')->listen();
+        }
+
         if ($this->container->has('forms') && \apply_filters('coretik/app/init/forms', true)) {
             \add_action('init', function () {
                 $singletons = $this->get('forms.singletons');
