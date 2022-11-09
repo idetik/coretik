@@ -19,12 +19,8 @@ use Coretik\Services\Menu\Menu;
 
 $container = new Container();
 
-// Declare menu location
-$container['menu'] = function ($container) {
-    return new Menu([
-        'header' => 'Menu principal',
-        'footer' => 'Pied de page',
-    ]);
+$container['my-service'] = function ($container) {
+    return new MyService();
 };
 
 [...]
@@ -46,16 +42,12 @@ $myPostType = new PostType(
     [
         'menu_icon' => 'dashicons-food',
         'is_femininus' => false,
-        'has_archive' => true,
-        'use_archive_page' => true,
-        'admin_filters' => [
-            'type' => [
-                'taxonomy' => 'my_taxonomy'
-            ]
-        ]
+        [...]
     ],
     ['singular' => 'Title', 'plural' => 'Titles']
 );
+
+// You can add a custom model factory or use the default factory
 $myPostType->factory(function ($initializer) {
     return new PostTypeModel($initializer);
 });
@@ -147,7 +139,7 @@ $postSchema->factory(fn ($initializer) => new MyPostModel($initializer));
 #### Usage
 
 ```
-$models = app()->schema('post')->query()->myCustomFilter()->models();
+$models = app()->schema('post')->query()->models();
 
 foreach ($models as $model) {
     echo $model->foo();
