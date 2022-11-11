@@ -66,6 +66,8 @@ class App
                 }
             });
         }
+
+        \do_action('coretik/app/init', $this);
     }
 
     public static function __callStatic($method, $args)
