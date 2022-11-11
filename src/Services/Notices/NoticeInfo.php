@@ -2,7 +2,7 @@
 
 namespace Coretik\Services\Notices;
 
-class NoticeError extends Notice
+class NoticeInfo extends Notice
 {
     public function __construct(string $message)
     {
@@ -16,7 +16,7 @@ class NoticeError extends Notice
     public function render()
     {
         ?>
-        <div class="notice notice-error is-dismissible">
+        <div class="notice is-dismissible">
             <p><?= $this->message ?></p>
         </div>
         <?php
