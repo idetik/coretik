@@ -70,6 +70,8 @@ class Container extends PimpleContainer implements ContainerInterface
         $this['notices'] = function ($container) {
             return new NoticeFactory($container->get('notices.container'));
         };
+
+        \do_action('coretik/container/construct', $this);
     }
 
     /**
