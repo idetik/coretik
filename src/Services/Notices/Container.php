@@ -19,7 +19,7 @@ class Container implements SplSubject, ArrayAccess, IteratorAggregate
     {
         $this->observers = new \SplObjectStorage();
 
-        if (empty($storage)) {
+        if (empty($storage) && (!defined('WP_CLI') || !WP_CLI)) {
             if (\is_user_logged_in()) {
                 $this->setStorage(new UserConnection((int) \get_current_user_id()));
             } elseif (app()->has('session')) {

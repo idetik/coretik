@@ -21,7 +21,7 @@ class Factory
         $this->container[] = new NoticeError($message);
     }
 
-    public function notice(string $message, callable $displayer)
+    public function notice(string $message, ?callable $displayer = null)
     {
         $this->container[] = new Notice($message, $displayer);
     }

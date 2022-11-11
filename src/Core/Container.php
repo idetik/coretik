@@ -20,6 +20,7 @@ use Coretik\Services\Templating\Wrapper as TemplateWrapper;
 use Coretik\Services\Modals\Container as Modals;
 use Coretik\Services\Notices\Container as Notices;
 use Coretik\Services\Notices\Observers\Admin as NoticesAdminObserver;
+use Coretik\Services\Notices\Observers\WPCli as NoticesWPCliObserver;
 use Coretik\Services\Notices\Factory as NoticeFactory;
 
 /**
@@ -63,6 +64,7 @@ class Container extends PimpleContainer implements ContainerInterface
         $this['notices.container'] = function ($container) {
             $notice_container = new Notices();
             $notice_container->attach(new NoticesAdminObserver());
+            $notice_container->attach(new NoticesWPCliObserver());
             return $notice_container;
         };
         $this['notices'] = function ($container) {

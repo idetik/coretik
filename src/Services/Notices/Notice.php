@@ -8,10 +8,10 @@ class Notice
     protected $displayer;
     protected $completed;
 
-    public function __construct(string $message, callable $displayer)
+    public function __construct(string $message, ?callable $displayer = null)
     {
         $this->message = $message;
-        $this->displayer = $displayer;
+        $this->displayer = $displayer ?? 'print';
         $this->completed = false;
     }
 
@@ -24,6 +24,12 @@ class Notice
     {
         \call_user_func($this->displayer, $this);
         $this->completed = true;
+    }
+
+    public function setCompleted()
+    {
+        $this->completed = true;
+        return $this;
     }
 
     public function __toString()
