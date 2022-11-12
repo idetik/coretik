@@ -1,7 +1,6 @@
 <?php
 
 use Coretik\App;
-use Coretik\Core\Collection;
 
 if (! function_exists('app')) {
     /**
@@ -12,17 +11,5 @@ if (! function_exists('app')) {
     function app()
     {
         return App::instance();
-    }
-}
-
-if (! function_exists('collect')) {
-    /**
-     * Array to collection
-     *
-     * @return \Coretik\App
-     */
-    function collect(array $array): Collection
-    {
-        return new Collection($array);
     }
 }

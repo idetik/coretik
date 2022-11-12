@@ -41,6 +41,8 @@ class Container extends PimpleContainer implements ContainerInterface
      */
     public function __construct(array $values = [])
     {
+        parent::__construct($values);
+
         $this['schema'] = function ($container) {
             return new Schema();
         };
@@ -69,9 +71,9 @@ class Container extends PimpleContainer implements ContainerInterface
             return new NoticeFactory($container->get('notices.container'));
         };
 
-        $this['settings']['text-domain'] = 'coretik';
-
-        parent::__construct($values);
+        $this['settings'] = [
+            'text-domain' => 'coretik',
+        ];
 
         \do_action('coretik/container/construct', $this);
     }

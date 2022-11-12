@@ -11,7 +11,6 @@ namespace Coretik\Core\Builders;
 
 use Coretik\Core\Builders\Interfaces\RegistrableInterface;
 use Coretik\Core\Builders\Interfaces\HandlerInterface;
-use Coretik\Core\Collection;
 use Coretik\Core\Builders\Users\Registry;
 use Coretik\Core\Query\User as Query;
 

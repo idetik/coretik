@@ -63,7 +63,7 @@ class Args extends Collection
 
     public function __construct(array $items = [])
     {
-        $this->replace($this->default);
+        $items = \array_merge($this->default, $items);
         parent::__construct($items);
     }
 }
