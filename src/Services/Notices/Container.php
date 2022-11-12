@@ -14,26 +14,35 @@ class Container implements SplSubject, ArrayAccess, IteratorAggregate
     protected $notices;
     protected $observers;
     protected $storage;
+    protected $initialized = false;
 
     public function __construct(?StorageInterface $storage = null)
     {
         $this->observers = new \SplObjectStorage();
 
         if (empty($storage) && (!defined('WP_CLI') || !WP_CLI)) {
-            if (\is_user_logged_in()) {
-                $this->setStorage(new UserConnection((int) \get_current_user_id()));
-            } elseif (app()->has('session')) {
-                $this->setStorage(new SessionConnection(app()->get('session')));
+            if (\did_action('coretik/app/launched')) {
+                $this->initialize();
             }
         } else {
             $this->setStorage($storage);
+            $this->initialized = true;
         }
 
         if (empty($this->storage)) {
             $this->setStorage(new NoConnection());
         }
+    }
 
+    protected function initialize()
+    {
+        if (\is_user_logged_in()) {
+            $this->setStorage(new UserConnection((int) \get_current_user_id()));
+        } elseif (app()->has('session')) {
+            $this->setStorage(new SessionConnection($this->app->get('session')));
+        }
         $this->notices = $this->storage->get()->getArrayCopy();
+        $this->initialized = true;
     }
 
     public function storage(): StorageInterface
@@ -49,6 +58,9 @@ class Container implements SplSubject, ArrayAccess, IteratorAggregate
 
     public function listen(): void
     {
+        if (!$this->initialized) {
+            $this->initialize();
+        }
         $this->notify();
     }
 

@@ -28,6 +28,7 @@ class App
     {
         if (empty(static::$instance)) {
             static::$instance = new static($containers);
+            \do_action('coretik/app/launched');
         }
     }
 
@@ -46,7 +47,7 @@ class App
         }
 
         if ($this->container->has('notices') && \apply_filters('coretik/app/init/notices', true)) {
-            app()->get('notices.container')->listen();
+            \add_action('coretik/app/launched', [$this->get('notices.container'), 'listen']);
         }
 
         if ($this->container->has('forms') && \apply_filters('coretik/app/init/forms', true)) {
