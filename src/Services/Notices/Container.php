@@ -20,8 +20,8 @@ class Container implements SplSubject, ArrayAccess, IteratorAggregate
     {
         $this->observers = new \SplObjectStorage();
 
-        if (empty($storage) && (!defined('WP_CLI') || !WP_CLI)) {
-            if (\did_action('coretik/app/launched')) {
+        if (empty($storage)) {
+            if ((!defined('WP_CLI') || !WP_CLI) && \did_action('coretik/app/launched')) {
                 $this->initialize();
             }
         } else {
