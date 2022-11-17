@@ -18,6 +18,10 @@ use Coretik\Services\UX\Table;
 use Coretik\Services\SchemaViewer\SchemaViewer;
 use Coretik\Services\Templating\Wrapper as TemplateWrapper;
 use Coretik\Services\Modals\Container as Modals;
+use Coretik\Services\Notices\Container as Notices;
+use Coretik\Services\Notices\Observers\Admin as NoticesAdminObserver;
+use Coretik\Services\Notices\Observers\WPCli as NoticesWPCliObserver;
+use Coretik\Services\Notices\Factory as NoticeFactory;
 
 /**
  * Default DI container is Pimple.
@@ -57,6 +61,21 @@ class Container extends PimpleContainer implements ContainerInterface
         $this['modals'] = function ($container) {
             return new Modals();
         };
+        $this['notices.container'] = function ($container) {
+            $notice_container = new Notices();
+            $notice_container->attach(new NoticesAdminObserver());
+            $notice_container->attach(new NoticesWPCliObserver());
+            return $notice_container;
+        };
+        $this['notices'] = function ($container) {
+            return new NoticeFactory($container->get('notices.container'));
+        };
+
+        $this['settings'] = [
+            'text-domain' => 'coretik',
+        ];
+
+        \do_action('coretik/container/construct', $this);
     }
 
     /**

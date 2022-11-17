@@ -34,7 +34,7 @@ class DefaultMetaDataHandler implements HandlerInterface
 
         $model = $this->builder->model((int)$object_id);
 
-        if ($model->hasMeta($meta_key) && !empty($model->metaDefinition($meta_key)->defaultValue())) {
+        if ($model->hasMeta($meta_key) && !empty($model->metaDefinition($meta_key)?->defaultValue())) {
             $value = $model->metaDefinition($meta_key)->defaultValue();
         }
         return $value;

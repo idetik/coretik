@@ -9,7 +9,8 @@
         "nesbot/carbon": "^2.62",
         "pelago/emogrifier": "^6.0",
         "wesbos/burner-email-providers": "dev-master",
-        "globalis/wp-cubi-helpers": "^1.0"
+        "globalis/wp-cubi-helpers": "^1.0",
+        "illuminate/collections": "^9.39"
     },
     "authors": [
         {

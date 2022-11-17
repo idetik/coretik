@@ -5,7 +5,6 @@ namespace Coretik\Core\Models;
 use Coretik\Core\Models\Interfaces\AdapterInterface as Adapter;
 use Coretik\Core\Models\Interfaces\ModelInterface;
 use Coretik\Core\Models\Interfaces\DictionnaryInterface as Dictionnary;
-use Coretik\Core\Collection;
 
 abstract class Model implements ModelInterface
 {

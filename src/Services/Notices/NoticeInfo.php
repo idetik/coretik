@@ -2,9 +2,9 @@
 
 namespace Coretik\Services\Notices;
 
-class NoticeSuccess extends Notice
+class NoticeInfo extends Notice
 {
-    const TYPE = 'success';
+    const TYPE = 'info';
 
     public function __construct(string $message)
     {
@@ -18,7 +18,7 @@ class NoticeSuccess extends Notice
     public function render()
     {
         ?>
-        <div class="notice notice-success is-dismissible">
+        <div class="notice notice-info is-dismissible">
             <p><?= $this->message ?></p>
         </div>
         <?php

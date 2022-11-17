@@ -4,7 +4,6 @@ namespace Coretik\Core\Builders;
 
 use Coretik\Core\Builders\Interfaces\RegistrableInterface;
 use Coretik\Core\Builders\Interfaces\HandlerInterface;
-use Coretik\Core\Collection;
 use Coretik\Core\Query\Comment as Query;
 
 final class Comment extends BuilderModelable

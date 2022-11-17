@@ -22,9 +22,9 @@ class Labels extends Collection
         array $labels = []
     ) {
         $this->new = $new;
+        parent::__construct($labels);
         $this->set('singular', $singular);
         $this->set('plural', $plural);
-        parent::__construct($labels);
     }
 
     public function isFemininus()

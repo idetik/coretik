@@ -9,6 +9,10 @@ class NoticeError extends Notice
         parent::__construct($message, [$this, 'render']);
     }
 
+    /**
+     * Common wp-admin render.
+     * Up to you to create your own rendering method in a custom Observer.
+     */
     public function render()
     {
         ?>

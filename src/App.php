@@ -28,6 +28,7 @@ class App
     {
         if (empty(static::$instance)) {
             static::$instance = new static($containers);
+            \do_action('coretik/app/launched');
         }
     }
 
@@ -43,6 +44,10 @@ class App
 
         if ($this->container->has('menu') && \apply_filters('coretik/app/init/menu', true)) {
             $this->menu();
+        }
+
+        if ($this->container->has('notices') && \apply_filters('coretik/app/init/notices', true)) {
+            \add_action('coretik/app/launched', [$this->get('notices.container'), 'listen']);
         }
 
         if ($this->container->has('forms') && \apply_filters('coretik/app/init/forms', true)) {
@@ -62,6 +67,8 @@ class App
                 }
             });
         }
+
+        \do_action('coretik/app/init', $this);
     }
 
     public static function __callStatic($method, $args)
