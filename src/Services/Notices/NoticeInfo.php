@@ -4,6 +4,8 @@ namespace Coretik\Services\Notices;
 
 class NoticeInfo extends Notice
 {
+    const TYPE = 'info';
+
     public function __construct(string $message)
     {
         parent::__construct($message, [$this, 'render']);
@@ -16,7 +18,7 @@ class NoticeInfo extends Notice
     public function render()
     {
         ?>
-        <div class="notice is-dismissible">
+        <div class="notice notice-info is-dismissible">
             <p><?= $this->message ?></p>
         </div>
         <?php

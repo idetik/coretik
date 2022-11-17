@@ -27,12 +27,20 @@ class WPCli implements \SplObserver
         }
 
         foreach ($alive_notices as $notice) {
-            if ($notice instanceof NoticeSuccess) {
-                \WP_CLI::success((string) $notice);
-            } elseif ($notice instanceof NoticeError) {
-                \WP_CLI::error((string) $notice);
-            } else {
-                \WP_CLI::line((string) $notice);
+            switch ($notice::TYPE ?? '') {
+                case 'success':
+                    \WP_CLI::success((string) $notice);
+                    break;
+                case 'error':
+                    \WP_CLI::error((string) $notice);
+                    break;
+                case 'warning':
+                    \WP_CLI::warning((string) $notice);
+                    break;
+                case 'info':
+                default:
+                    \WP_CLI::line((string) $notice);
+                    break;
             }
             $notice->setCompleted();
         }
