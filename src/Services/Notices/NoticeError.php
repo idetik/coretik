@@ -4,6 +4,8 @@ namespace Coretik\Services\Notices;
 
 class NoticeError extends Notice
 {
+    const TYPE = 'error';
+
     public function __construct(string $message)
     {
         parent::__construct($message, [$this, 'render']);
