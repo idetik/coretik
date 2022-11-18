@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/idetik/coretik/compare/v1.1.0...v1.1.1) (2022-11-18)
+
+
+### Bug Fixes
+
+* Notice error add constant TYPE ([c021eca](https://github.com/idetik/coretik/commit/c021eca61df8d756a5d1436e3582aa3cae21bf7f))
+
 # [1.1.0](https://github.com/idetik/coretik/compare/v1.0.1...v1.1.0) (2022-11-17)
 
 
