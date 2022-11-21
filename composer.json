@@ -28,6 +28,7 @@
         "squizlabs/php_codesniffer": "^3.6"
     },
     "suggest": {
-        "idetik/coretik-navigation": "Navigation service, resolve breadcrumb and page title"
+        "idetik/coretik-navigation": "Navigation service, resolve breadcrumb and page title",
+        "idetik/coretik-page-builder": "Page builder service"
     }
 }
