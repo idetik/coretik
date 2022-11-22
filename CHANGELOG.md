@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/idetik/coretik/compare/v1.1.1...v1.1.2) (2022-11-22)
+
+
+### Bug Fixes
+
+* Collection errors ([9646cd6](https://github.com/idetik/coretik/commit/9646cd66d2842045de9f269e5544116344156761))
+
 ## [1.1.1](https://github.com/idetik/coretik/compare/v1.1.0...v1.1.1) (2022-11-18)
 
 
