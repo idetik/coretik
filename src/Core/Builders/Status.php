@@ -53,7 +53,7 @@ final class Status implements Interfaces\BuilderInterface, Interfaces\Registrabl
 
     public function registerAction(): void
     {
-        \register_post_status($this->status, $this->args);
+        \register_post_status($this->status, $this->args->all());
     }
 
     public function handler(callable $handler): void

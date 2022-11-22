@@ -201,9 +201,7 @@ trait Metable
 
     public function getLocalKeyFromMetaKey(string $meta_key): string
     {
-        return $this->metas->keyOf(function ($meta) use ($meta_key) {
-            return $meta->key() === $meta_key;
-        });
+        return $this->metas->search(fn ($meta) => $meta->key() === $meta_key);
     }
 
     protected function resolveLocalKey(string $key)

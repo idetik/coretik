@@ -25,24 +25,6 @@ class Collection extends IlluminateCollection implements CollectionInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function keyOf($value, $strict = false)
-    {
-        if (!\is_callable($value)) {
-            return \array_search($value, $this->data, $strict);
-        }
-
-        foreach ($this->data as $key => $item) {
-            if (\call_user_func($value, $item, $key)) {
-                return $key;
-            }
-        }
-
-        return false;
-    }
-
     // /**
     //  * {@inheritdoc}
     //  */
