@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/idetik/coretik/compare/v1.1.2...v1.1.3) (2022-11-24)
+
+
+### Bug Fixes
+
+* Metable trait, fix return type (collection to array) ([861fc63](https://github.com/idetik/coretik/commit/861fc63cd2119441c20f6f467262f0caf2a5b84e))
+
 ## [1.1.2](https://github.com/idetik/coretik/compare/v1.1.1...v1.1.2) (2022-11-22)
 
 
