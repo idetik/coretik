@@ -101,7 +101,7 @@ trait Metable
     public function metaKeys(bool $local = true): array
     {
         return $local
-                ? $this->metas->keys()
+                ? $this->metas->keys()->all()
                 : $this->metas->map(function ($item) {
                     return $item->key();
                 })->all();
@@ -113,7 +113,7 @@ trait Metable
             return $item->protected();
         });
         return $local
-                ? $protected->keys()
+                ? $protected->keys()->all()
                 : $protected->map(function ($item) {
                     return $item->key();
                 })->all();
