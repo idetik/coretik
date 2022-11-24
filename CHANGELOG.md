@@ -1,3 +1,10 @@
+## [1.1.4](https://github.com/idetik/coretik/compare/v1.1.3...v1.1.4) (2022-11-24)
+
+
+### Bug Fixes
+
+* Dump closure utils fixes ([ff26fb1](https://github.com/idetik/coretik/commit/ff26fb15a8647207e0b66dfa3c2091c8b3fedb52))
+
 ## [1.1.3](https://github.com/idetik/coretik/compare/v1.1.2...v1.1.3) (2022-11-24)
 
 
