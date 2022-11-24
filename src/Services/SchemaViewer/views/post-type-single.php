@@ -16,7 +16,7 @@ $modalArgs = app()->modals()->factory(function ($data) {
                 if (is_int($subkey)) {
                     $format .= sprintf('<li>%s</li>', $subval);
                 } else {
-                    $format .= sprintf('<li><b>%s</b>: %s</li>', $subkey, $subval);
+                    $format .= sprintf('<li><b>%s</b>: %s</li>', $subkey, is_array($subval) ? implode(', ', $subval) : $subval);
                 }
             }
         } else {
