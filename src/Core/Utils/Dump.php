@@ -16,12 +16,12 @@ class Dump
             ? $reflectionType->getTypes()
             : [$reflectionType];
 
-       return \in_array('array', \array_map(fn(\ReflectionNamedType $t) => $t->getName(), $types));
+        return \in_array('array', \array_map(fn(\ReflectionNamedType $t) => $t->getName(), $types));
     }
 
     protected static function getClass(\ReflectionParameter $reflectionParameter)
     {
-       return  $reflectionParameter->getType() && !$reflectionParameter->getType()->isBuiltin() 
+        return  $reflectionParameter->getType() && !$reflectionParameter->getType()->isBuiltin()
             ? new ReflectionClass($reflectionParameter->getType()->getName())
             : null;
     }
