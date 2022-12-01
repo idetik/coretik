@@ -24,16 +24,19 @@ class Factory
 
     public function create()
     {
-        return \call_user_func($this->model, null, $this->mediator);
+        return \call_user_func($this->model, null, $this->mediator, ['id' => null, 'initializer' => null]);
     }
 
-    public function get(int $id, $initializer = null)
+    public function get(int $id, $initializer = null, $refresh = false)
     {
         try {
+            if ($refresh && $this->models->offsetExists($id)) {
+                $this->models->offsetUnset($id);
+            }
             return $this->models->get($id);
         } catch (Exceptions\InstanceNotExistsException $e) {
             try {
-                $model = \call_user_func($this->model, $initializer ?? $id, $this->mediator);
+                $model = \call_user_func($this->model, $initializer ?? $id, $this->mediator, ['id' => $id, 'initializer' => $initializer]);
                 $this->models[$id] = $model;
                 return $model;
             } catch (Exceptions\CannotResolveException $e) {

@@ -43,12 +43,12 @@ abstract class BuilderModelable extends Builder implements ModelableInterface
         return $this;
     }
 
-    public function model($id = null, $initializer = null): Model
+    public function model($id = null, $initializer = null, bool $refresh = false): Model
     {
         if (\is_null($id)) {
             return $this->factory->create();
         }
-        return $this->factory->get($id, $initializer);
+        return $this->factory->get($id, $initializer, $refresh);
     }
 
     public function query(): QuerierInterface
