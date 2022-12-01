@@ -5,6 +5,7 @@ namespace Coretik\Core\Builders;
 use Coretik\Core\Builders\Interfaces\BuilderInterface;
 use Coretik\Core\Builders\Interfaces\HandlerInterface;
 use Coretik\Core\Collection;
+use Exception;
 
 abstract class Builder implements BuilderInterface
 {
@@ -32,8 +33,14 @@ abstract class Builder implements BuilderInterface
         return $this;
     }
 
-    public function handler(HandlerInterface $handler): self
+    public function handler(string|HandlerInterface $handler): self
     {
+        if (\is_string($handler)) {
+            if (!\class_exists($handler) || !in_array(HandlerInterface::class, \class_implements($handler))) {
+                throw new Exception('Undefined Handler : ' . $handler);
+            }
+            $handler = new $handler;
+        }
         $this->handlers->attach($handler);
         return $this;
     }
