@@ -49,7 +49,7 @@ $modalArgs = app()->modals()->factory(function ($data) {
             <b>Taxonomies</b>: 
             <?php
             foreach ($builder->taxonomies() as $taxonomy_name) {
-                printf('<a href="%s">%s</a>', '#' . $taxonomy_name, app()->schema($taxonomy_name)->args()->get('labels')['singular']);
+                printf('<a href="%s">%s</a>&nbsp;', '#' . $taxonomy_name, app()->schema($taxonomy_name)->args()->get('labels')['singular']);
             }
             ?>
         </li>
