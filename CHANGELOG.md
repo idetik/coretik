@@ -1,3 +1,17 @@
+# [1.2.0](https://github.com/idetik/coretik/compare/v1.1.4...v1.2.0) (2022-12-01)
+
+
+### Bug Fixes
+
+* Add refresh option on model factory ([bccd127](https://github.com/idetik/coretik/commit/bccd1273e6d1184862e1f2ae27c0570bc25127bc))
+* Allow to give classname to builder handlers ([3c3a6a0](https://github.com/idetik/coretik/commit/3c3a6a0e7245562ba461f9bff9e3a4e956b99953))
+* Schema viewer post-type-single, taxonomy display list ([ed23f7d](https://github.com/idetik/coretik/commit/ed23f7d639486b0fb135dfedfc7220cb19cb2336))
+
+
+### Features
+
+* Add Relationships feature ([2617fd3](https://github.com/idetik/coretik/commit/2617fd36445e522ca9b0d2f1daa1efb175f7ce19))
+
 ## [1.1.4](https://github.com/idetik/coretik/compare/v1.1.3...v1.1.4) (2022-11-24)
 
 
