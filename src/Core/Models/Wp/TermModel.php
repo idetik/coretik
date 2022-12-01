@@ -4,9 +4,11 @@ namespace Coretik\Core\Models\Wp;
 
 use Coretik\Core\Models\Traits\AcfFields;
 use Coretik\Core\Models\Adapters\WPTermAdapter;
+use Coretik\Core\Models\Traits\Relationships;
 
 class TermModel extends WPModel
 {
+    use Relationships;
     use AcfFields;
 
     public function __construct($initializer = null)
@@ -53,6 +55,11 @@ class TermModel extends WPModel
     public function permalink(): string
     {
         return \get_term_link($this->wp_object);
+    }
+
+    public function parentId(): int
+    {
+        return $this->get('parent');
     }
 
     public function get(string $prop)

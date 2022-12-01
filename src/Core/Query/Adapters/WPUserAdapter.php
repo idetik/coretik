@@ -60,6 +60,11 @@ class WPUserAdapter extends WPAdapter
         return $this;
     }
 
+    public function childOf(int|array $values): self
+    {
+        return $this;
+    }
+
     public function addContext(array $values, string $opt = 'in', string $context = '')
     {
         if (!empty($context) && !\in_array($context . '__' . $opt, static::PARAMETERS)) {

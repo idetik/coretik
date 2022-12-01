@@ -3,11 +3,13 @@
 namespace Coretik\Core\Models\Wp;
 
 use Coretik\Core\Models\Traits\AcfFields;
+use Coretik\Core\Models\Traits\Relationships;
 use Coretik\Core\Models\Adapters\WPCommentAdapter;
 
 class CommentModel extends WPModel
 {
     use AcfFields;
+    use Relationships;
 
     public function __construct($initializer = null)
     {
@@ -69,6 +71,16 @@ class CommentModel extends WPModel
     public function content(): string
     {
         return \get_comment_text($this->id());
+    }
+
+    public function parentId(): int
+    {
+        return $this->get('post_parent');
+    }
+
+    public function commentParentId(): int
+    {
+        return $this->get('comment_parent');
     }
 
     public function children()

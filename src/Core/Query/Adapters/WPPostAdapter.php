@@ -107,6 +107,16 @@ class WPPostAdapter extends WPAdapter
         return $this;
     }
 
+    public function childOf(int|array $values): self
+    {
+        if (is_array($values)) {
+            $this->set('post_parent__in', $values);
+        } else {
+            $this->set('post_parent', $values);
+        }
+        return $this;
+    }
+
     public function addTaxQuery(array $tax_query, $relation = 'AND')
     {
         if (empty($this->tax_query)) {

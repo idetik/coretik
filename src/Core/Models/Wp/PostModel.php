@@ -3,6 +3,7 @@
 namespace Coretik\Core\Models\Wp;
 
 use Coretik\Core\Models\Traits\AcfFields;
+use Coretik\Core\Models\Traits\Relationships;
 use Coretik\Core\Models\Adapters\WPPostAdapter;
 use Coretik\Core\Query\Post as Query;
 use Coretik\Core\Models\Exceptions\UndefinedMetaKeyException;
@@ -10,6 +11,7 @@ use Coretik\Core\Models\Exceptions\UndefinedMetaKeyException;
 class PostModel extends WPModel
 {
     use AcfFields;
+    use Relationships;
 
     public function __construct($initializer = null)
     {
@@ -87,6 +89,11 @@ class PostModel extends WPModel
         }
 
         return $url;
+    }
+
+    public function parentId(): int
+    {
+        return $this->get('post_parent');
     }
 
     public function thumbnailFallbackId()

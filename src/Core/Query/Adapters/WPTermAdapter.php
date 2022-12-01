@@ -62,6 +62,15 @@ class WPTermAdapter extends WPAdapter
         return $this;
     }
 
+    public function childOf(int|array $values): self
+    {
+        if (is_array($values)) {
+            $values = current($values);
+        }
+        $this->set('parent', $values);
+        return $this;
+    }
+
     public function addContext(array $values, string $opt = 'in', string $context = '')
     {
         $values = $values ?: [0];

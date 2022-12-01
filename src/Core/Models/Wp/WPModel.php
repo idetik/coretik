@@ -16,6 +16,9 @@ class WPModel extends Model
             }
         }
         parent::__construct($initializer);
+        $this->on('saved', function ($savedModel) {
+            $this->wp_object = $this->adapter->get($savedModel->id());
+        });
     }
 
     public function get(string $prop)
