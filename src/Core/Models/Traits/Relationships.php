@@ -24,7 +24,7 @@ trait Relationships
     protected function hasMany(string|BuilderInterface $builder): Collection
     {
         $builder = $this->resolveBuilder($builder);
-        return $builder->query()->childOf($this->id())->collection();
+        return $builder->query()->childOf($this->id())->all()->collection();
     }
 
     protected function hasOne(string|BuilderInterface $builder): Collection
