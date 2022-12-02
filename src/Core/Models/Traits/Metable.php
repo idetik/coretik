@@ -132,7 +132,7 @@ trait Metable
     /**
      * Get meta value from BDD
      */
-    public function meta(string $key, $default = null)
+    public function meta(string $key, $default = null, $raw = false)
     {
         if (empty($this->id)) {
             return $this->metaDefaultValue($key, $default);
@@ -140,7 +140,7 @@ trait Metable
 
         try {
             $value = $this->adapter->meta($this->resolveMetaKey($key), $this->metaDefaultValue($key, $default));
-            return $this->castMeta($key, $value);
+            return $raw ? $value : $this->castMeta($key, $value);
         } catch (UndefinedMetaKeyException $e) {
             return $this->metaDefaultValue($key, $default);
         }
