@@ -1,3 +1,11 @@
+## [1.2.1](https://github.com/idetik/coretik/compare/v1.2.0...v1.2.1) (2022-12-02)
+
+
+### Bug Fixes
+
+* Metable trait rstur meta raw format ([5652a16](https://github.com/idetik/coretik/commit/5652a16b04bcba9c12c0b32ddc48454c5a47f5b0))
+* Relationship set query to return all results ([f614197](https://github.com/idetik/coretik/commit/f614197f3418d6cfbe5578c68f05cbad5c9ca19c))
+
 # [1.2.0](https://github.com/idetik/coretik/compare/v1.1.4...v1.2.0) (2022-12-01)
 
 
