@@ -9,7 +9,17 @@ class WPPostAdapter extends WPAdapter implements MetableAdapterInterface, CRUDIn
 {
     public function meta(string $key, $default = false, bool $single = true)
     {
-        return \get_post_meta($this->model->id(), $key, $single) ?: $default;
+        $meta = \get_post_meta($this->model->id(), $key, $single);
+
+        if ($single && '' === $meta) {
+            return $default;
+        }
+
+        if (!$single && [] === $meta) {
+            return $default;
+        }
+
+        return $meta;
     }
 
     public function updateMeta(string $key, $value, bool $unique = false)
