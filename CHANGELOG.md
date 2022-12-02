@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/idetik/coretik/compare/v1.2.1...v1.2.2) (2022-12-02)
+
+
+### Bug Fixes
+
+* Fix post model adpater : get post meta ([08ef5cd](https://github.com/idetik/coretik/commit/08ef5cdb96f0c8a5ba944baeab5dc6766e1710c4))
+
 ## [1.2.1](https://github.com/idetik/coretik/compare/v1.2.0...v1.2.1) (2022-12-02)
 
 
