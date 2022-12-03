@@ -1,3 +1,10 @@
+## [1.2.3](https://github.com/idetik/coretik/compare/v1.2.2...v1.2.3) (2022-12-03)
+
+
+### Bug Fixes
+
+* Register taxonomy action : add is_femininus option ([514a41f](https://github.com/idetik/coretik/commit/514a41f65884302f64ec791d5131362ed91c0e1b))
+
 ## [1.2.2](https://github.com/idetik/coretik/compare/v1.2.1...v1.2.2) (2022-12-02)
 
 
