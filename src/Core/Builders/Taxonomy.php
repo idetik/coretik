@@ -79,6 +79,9 @@ final class Taxonomy extends BuilderModelable implements RegistrableInterface
         }
 
         if ($this->args->get('labels') instanceof Labels) {
+            if ($this->args->has('is_femininus') && $this->args->get('is_femininus')) {
+                $this->args->get('labels')->isFemininus();
+            }
             $this->args->set('labels', $this->args->get('labels')->all());
         }
 
