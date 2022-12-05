@@ -16,7 +16,25 @@ $modalArgs = app()->modals()->factory(function ($data) {
                 if (is_int($subkey)) {
                     $format .= sprintf('<li>%s</li>', $subval);
                 } else {
-                    $format .= sprintf('<li><b>%s</b>: %s</li>', $subkey, is_array($subval) ? implode(', ', $subval) : $subval);
+                    if (is_array($subval)) {
+                        $format .= sprintf('<li><b>%s</b>: ', $subkey);
+                        foreach ($subval as $finalval) {
+                            switch (true) {
+                                case is_array($finalval) :
+                                    $format .= implode(', ', $finalval);
+                                    break;
+                                case $finalval instanceof \Closure:
+                                    $format .= ' ' . \Coretik\Core\Utils\Dump::closure($finalval);
+                                    break;
+                                default:
+                                    $format .= ' ' . $finalval;
+                                    break;
+                            }
+                        }
+                        $format .= '</li>';
+                    } else {
+                        $format .= sprintf('<li><b>%s</b>: %s</li>', $subkey, $subval);
+                    }
                 }
             }
         } else {
