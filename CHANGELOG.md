@@ -1,3 +1,10 @@
+## [1.2.4](https://github.com/idetik/coretik/compare/v1.2.3...v1.2.4) (2022-12-05)
+
+
+### Bug Fixes
+
+* Schema viwer post type view ([740851a](https://github.com/idetik/coretik/commit/740851a3cc12bf56211bdde67eb99631cb833678))
+
 ## [1.2.3](https://github.com/idetik/coretik/compare/v1.2.2...v1.2.3) (2022-12-03)
 
 
