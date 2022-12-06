@@ -8,6 +8,7 @@ use Coretik\Core\Builders\Interfaces\HandlerInterface;
 class AcfProtectFieldsHandler implements HandlerInterface
 {
     private $builder;
+    private static $stylesLoaded = false;
 
     public function handle(BuilderInterface $builder): void
     {
@@ -75,6 +76,7 @@ class AcfProtectFieldsHandler implements HandlerInterface
             case 'true_false':
             case 'time_picker':
             case 'button_group':
+            case 'taxonomy':
                 $field['disabled'] = 1;
                 // Warning : True / false acf field don't support attr "disabled"
                 \add_action('admin_footer', function () use ($field) {
@@ -87,11 +89,57 @@ class AcfProtectFieldsHandler implements HandlerInterface
                     <?php
                 });
                 break;
+            case 'image':
+                $field['disabled'] = 1;
+                $field['readonly'] = 1;
+                $field['wrapper']['class'] .= ' acf-field-image-readonly';
+                static::addStyles();
+                break;
+            case 'gallery':
+                $field['disabled'] = 1;
+                $field['readonly'] = 1;
+                $field['wrapper']['class'] .= ' acf-field-gallery-readonly';
+                static::addStyles();
+                break;
             default:
                 $field['disabled'] = 1;
                 break;
         }
 
         return $field;
+    }
+
+    protected static function addStyles()
+    {
+        if (static::$stylesLoaded) {
+            return;
+        }
+
+        static::$stylesLoaded = true;
+
+        add_action('admin_footer', function () {
+            ?>
+            <style>
+                /* Gallery */
+                .acf-field-gallery-readonly .actions {
+                    display: none !important;
+                }
+                .acf-field-gallery-readonly .acf-gallery-main .acf-gallery-toolbar {
+                    display: none !important;
+                }
+
+                /* Image */
+                .acf-field-image-readonly {
+                    cursor: not-allowed;
+                }
+                .acf-field-image-readonly .acf-actions {
+                    display: none !important;
+                }
+                .acf-field-image-readonly .hide-if-value {
+                    display: none !important;
+                }
+            </style>
+            <?php
+        });
     }
 }
