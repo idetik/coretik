@@ -1,3 +1,10 @@
+## [1.2.5](https://github.com/idetik/coretik/compare/v1.2.4...v1.2.5) (2022-12-06)
+
+
+### Bug Fixes
+
+* AcfProtectFieldsHandler add types support ([cc119fa](https://github.com/idetik/coretik/commit/cc119fa72d5e6819b4907d144b4a9c65d0cd6424))
+
 ## [1.2.4](https://github.com/idetik/coretik/compare/v1.2.3...v1.2.4) (2022-12-05)
 
 
