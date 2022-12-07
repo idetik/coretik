@@ -1,3 +1,10 @@
+## [1.2.6](https://github.com/idetik/coretik/compare/v1.2.5...v1.2.6) (2022-12-07)
+
+
+### Bug Fixes
+
+* Query add count method ([3185724](https://github.com/idetik/coretik/commit/3185724c00cc0a56a3a2f3d2ed92d9aae6a919d0))
+
 ## [1.2.5](https://github.com/idetik/coretik/compare/v1.2.4...v1.2.5) (2022-12-06)
 
 
