@@ -15,6 +15,11 @@ trait Relationships
         $builder = $this->resolveBuilder($builder);
         try {
             $parent_id = $this->parentId();
+
+            if (empty($parent_id)) {
+                return null;
+            }
+
             return $builder->model($parent_id);
         } catch (CannotResolveException $e) {
             return null;
