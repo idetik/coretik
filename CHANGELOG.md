@@ -1,3 +1,10 @@
+## [1.2.7](https://github.com/idetik/coretik/compare/v1.2.6...v1.2.7) (2022-12-07)
+
+
+### Bug Fixes
+
+* Model relationship belongsTo return null if no parent ([c30e04f](https://github.com/idetik/coretik/commit/c30e04f5ea8067d448df817c92dc0f7991876cc8))
+
 ## [1.2.6](https://github.com/idetik/coretik/compare/v1.2.5...v1.2.6) (2022-12-07)
 
 
