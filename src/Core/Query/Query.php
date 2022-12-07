@@ -151,12 +151,18 @@ abstract class Query implements QuerierInterface
         return $this->collect($models ? $this->models() : $this->results());
     }
 
+    public function count(): int
+    {
+        return count($this->results());
+    }
+
     public function first($model = true)
     {
         $results = $this->results();
         if (empty($results)) {
             return null;
         }
+
         return $model ? $this->mediator->model(current($results)->{static::PRIMARY_KEY}) : current($results);
     }
 
