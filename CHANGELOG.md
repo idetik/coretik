@@ -1,3 +1,10 @@
+## [1.2.9](https://github.com/idetik/coretik/compare/v1.2.8...v1.2.9) (2022-12-08)
+
+
+### Bug Fixes
+
+* meta method, don't return default meta value if meta empty. Default meta handle this job ([6c83951](https://github.com/idetik/coretik/commit/6c8395162827b8882e64def512fae4b1ef045a96))
+
 ## [1.2.8](https://github.com/idetik/coretik/compare/v1.2.7...v1.2.8) (2022-12-08)
 
 
