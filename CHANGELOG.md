@@ -1,3 +1,10 @@
+## [1.2.8](https://github.com/idetik/coretik/compare/v1.2.7...v1.2.8) (2022-12-08)
+
+
+### Bug Fixes
+
+* Default metadata handler, make array if meta single is false ([62ace62](https://github.com/idetik/coretik/commit/62ace6292da60b5bdc1c40d5a5f0b853371a2d59))
+
 ## [1.2.7](https://github.com/idetik/coretik/compare/v1.2.6...v1.2.7) (2022-12-07)
 
 
