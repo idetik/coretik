@@ -139,7 +139,7 @@ trait Metable
         }
 
         try {
-            $value = $this->adapter->meta($this->resolveMetaKey($key), $this->metaDefaultValue($key, $default));
+            $value = $this->adapter->meta($this->resolveMetaKey($key), $default);
             return $raw ? $value : $this->castMeta($key, $value);
         } catch (UndefinedMetaKeyException $e) {
             return $this->metaDefaultValue($key, $default);
