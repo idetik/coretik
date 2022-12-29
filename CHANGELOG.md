@@ -1,3 +1,11 @@
+## [1.2.10](https://github.com/idetik/coretik/compare/v1.2.9...v1.2.10) (2022-12-29)
+
+
+### Bug Fixes
+
+* ACF protect field repeater && fix event select2 onchange ([073d74d](https://github.com/idetik/coretik/commit/073d74d0dbcbc6403926e0bf200482d39a729ed1))
+* ACF protect field select2 ([c4fdb8d](https://github.com/idetik/coretik/commit/c4fdb8ddb4111b3123b0b46c297dbd7604733172))
+
 ## [1.2.9](https://github.com/idetik/coretik/compare/v1.2.8...v1.2.9) (2022-12-08)
 
 
