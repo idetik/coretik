@@ -155,6 +155,15 @@ class AcfProtectFieldsHandler implements HandlerInterface
                 break;
         }
 
+        \add_filter('acf/prepare_field', function ($prep_field) use ($field) {
+            if ($prep_field['key'] !== $field['key']) {
+                return $prep_field;
+            }
+
+            $prep_field['class'] = 'acf-disabled';
+            return $prep_field;
+        });
+
         return $field;
     }
 
