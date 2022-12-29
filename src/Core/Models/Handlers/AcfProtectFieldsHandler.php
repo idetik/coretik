@@ -4,6 +4,7 @@ namespace Coretik\Core\Models\Handlers;
 
 use Coretik\Core\Builders\Interfaces\BuilderInterface;
 use Coretik\Core\Builders\Interfaces\HandlerInterface;
+use Coretik\Core\Utils\Classes;
 
 class AcfProtectFieldsHandler implements HandlerInterface
 {
@@ -14,11 +15,13 @@ class AcfProtectFieldsHandler implements HandlerInterface
     {
         $this->builder = $builder;
         \add_filter('admin_init', [$this, 'prepareFields']);
+        \add_filter('acf/update_value', [$this, 'maybeRestoreOldValue'], 5, 3);
     }
 
     public function freeze(): void
     {
         \remove_filter('admin_init', [$this, 'prepareFields']);
+        \remove_filter('acf/update_value', [$this, 'maybeRestoreOldValue'], 5);
     }
 
     public function prepareFields()
@@ -40,11 +43,34 @@ class AcfProtectFieldsHandler implements HandlerInterface
         }
     }
 
-    public function lockField($field)
+    public function maybeRestoreOldValue($value, $post_id, $field)
+    {
+        if ($field['type'] !== 'repeater') {
+            return $value;
+        }
+
+        $model_id = (int)$post_id;
+        if (!$this->builder->concern($model_id)) {
+            return;
+        }
+
+        $model = $this->builder->model((int)$model_id);
+
+        if (\in_array('Coretik\Core\Models\Traits\Metable', Classes::classUsesDeep($model))) {
+            $key = $model->getLocalKeyFromMetaKey($field['name']);
+            if ($model->isProtectedMeta($key)) {
+                return $model->$key;
+            }
+        }
+
+        return $value;
+    }
+
+    public function lockField($field, bool $force = false)
     {
         $model_id = (int)\acf_decode_post_id(\acfe_get_post_id())['id'];
         $model = $this->builder->model($model_id);
-        if (!$model->isProtectedMeta($field['name'])) {
+        if (!$force && !$model->isProtectedMeta($field['name'])) {
             return $field;
         }
 
@@ -101,6 +127,29 @@ class AcfProtectFieldsHandler implements HandlerInterface
                 $field['wrapper']['class'] .= ' acf-field-gallery-readonly';
                 static::addStyles();
                 break;
+            case 'repeater':
+                $field['disabled'] = 1;
+                $field['wrapper']['class'] .= ' acf-field-repeater-readonly';
+                $field['sub_fields'] = array_map(fn ($subfield) => $this->lockField($subfield, true), $field['sub_fields']);
+                \add_action('admin_footer', function () use ($field) {
+                    ?>
+                    <script type="text/javascript">
+                    (function($) {
+                        $('[data-key="<?= $field['key'] ?>"] .acf-repeater-add-row').remove();
+                        $('[data-key="<?= $field['key'] ?>"] .acfe-repeater-stylised-button').remove();
+                        $('[data-key="<?= $field['key'] ?>"] .acf-row').each(function(index, element) {
+                            if ($(element).hasClass('acf-clone')) {
+                                return;
+                            }
+                            $(element).find('.acf-input input').attr('readonly', true);
+                            $(element).find('a[data-event="remove-row"]').remove();
+                            $(element).find('a[data-event="add-row"]').remove();
+                        });
+                    })(jQuery); 
+                    </script>
+                    <?php
+                });
+                break;
             default:
                 $field['disabled'] = 1;
                 break;
@@ -125,6 +174,11 @@ class AcfProtectFieldsHandler implements HandlerInterface
                     display: none !important;
                 }
                 .acf-field-gallery-readonly .acf-gallery-main .acf-gallery-toolbar {
+                    display: none !important;
+                }
+
+                /* Repeater */
+                .acf-field-repeater-readonly .acfe-repeater-stylised-button {
                     display: none !important;
                 }
 
