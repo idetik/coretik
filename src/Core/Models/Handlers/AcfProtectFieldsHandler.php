@@ -109,7 +109,8 @@ class AcfProtectFieldsHandler implements HandlerInterface
                     ?>
                     <script type="text/javascript">
                     (function($) {
-                        $('[data-key="<?= $field['key'] ?>"] input').prop('disabled', true);
+                        $('[data-key="<?= $field['key'] ?>"] input').addClass('acf-disabled').prop('disabled', true);
+                        $('[data-key="<?= $field['key'] ?>"] select').prop('disabled', true);
                     })(jQuery); 
                     </script>
                     <?php
