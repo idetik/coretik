@@ -1,3 +1,10 @@
+## [1.2.11](https://github.com/idetik/coretik/compare/v1.2.10...v1.2.11) (2023-01-05)
+
+
+### Bug Fixes
+
+* Acf protect field taxonomy ([9653e41](https://github.com/idetik/coretik/commit/9653e4139be6ceec1ce8bfe0bff737f180f05a8b))
+
 ## [1.2.10](https://github.com/idetik/coretik/compare/v1.2.9...v1.2.10) (2022-12-29)
 
 
