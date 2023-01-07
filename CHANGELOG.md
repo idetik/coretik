@@ -1,3 +1,10 @@
+## [1.2.12](https://github.com/idetik/coretik/compare/v1.2.11...v1.2.12) (2023-01-07)
+
+
+### Bug Fixes
+
+* Acf protect field acfe_daterage_picker ([f121b9d](https://github.com/idetik/coretik/commit/f121b9ddd211b73e8420e0d0adbab32563280cb4))
+
 ## [1.2.11](https://github.com/idetik/coretik/compare/v1.2.10...v1.2.11) (2023-01-05)
 
 
