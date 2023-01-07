@@ -103,6 +103,7 @@ class AcfProtectFieldsHandler implements HandlerInterface
             case 'time_picker':
             case 'button_group':
             case 'taxonomy':
+            case 'acfe_date_range_picker':
                 $field['disabled'] = 1;
                 // Warning : True / false acf field don't support attr "disabled"
                 \add_action('admin_footer', function () use ($field) {
