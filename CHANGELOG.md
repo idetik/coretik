@@ -1,3 +1,10 @@
+## [1.2.13](https://github.com/idetik/coretik/compare/v1.2.12...v1.2.13) (2023-01-10)
+
+
+### Bug Fixes
+
+* Optimize perf in metable trait ([6fef7dd](https://github.com/idetik/coretik/commit/6fef7dd3103654aafb287f16bae01f685c829a94))
+
 ## [1.2.12](https://github.com/idetik/coretik/compare/v1.2.11...v1.2.12) (2023-01-07)
 
 
