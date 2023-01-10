@@ -10,6 +10,7 @@ use Coretik\Core\Query\Clauses\MetaClause;
 use Coretik\Core\Query\Clauses\WhereClause;
 use Coretik\Core\Query\Clauses\DateClause;
 use Coretik\Core\Collection;
+use Illuminate\Support\LazyCollection;
 
 abstract class Query implements QuerierInterface
 {
@@ -149,6 +150,11 @@ abstract class Query implements QuerierInterface
     public function collection($models = true): Collection
     {
         return $this->collect($models ? $this->models() : $this->results());
+    }
+
+    public function lazyCollection(): LazyCollection
+    {
+        return new LazyCollection($this->models());
     }
 
     public function count(): int
