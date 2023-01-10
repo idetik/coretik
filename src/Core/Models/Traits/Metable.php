@@ -15,6 +15,7 @@ use Carbon\Carbon;
 trait Metable
 {
     protected $metas;
+    protected array $metasKeys = [];
 
     protected function initializeMetable()
     {
@@ -28,11 +29,14 @@ trait Metable
     public function addMeta(MetaDefinition $meta)
     {
         $this->metas->set($meta->localName(), $meta);
+
+        // reason : perf
+        $this->metasKeys[] = $meta->key();
     }
 
     protected function declareMeta(string $local_key, string $meta_key = null, $protected = null): MetaDefinition
     {
-        if ($this->hasMeta($local_key)) {
+        if ($this->metas->has($local_key)) {
             return $this->metaDefinition($local_key);
         }
 
@@ -102,9 +106,7 @@ trait Metable
     {
         return $local
                 ? $this->metas->keys()->all()
-                : $this->metas->map(function ($item) {
-                    return $item->key();
-                })->all();
+                : $this->metasKeys;
     }
 
     public function protectedMetaKeys(bool $local = true): array
