@@ -1,3 +1,10 @@
+## [1.2.15](https://github.com/idetik/coretik/compare/v1.2.14...v1.2.15) (2023-01-10)
+
+
+### Bug Fixes
+
+* add Debug class with benchmark service ([c4ba475](https://github.com/idetik/coretik/commit/c4ba47555f0c95837a7480564637610286a9a241))
+
 ## [1.2.14](https://github.com/idetik/coretik/compare/v1.2.13...v1.2.14) (2023-01-10)
 
 
