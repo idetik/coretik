@@ -1,3 +1,10 @@
+## [1.2.14](https://github.com/idetik/coretik/compare/v1.2.13...v1.2.14) (2023-01-10)
+
+
+### Bug Fixes
+
+* Add querier return lazycollection ([8a0b478](https://github.com/idetik/coretik/commit/8a0b478c8c3b3c2407437d9b53833e1fbe054f1b))
+
 ## [1.2.13](https://github.com/idetik/coretik/compare/v1.2.12...v1.2.13) (2023-01-10)
 
 
