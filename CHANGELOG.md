@@ -1,3 +1,10 @@
+## [1.2.16](https://github.com/idetik/coretik/compare/v1.2.15...v1.2.16) (2023-01-11)
+
+
+### Bug Fixes
+
+* Fix query lazycollection instanciation ([379749d](https://github.com/idetik/coretik/commit/379749d3b6e43c59cfd881327a968dc33d695de0))
+
 ## [1.2.15](https://github.com/idetik/coretik/compare/v1.2.14...v1.2.15) (2023-01-10)
 
 
