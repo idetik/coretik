@@ -154,7 +154,7 @@ abstract class Query implements QuerierInterface
 
     public function lazyCollection(): LazyCollection
     {
-        return new LazyCollection($this->models());
+        return new LazyCollection(fn () => $this->models());
     }
 
     public function count(): int
