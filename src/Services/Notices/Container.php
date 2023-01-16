@@ -8,6 +8,7 @@ use ArrayIterator;
 use IteratorAggregate;
 use SplSubject;
 use ArrayAccess;
+use Traversable;
 
 class Container implements SplSubject, ArrayAccess, IteratorAggregate
 {
@@ -64,24 +65,24 @@ class Container implements SplSubject, ArrayAccess, IteratorAggregate
         $this->notify();
     }
 
-    public function attach(\SplObserver $observer)
+    public function attach(\SplObserver $observer): void
     {
         $this->observers->attach($observer);
     }
 
-    public function detach(\SplObserver $observer)
+    public function detach(\SplObserver $observer): void
     {
         $this->observers->detach($observer);
     }
 
-    public function notify()
+    public function notify(): void
     {
         foreach ($this->observers as $observer) {
             $observer->update($this);
         }
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         if (is_null($offset)) {
             $this->notices[] = $value;
@@ -91,22 +92,22 @@ class Container implements SplSubject, ArrayAccess, IteratorAggregate
         $this->notify();
     }
 
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         return isset($this->notices[$offset]);
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         unset($this->notices[$offset]);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->notices[$offset] ?? null;
     }
 
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->notices);
     }

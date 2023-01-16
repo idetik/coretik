@@ -8,7 +8,7 @@ use Coretik\Services\Notices\NoticeError;
 
 class WPCli implements \SplObserver
 {
-    public function update(\SplSubject $container)
+    public function update(\SplSubject $container): void
     {
         if (!\defined('WP_CLI') || !WP_CLI) {
             return;

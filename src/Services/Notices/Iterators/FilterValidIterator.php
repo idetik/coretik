@@ -9,7 +9,7 @@ class FilterValidIterator extends \FilterIterator
         parent::__construct($iterator);
     }
 
-    public function accept()
+    public function accept(): bool
     {
         $notice = $this->getInnerIterator()->current();
         return $notice->waiting();

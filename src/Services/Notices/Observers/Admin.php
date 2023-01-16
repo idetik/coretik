@@ -6,7 +6,7 @@ use Coretik\Services\Notices\Iterators\FilterValidIterator;
 
 class Admin implements \SplObserver
 {
-    public function update(\SplSubject $container)
+    public function update(\SplSubject $container): void
     {
         if (!\is_admin()) {
             return;
