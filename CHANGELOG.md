@@ -1,3 +1,10 @@
+## [1.2.17](https://github.com/idetik/coretik/compare/v1.2.16...v1.2.17) (2023-01-16)
+
+
+### Bug Fixes
+
+* Fix notices service, support php 8.1 ([16a10d7](https://github.com/idetik/coretik/commit/16a10d7bc3a8369c426355fb01bcbfe2689797b9))
+
 ## [1.2.16](https://github.com/idetik/coretik/compare/v1.2.15...v1.2.16) (2023-01-11)
 
 
