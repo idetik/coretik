@@ -81,9 +81,9 @@ class WPCommentAdapter extends WPAdapter
     public function childOf(int|array $values): self
     {
         if (is_array($values)) {
-            $this->set('post_parent__in', $values);
+            $this->set('parent__in', $values);
         } else {
-            $this->set('post_parent', $values);
+            $this->set('parent', $values);
         }
         return $this;
     }

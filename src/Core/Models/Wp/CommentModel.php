@@ -75,7 +75,7 @@ class CommentModel extends WPModel
 
     public function parentId(): int
     {
-        return $this->get('post_parent');
+        return $this->get('comment_parent');
     }
 
     public function commentParentId(): int
