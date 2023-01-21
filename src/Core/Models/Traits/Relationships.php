@@ -15,7 +15,7 @@ use Coretik\Core\Models\Wp\CommentModel;
 
 trait Relationships
 {
-    protected function belongsTo(string|BuilderInterface $builder): ?ModelInterface
+    protected function belongsTo(string|BuilderInterface|ModelInterface $builder): ?ModelInterface
     {
         $builder = $this->resolveBuilder($builder);
         try {
@@ -59,7 +59,7 @@ trait Relationships
         }
     }
 
-    protected function hasMany(string|BuilderInterface $builder): Collection
+    protected function hasMany(string|BuilderInterface|ModelInterface $builder): Collection
     {
         $builder = $this->resolveBuilder($builder);
 
@@ -101,7 +101,7 @@ trait Relationships
         }
     }
 
-    protected function hasOne(string|BuilderInterface $builder): ?ModelInterface
+    protected function hasOne(string|BuilderInterface|ModelInterface $builder): ?ModelInterface
     {
         $builder = $this->resolveBuilder($builder);
 
@@ -144,8 +144,18 @@ trait Relationships
         }
     }
 
-    protected function resolveBuilder(string|BuilderInterface $builder): BuilderInterface
+    protected function resolveBuilder(string|BuilderInterface|ModelInterface $builder): BuilderInterface
     {
+        if ($builder instanceof ModelInterface) {
+            $builder = match (true) {
+                $builder instanceof PostModel => app()->schema($builder->name(), 'post'),
+                $builder instanceof TermModel => app()->schema($builder->name(), 'taxonomy'),
+                $builder instanceof CommentModel => app()->schema($builder->name(), 'comment'),
+                $builder instanceof UserModel => app()->schema($builder->name(), 'user'),
+                default => app()->schema($builder->name())
+            };
+        }
+
         if ($builder instanceof BuilderInterface) {
             return $builder;
         }
