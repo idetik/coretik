@@ -15,6 +15,12 @@ use Coretik\Core\Models\Wp\CommentModel;
 
 trait Relationships
 {
+    /**
+     * @todo ? 
+     * return Relationship Object
+     * with __toString() = value
+     * with attach|save|associate method to set relation
+     */
     protected function belongsTo(string|BuilderInterface|ModelInterface $builder): ?ModelInterface
     {
         $builder = $this->resolveBuilder($builder);
