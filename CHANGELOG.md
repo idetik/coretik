@@ -1,3 +1,19 @@
+# [1.3.0](https://github.com/idetik/coretik/compare/v1.2.17...v1.3.0) (2023-01-24)
+
+
+### Bug Fixes
+
+* acf protect field handler, return value missed ([49abc28](https://github.com/idetik/coretik/commit/49abc2897173e0ee7089fb481520e3d74e1f62d2))
+* Fix key name on saveMeta ([af4186e](https://github.com/idetik/coretik/commit/af4186e423620091ba7e82178f17487a192bc3be))
+* Fix retur values with models relationships ([3882657](https://github.com/idetik/coretik/commit/3882657146888f8238edf825cfd424a9f8a7de75))
+* Some fixes with models ([caf6af9](https://github.com/idetik/coretik/commit/caf6af9c0f65ee4cdf8e24c737f9ec13f21ff11b))
+
+
+### Features
+
+* Enhance relationship between models ([56f1103](https://github.com/idetik/coretik/commit/56f11039ca69af34a36d598fc4a9ca4592fba765))
+* Enhance relationship between models ([7d14f70](https://github.com/idetik/coretik/commit/7d14f70bb6b02fde4862b78b7d683e0e7061fa96))
+
 ## [1.2.17](https://github.com/idetik/coretik/compare/v1.2.16...v1.2.17) (2023-01-16)
 
 
