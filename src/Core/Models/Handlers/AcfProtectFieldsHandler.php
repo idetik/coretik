@@ -51,7 +51,7 @@ class AcfProtectFieldsHandler implements HandlerInterface
 
         $model_id = (int)$post_id;
         if (!$this->builder->concern($model_id)) {
-            return;
+            return $value;
         }
 
         $model = $this->builder->model((int)$model_id);
