@@ -14,12 +14,12 @@ use function Globalis\WP\Cubi\memory_usage_format;
 
 class Debug
 {
-    public static function benchmark(array|callable $action, $echo = true)
+    public static function benchmark(array|callable $action, bool $echo = true, bool $withBuffer = true)
     {
         mysql_enable_nocache_mod();
 
         $table = app()->get('ux.table')
-                    ->setColumns(['Scenario', 'Time elapsed', 'Memory usage (mb)', 'Memory peak (mb)'])
+                    ->setColumns(['Scenario', 'Time elapsed', 'Memory usage (mb)', 'Memory peak (mb)', 'Result'])
                     ->withFooter(false);
 
         $data = [];
@@ -30,13 +30,19 @@ class Debug
                 \memory_reset_peak_usage();
             }
 
-            $callback();
+            \ob_start();
+            $result = $callback();
+            $buffer = \ob_get_clean();
+
+            if ($withBuffer && !empty($buffer)) {
+                $result .= (!empty($result) ? '<br/><br/>' : '') . '<b>>>>> Buffer:</b><br/>' . $buffer;
+            }
 
             $time = time_elapsed($scenario);
             $memory_usage_after = \memory_get_usage(false);
             $memory_usage = memory_usage_format(($memory_usage_after - $memory_usage_before) / 1024 / 1024, 'MB', true);
             $memory_peak = memory_get_peak_usage_mb();
-            $data[] = [$scenario, $time, $memory_usage, $memory_peak];
+            $data[] = [$scenario, $time, $memory_usage, $memory_peak, $result];
         }
 
         $table->setData($data);
