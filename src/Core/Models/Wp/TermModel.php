@@ -20,20 +20,37 @@ class TermModel extends WPModel
             case $initializer instanceof \WP_Term:
                 $this->id = $initializer->term_id;
                 $this->wp_object = $initializer;
-                $this->name = $initializer->name;
+                $this->name = $initializer->taxonomy;
                 break;
             case \is_int($initializer):
                 $this->id = $initializer;
                 $this->wp_object = $this->adapter->get($initializer);
-                $this->name = $this->wp_object->name;
+                $this->name = $this->wp_object->taxonomy;
                 break;
             default:
                 break;
         }
         parent::__construct();
 
-        $this->on('created', [$this, 'saveMeta']);
-        $this->on('updated', [$this, 'saveMeta']);
+        if (!empty($this->name())) {
+            $this->on('created', [$this, 'saveMeta']);
+            $this->on('updated', [$this, 'saveMeta']);
+        }
+    }
+
+    public function setName(string $value): self
+    {
+        parent::setName($value);
+
+        if (!empty($this->name())) {
+            $this->on('created', [$this, 'saveMeta']);
+            $this->on('updated', [$this, 'saveMeta']);
+            $this->on('saved', function ($savedModel) {
+                $this->wp_object = $this->adapter->get($savedModel->id());
+            });
+        }
+
+        return $this;
     }
 
     public function saveMeta()
@@ -41,7 +58,7 @@ class TermModel extends WPModel
         foreach ($this->metaKeys() as $key) {
             if (\property_exists($this, $key)) {
                 if (!$this->isProtectedMeta($key)) {
-                    $this->adapter->updateMeta($key, $this->castMeta($key, $this->$key));
+                    $this->adapter->updateMeta($this->resolveMetaKey($key), $this->castMeta($key, $this->$key));
                 }
             }
         }
@@ -50,6 +67,14 @@ class TermModel extends WPModel
     public function title(): string
     {
         return $this->wp_object->name;
+    }
+
+    public function setTitleAttribute($value): void
+    {
+        if (!isset($this->wp_object)) {
+            $this->wp_object = new \stdClass();
+        }
+        $this->wp_object->name = $value;
     }
 
     public function permalink(): string

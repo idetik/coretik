@@ -13,6 +13,7 @@ class UserModel extends WPModel
     {
         $this->adapter = new WPUserAdapter($this);
         $this->dictionnary = new UserDictionnary();
+        $this->name = 'users';
 
         switch (true) {
             case $initializer instanceof \WP_User:

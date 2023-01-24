@@ -19,8 +19,8 @@ class WPTermAdapter extends WPAdapter implements MetableAdapterInterface, CRUDIn
         } else {
             $success = \add_term_meta($this->model->id(), $key, $value, $unique);
         }
-        if (!$success) {
-            throw new \RuntimeException("Update term meta: failure - {$this->model->id()} / {$key}");
+        if (\is_wp_error($success)) {
+            throw new \RuntimeException("Update term meta: failure - {$this->model->id()} / {$key} : " . $success->get_error_message());
         }
     }
 
@@ -35,30 +35,30 @@ class WPTermAdapter extends WPAdapter implements MetableAdapterInterface, CRUDIn
     {
         $wp_result = \get_term($term, $taxonomy, $output, $filter);
         if (empty($wp_result)) {
-            throw new \RuntimeException("Get term: failure - {$user}");
+            throw new \RuntimeException("Get term: failure - {$term}");
         }
         return $wp_result;
     }
 
-    public function delete(string $taxonomy = '', array $args = [])
+    public function delete()
     {
-        return \wp_delete_term($this->model->id(), $taxonomy, $args);
+        return \wp_delete_term($this->model->id(), $this->model->name());
     }
 
-    public function create(string $term = '', string $taxonomy = '', array $args = [])
+    public function create(array $args = [])
     {
-        $term_ids = \wp_insert_term($term, $taxonomy, $args);
+        $term_ids = \wp_insert_term($this->model->title(), $this->model->name(), $args);
         if (!is_array($term_ids)) {
             throw new \RuntimeException("Insert term: failure");
         }
-        return $term_ids;
+        return $term_ids['term_id'];
     }
 
-    public function update(string $taxonomy = '', array $args = [])
+    public function update(array $args = [])
     {
-        $term_ids = \wp_update_term($this->model->id(), $taxonomy, $args);
+        $term_ids = \wp_update_term($this->model->id(), $this->model->name(), $args);
         if (!is_array($term_ids)) {
-            throw new \RuntimeException("Insert term: failure");
+            throw new \RuntimeException("Update term: failure");
         }
         return $term_ids;
     }

@@ -46,9 +46,15 @@ abstract class Model implements ModelInterface
         return (int)$this->id;
     }
 
-    public function name(): string
+    public function name(): ?string
     {
         return $this->name;
+    }
+
+    public function setName(string $value): self
+    {
+        $this->name = $value;
+        return $this;
     }
 
     /**

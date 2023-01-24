@@ -15,6 +15,7 @@ class CommentModel extends WPModel
     {
         $this->adapter = new WPCommentAdapter($this);
         $this->dictionnary = new CommentDictionnary();
+        $this->name = 'comments';
 
         switch (true) {
             case $initializer instanceof \WP_Comment:

@@ -24,7 +24,11 @@ class Factory
 
     public function create()
     {
-        return \call_user_func($this->model, null, $this->mediator, ['id' => null, 'initializer' => null]);
+        $model = \call_user_func($this->model, null, $this->mediator, ['id' => null, 'initializer' => null]);
+        if (empty($model->name())) {
+            $model->setName($this->mediator->getName());
+        }
+        return $model;
     }
 
     public function get(int $id, $initializer = null, $refresh = false)
