@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/idetik/coretik/compare/v1.3.0...v1.3.1) (2023-01-24)
+
+
+### Bug Fixes
+
+* Enhance debug benchmark ([95668f8](https://github.com/idetik/coretik/commit/95668f86cb1a6a8239bb68cd67ece605fd341a81))
+
 # [1.3.0](https://github.com/idetik/coretik/compare/v1.2.17...v1.3.0) (2023-01-24)
 
 
