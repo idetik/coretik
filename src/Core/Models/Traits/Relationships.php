@@ -16,9 +16,8 @@ use Coretik\Core\Models\Wp\CommentModel;
 trait Relationships
 {
     /**
-     * @todo ? 
+     * @todo 
      * return Relationship Object
-     * with __toString() = value
      * with attach|save|associate method to set relation
      */
     protected function belongsTo(string|BuilderInterface|ModelInterface $builder): ?ModelInterface
@@ -31,7 +30,7 @@ trait Relationships
                     return match ($builder->getType()) {
                         'post' => !empty($parent_id = $this->parentId()) ? $builder->model($parent_id) : null,
                         'taxonomy' => $this->term($builder->getName()),
-                        'user' => $builder->model((int)$this->post_author),
+                        'user' => $builder->concern((int)$this->post_author) ? $builder->model((int)$this->post_author) : null,
                         default => throw new UnhandledException(sprintf('Relationship not supported between %s and %s builder type.', 'PostModel', $builder->getType()))
                     };
     
@@ -52,8 +51,8 @@ trait Relationships
                     // Support comment, user, post
                     return match ($builder->getType()) {
                         'comment' => !empty($parent_id = $this->parentId()) ? $builder->model($parent_id) : null,
-                        'post' => $builder->model($this->comment_post_ID),
-                        'user' => !empty($this->user_id) ? $builder->model($this->user_id) : null,
+                        'post' => $builder->concern($this->comment_post_ID) ? $builder->model($this->comment_post_ID) : null,
+                        'user' => !empty($this->user_id) && $builder->concern((int)$this->user_id) ? $builder->model($this->user_id) : null,
                         default => throw new UnhandledException(sprintf('Relationship not supported between %s and %s builder type.', 'CommentModel', $builder->getType()))
                     };
     
@@ -141,7 +140,7 @@ trait Relationships
                 // Support comment, user, post
                 return match ($builder->getType()) {
                     'comment' => $builder->query()->childOf($this->id())->limit(1)->first(),
-                    'user' => !empty($this->user_id) ? $builder->model($this->user_id) : null,
+                    'user' => !empty($this->user_id) && $builder->concern((int)$this->user_id) ? $builder->model($this->user_id) : null,
                     default => throw new UnhandledException(sprintf('Relationship not supported between %s and %s builder type.', 'CommentModel', $builder->getType()))
                 };
 
