@@ -38,7 +38,7 @@ class UserModel extends WPModel
         foreach ($this->metaKeys() as $key) {
             if (\property_exists($this, $key)) {
                 if (!$this->isProtectedMeta($key)) {
-                    $this->adapter->updateMeta($key, $this->castMeta($key, $this->$key));
+                    $this->adapter->updateMeta($this->resolveMetaKey($key), $this->castMeta($key, $this->$key));
                 }
             }
         }
