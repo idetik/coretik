@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/idetik/coretik/compare/v1.3.1...v1.3.2) (2023-02-07)
+
+
+### Bug Fixes
+
+* Forms service fix initialization ([59215bd](https://github.com/idetik/coretik/commit/59215bdb85d7e5da0a7e031dbe1fd9ea7bdc69b2))
+
 ## [1.3.1](https://github.com/idetik/coretik/compare/v1.3.0...v1.3.1) (2023-01-24)
 
 
