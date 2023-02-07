@@ -74,8 +74,8 @@ abstract class Form implements Handlable
     protected function initializeIfNot()
     {
         if (!$this->initialized) {
-            $this->initialize();
             $this->initialized = true;
+            $this->initialize();
         }
     }
 
