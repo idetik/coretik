@@ -1,3 +1,10 @@
+## [1.3.3](https://github.com/idetik/coretik/compare/v1.3.2...v1.3.3) (2023-02-13)
+
+
+### Bug Fixes
+
+* Taxonomy builder, fix multiple object type ([7cde2d5](https://github.com/idetik/coretik/commit/7cde2d55f068efefcab0a6f9063fbd0fb77a857d))
+
 ## [1.3.2](https://github.com/idetik/coretik/compare/v1.3.1...v1.3.2) (2023-02-07)
 
 
