@@ -98,6 +98,12 @@ class PostModel extends WPModel
         return $this->get('post_parent');
     }
 
+    public function setParentId(int $id): self
+    {
+        $this->post_parent = $id;
+        return $this;
+    }
+
     public function thumbnailFallbackId()
     {
         return \apply_filters('coretik/postModel/thumbnail_fallback_id', false);

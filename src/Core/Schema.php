@@ -6,6 +6,8 @@ use Psr\Container\ContainerInterface;
 use Coretik\Core\Builders\Interfaces\BuilderInterface;
 use Coretik\Core\Builders\Interfaces\ModelableInterface;
 use Coretik\Core\Builders\Interfaces\RegistrableInterface;
+use Coretik\Core\Exception\ContainerValueNotFoundException;
+use Coretik\Core\Models\Interfaces\ModelInterface;
 use Coretik\Core\Models\Wp\PostModel;
 use Coretik\Core\Models\Wp\TermModel;
 use Coretik\Core\Models\Wp\UserModel;
@@ -158,6 +160,29 @@ class Schema implements ContainerInterface
         return array_map(function ($collection) {
             return $collection->keys();
         }, $this->objects);
+    }
+
+    public function resolve(string|BuilderInterface|ModelInterface $builder): BuilderInterface
+    {
+        if ($builder instanceof ModelInterface) {
+            $builder = match (true) {
+                $builder instanceof PostModel => $this->get($builder->name(), 'post'),
+                $builder instanceof TermModel => $this->get($builder->name(), 'taxonomy'),
+                $builder instanceof CommentModel => $this->get($builder->name(), 'comment'),
+                $builder instanceof UserModel => $this->get($builder->name(), 'user'),
+                default => $this->get($builder->name())
+            };
+        }
+
+        if ($builder instanceof BuilderInterface) {
+            return $builder;
+        }
+
+        if (!empty(($object = app()->schema()->get($builder)))) {
+            return $object;
+        }
+
+        throw new ContainerValueNotFoundException;
     }
 
     public function __invoke($key = null)

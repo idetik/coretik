@@ -87,6 +87,12 @@ class TermModel extends WPModel
         return $this->get('parent');
     }
 
+    public function setParentId(int $id): self
+    {
+        $this->parent = $id;
+        return $this;
+    }
+
     public function get(string $prop)
     {
         if ($this->hasMeta($prop)) {
