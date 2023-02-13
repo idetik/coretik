@@ -1,3 +1,10 @@
+## [1.3.4](https://github.com/idetik/coretik/compare/v1.3.3...v1.3.4) (2023-02-13)
+
+
+### Bug Fixes
+
+* Add model parent setter && resolve builder from schema ([5ef6087](https://github.com/idetik/coretik/commit/5ef60876259868ee9cf6662c4517f9abdfc7f0b2))
+
 ## [1.3.3](https://github.com/idetik/coretik/compare/v1.3.2...v1.3.3) (2023-02-13)
 
 
