@@ -48,7 +48,7 @@ $modalArgs = app()->modals()->factory(function ($data) {
             <b>Object types</b>: 
             <?php
             foreach ($builder->getObjectTypes() as $post_type_name) {
-                printf('<a href="%s">%s</a>', '#' . $post_type_name, app()->schema($post_type_name)->args()->get('labels')['singular']);
+                printf('<a href="%s">%s</a>&nbsp;', '#' . $post_type_name, app()->schema($post_type_name)->args()->get('labels')['singular']);
             }
             ?>
         </li>

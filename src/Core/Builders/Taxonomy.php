@@ -24,10 +24,10 @@ final class Taxonomy extends BuilderModelable implements RegistrableInterface
         $this->taxonomy = $taxonomy;
 
         foreach (Arr::wrap($object_type) as $object) {
-            if ($object_type instanceof TaxonomiableInterface) {
-                $this->addObjectType($object_type);
-            } elseif (\is_string($object_type)) {
-                $this->objectType[] = $object_type;
+            if ($object instanceof TaxonomiableInterface) {
+                $this->addObjectType($object);
+            } elseif (\is_string($object)) {
+                $this->objectType[] = $object;
             }
         }
 
