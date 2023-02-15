@@ -82,6 +82,7 @@ class CommentModel extends WPModel
     public function setParentId(int $id): self
     {
         $this->comment_parent = $id;
+        $this->wp_object->comment_parent = $id;
         return $this;
     }
 

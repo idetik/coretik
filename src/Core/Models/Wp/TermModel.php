@@ -90,6 +90,7 @@ class TermModel extends WPModel
     public function setParentId(int $id): self
     {
         $this->parent = $id;
+        $this->wp_object->parent = $id;
         return $this;
     }
 
