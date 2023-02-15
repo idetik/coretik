@@ -101,7 +101,9 @@ class PostModel extends WPModel
     public function setParentId(int $id): self
     {
         $this->post_parent = $id;
-        $this->wp_object->post_parent = $id;
+        if (isset($this->wp_object)) {
+            $this->wp_object->post_parent = $id;
+        }
         return $this;
     }
 
