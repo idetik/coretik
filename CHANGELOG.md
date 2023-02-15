@@ -1,3 +1,10 @@
+## [1.3.5](https://github.com/idetik/coretik/compare/v1.3.4...v1.3.5) (2023-02-15)
+
+
+### Bug Fixes
+
+* Add model parent setter ([c4d56de](https://github.com/idetik/coretik/commit/c4d56de2a01c06486566d42d7334db0355ab7ec1))
+
 ## [1.3.4](https://github.com/idetik/coretik/compare/v1.3.3...v1.3.4) (2023-02-13)
 
 
