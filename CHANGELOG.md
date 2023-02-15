@@ -1,3 +1,10 @@
+## [1.3.6](https://github.com/idetik/coretik/compare/v1.3.5...v1.3.6) (2023-02-15)
+
+
+### Bug Fixes
+
+* Add parent setter, check wp_object is set ([678e2bd](https://github.com/idetik/coretik/commit/678e2bd2054e8be37ac38d8d931ea0a1ca1a3ac3))
+
 ## [1.3.5](https://github.com/idetik/coretik/compare/v1.3.4...v1.3.5) (2023-02-15)
 
 
