@@ -154,7 +154,7 @@ class Table
     protected function filtersGroup($filter_name, $values)
     {
         $wrapper = '<ul class="subsubsub table-filters" data-filter-name="%s">%s</ul>';
-        $wrapper_row = '<li><a data-filter="%s" class="%s">%s <span class="count">(%s)</span></a>%s</li>';
+        $wrapper_row = '<li><a href="#" data-filter="%s" class="%s">%s <span class="count">(%s)</span></a>%s</li>';
         $separator = ' |';
         $rows = [];
         $rows[] = sprintf($wrapper_row, 'all', "current", "Tous", count($this->data), $separator);
