@@ -1,3 +1,10 @@
+## [1.3.7](https://github.com/idetik/coretik/compare/v1.3.6...v1.3.7) (2023-02-17)
+
+
+### Bug Fixes
+
+* UX/Table add href on filters ([13b66ac](https://github.com/idetik/coretik/commit/13b66acb8333775b0af4711591c083f0ba7bd2e1))
+
 ## [1.3.6](https://github.com/idetik/coretik/compare/v1.3.5...v1.3.6) (2023-02-15)
 
 
