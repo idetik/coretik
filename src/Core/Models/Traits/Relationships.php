@@ -8,10 +8,12 @@ use Coretik\Core\Models\Exceptions\CannotResolveException;
 use Coretik\Core\Exception\ContainerValueNotFoundException;
 use Coretik\Core\Exception\UnhandledException;
 use Coretik\Core\Collection;
+use Illuminate\Support\LazyCollection;
 use Coretik\Core\Models\Wp\PostModel;
 use Coretik\Core\Models\Wp\TermModel;
 use Coretik\Core\Models\Wp\UserModel;
 use Coretik\Core\Models\Wp\CommentModel;
+use Coretik\Core\Query\Interfaces\QuerierInterface;
 
 trait Relationships
 {
@@ -64,45 +66,47 @@ trait Relationships
         }
     }
 
-    protected function hasMany(string|BuilderInterface|ModelInterface $builder): Collection
+    protected function hasMany(string|BuilderInterface|ModelInterface $builder, bool $collect = true): Collection|QuerierInterface
     {
         $builder = $this->resolveBuilder($builder);
+
+        $getter = $collect ? 'collection' : 'querier';
 
         switch (true) {
             case $this instanceof PostModel:
                 // Support post, taxonomy, comment
                 return match ($builder->getType()) {
-                    'post' => $builder->query()->childOf($this->id())->all()->collection(),
+                    'post' => $builder->query()->childOf($this->id())->all()->$getter(),
                     'taxonomy' => $this->terms($builder->getName()),
-                    'comment' => $builder->query()->set('post_id', $this->id())->all()->collection(),
+                    'comment' => $builder->query()->set('post_id', $this->id())->all()->$getter(),
                     default => throw new UnhandledException(sprintf('Relationship not supported between %s and %s builder type.', 'PostModel', $builder->getType()))
                 };
 
             case $this instanceof TermModel:
                 // Support post, taxonomy
                 return match ($builder->getType()) {
-                    'post' => $builder->query()->whereTax($this->taxonomy, [$this->id()])->all()->collection(),
-                    'taxonomy' => $builder->query()->childOf($this->id())->all()->collection(),
+                    'post' => $builder->query()->whereTax($this->taxonomy, [$this->id()])->all()->$getter(),
+                    'taxonomy' => $builder->query()->childOf($this->id())->all()->$getter(),
                     default => throw new UnhandledException(sprintf('Relationship not supported between %s and %s builder type.', 'TermModel', $builder->getType()))
                 };
 
             case $this instanceof UserModel:
                 // Support post, comment
                 return match ($builder->getType()) {
-                    'post' => $builder->query()->set('author', $this->id())->all()->collection(),
-                    'comment' => $builder->query()->set('user_id', $this->id())->all()->collection(),
+                    'post' => $builder->query()->set('author', $this->id())->all()->$getter(),
+                    'comment' => $builder->query()->set('user_id', $this->id())->all()->$getter(),
                     default => throw new UnhandledException(sprintf('Relationship not supported between %s and %s builder type.', 'UserModel', $builder->getType()))
                 };
 
             case $this instanceof CommentModel:
                 // Support comment
                 return match ($builder->getType()) {
-                    'comment' => $builder->query()->childOf($this->id())->all()->collection(),
+                    'comment' => $builder->query()->childOf($this->id())->all()->$getter(),
                     default => throw new UnhandledException(sprintf('Relationship not supported between %s and %s builder type.', 'CommentModel', $builder->getType()))
                 };
 
             default:
-                return $builder->query()->childOf($this->id())->all()->collection();
+                return $builder->query()->childOf($this->id())->all()->$getter();
         }
     }
 

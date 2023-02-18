@@ -114,6 +114,11 @@ abstract class Query implements QuerierInterface
     /**
      * Getters
      */
+    public function querier()
+    {
+        return $this;
+    }
+
     public function builder()
     {
         return $this->builder;
