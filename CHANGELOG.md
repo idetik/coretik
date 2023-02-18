@@ -1,3 +1,10 @@
+## [1.3.8](https://github.com/idetik/coretik/compare/v1.3.7...v1.3.8) (2023-02-18)
+
+
+### Bug Fixes
+
+* Relationship hasMany can return querier object ([4b1ac1e](https://github.com/idetik/coretik/commit/4b1ac1e708ac6aa18bfa501df73bd9e26c254b4d))
+
 ## [1.3.7](https://github.com/idetik/coretik/compare/v1.3.6...v1.3.7) (2023-02-17)
 
 
