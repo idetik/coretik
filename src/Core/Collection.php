@@ -50,7 +50,7 @@ class Collection extends IlluminateCollection implements CollectionInterface
     {
         $data = $this->items;
         $groups = [];
-        foreach ($this->data as $object) {
+        foreach ($data as $object) {
             $groups[$object[$parentKey]][] = $object;
         }
 
