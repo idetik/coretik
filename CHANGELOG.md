@@ -1,3 +1,10 @@
+## [1.3.9](https://github.com/idetik/coretik/compare/v1.3.8...v1.3.9) (2023-02-21)
+
+
+### Bug Fixes
+
+* collection makeTree error ([186442c](https://github.com/idetik/coretik/commit/186442cf0d36fe65abe94bcdfe925a06ddb622f2))
+
 ## [1.3.8](https://github.com/idetik/coretik/compare/v1.3.7...v1.3.8) (2023-02-18)
 
 
