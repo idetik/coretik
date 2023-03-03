@@ -1,3 +1,10 @@
+## [1.3.11](https://github.com/idetik/coretik/compare/v1.3.10...v1.3.11) (2023-03-03)
+
+
+### Bug Fixes
+
+* Schemaviewer taxonomy-single format value ([39990d2](https://github.com/idetik/coretik/commit/39990d282289dcc69f516ddf64922a3ee9bfab1e))
+
 ## [1.3.10](https://github.com/idetik/coretik/compare/v1.3.9...v1.3.10) (2023-03-03)
 
 
