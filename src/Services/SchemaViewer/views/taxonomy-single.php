@@ -1,7 +1,19 @@
 <?php
+
+use Coretik\Core\Utils\Dump;
+use Closure;
+
 $args = $builder->args();
 
-$modalArgs = app()->modals()->factory(function ($data) {
+$to_string = fn ($value) => match(true) {
+    is_string($value) => $value,
+    is_bool($value) => $value ? 'true' : 'false',
+    is_array($value) => implode(', ', array_map($to_string, $value)),
+    $value instanceof Closure => Dump::closure($value),
+    default => strval($value)
+};
+
+$modalArgs = app()->modals()->factory(function ($data) use ($to_string) {
     $array = [];
     $table = app()->get('ux.table');
     foreach ($data['args'] as $key => $value) {
@@ -13,9 +25,9 @@ $modalArgs = app()->modals()->factory(function ($data) {
         if (is_array($value)) {
             foreach ($value as $subkey => $subval) {
                 if (is_int($subkey)) {
-                    $format .= sprintf('<li>%s</li>', $subval);
+                    $format .= sprintf('<li>%s</li>', $to_string($subval));
                 } else {
-                    $format .= sprintf('<li><b>%s</b>: %s</li>', $subkey, $subval);
+                    $format .= sprintf('<li><b>%s</b>: %s</li>', $to_string($subkey), $to_string($subval));
                 }
             }
         } else {
