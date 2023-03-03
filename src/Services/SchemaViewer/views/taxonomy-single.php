@@ -1,7 +1,6 @@
 <?php
 
 use Coretik\Core\Utils\Dump;
-use Closure;
 
 $args = $builder->args();
 
