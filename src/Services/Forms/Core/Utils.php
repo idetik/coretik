@@ -143,4 +143,21 @@ class Utils
         $string = str_replace([" ", '_'], '-', $string);
         return $string;
     }
+
+    public static function hasBracket($string)
+    {
+        $bracket = strpos($string, '[');
+        return false !== $bracket;
+    }
+
+    public static function removeBracket($string)
+    {
+        if (!static::hasBracket($string)) {
+            return $string;
+        }
+
+        $bracket = strpos($string, '[');
+        preg_match_all("/\[([^\]]+)\]/", $string, $matches);
+        return substr($string, 0, $bracket);
+    }
 }
