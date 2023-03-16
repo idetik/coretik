@@ -74,7 +74,8 @@ class Utils
 
     public static function isActionRefresh()
     {
-        return isset($_POST['action']) && 'coretik_form_refresh' == $_POST['action'];
+        return (isset($_POST['action']) && 'coretik_form_refresh' == $_POST['action'])
+            || (isset($_POST['coretik_form_refresh']) && '1' === $_POST['coretik_form_refresh']);
     }
 
     public static function concatFieldBirthday($form, $fieldname = 'birthday')
