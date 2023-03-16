@@ -1,3 +1,10 @@
+## [1.3.12](https://github.com/idetik/coretik/compare/v1.3.11...v1.3.12) (2023-03-16)
+
+
+### Bug Fixes
+
+* add Utils functions to handle string brackets ([bf4bf2a](https://github.com/idetik/coretik/commit/bf4bf2a42d6e48df887c8d63fc7290453320b4ed))
+
 ## [1.3.11](https://github.com/idetik/coretik/compare/v1.3.10...v1.3.11) (2023-03-03)
 
 
