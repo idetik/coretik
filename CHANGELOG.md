@@ -1,3 +1,10 @@
+## [1.3.13](https://github.com/idetik/coretik/compare/v1.3.12...v1.3.13) (2023-03-16)
+
+
+### Bug Fixes
+
+* Forms add form refreshing condition ([10be9d1](https://github.com/idetik/coretik/commit/10be9d1ae6293e25a1d9bc59db5e217b570fbc21))
+
 ## [1.3.12](https://github.com/idetik/coretik/compare/v1.3.11...v1.3.12) (2023-03-16)
 
 
