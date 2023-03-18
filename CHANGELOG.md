@@ -1,3 +1,10 @@
+## [1.3.14](https://github.com/idetik/coretik/compare/v1.3.13...v1.3.14) (2023-03-18)
+
+
+### Bug Fixes
+
+* Handlers AcfProtectFieldsHandler, provide old value from get_field provider instead model getter ([70c823b](https://github.com/idetik/coretik/commit/70c823b7db8bd63082e36b429fb851170b6d7489))
+
 ## [1.3.13](https://github.com/idetik/coretik/compare/v1.3.12...v1.3.13) (2023-03-16)
 
 
