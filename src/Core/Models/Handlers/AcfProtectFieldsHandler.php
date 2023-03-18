@@ -59,7 +59,7 @@ class AcfProtectFieldsHandler implements HandlerInterface
         if (\in_array('Coretik\Core\Models\Traits\Metable', Classes::classUsesDeep($model))) {
             $key = $model->getLocalKeyFromMetaKey($field['name']);
             if ($model->isProtectedMeta($key)) {
-                return $model->$key;
+                return $model->getField($field['name']);
             }
         }
 
