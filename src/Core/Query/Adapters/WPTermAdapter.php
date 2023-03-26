@@ -71,6 +71,15 @@ class WPTermAdapter extends WPAdapter
         return $this;
     }
 
+    /**
+     * Alias of childOf
+     */
+    public function belongsTo(int $parent): self
+    {
+        $this->childOf($parent);
+        return $this;
+    }
+
     public function addContext(array $values, string $opt = 'in', string $context = '')
     {
         $values = $values ?: [0];
