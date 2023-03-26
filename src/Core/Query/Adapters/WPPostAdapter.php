@@ -133,7 +133,6 @@ class WPPostAdapter extends WPAdapter
         return $this;
     }
 
-
     public function addTaxQueryGroup(array $tax_queries, $relation = 'OR')
     {
         $query_group = [];
@@ -162,6 +161,18 @@ class WPPostAdapter extends WPAdapter
             }
         }
         $this->{$context . '__' . $opt} = $values;
+        return $this;
+    }
+
+    public function withoutMetas(): self
+    {
+        $this->set('update_post_meta_cache', false);
+        return $this;
+    }
+
+    public function withoutTerms(): self
+    {
+        $this->set('update_post_term_cache', false);
         return $this;
     }
 
