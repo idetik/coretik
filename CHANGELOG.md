@@ -1,3 +1,11 @@
+## [1.3.15](https://github.com/idetik/coretik/compare/v1.3.14...v1.3.15) (2023-03-26)
+
+
+### Bug Fixes
+
+* add alias term query relationship belongsTo() ([b26e351](https://github.com/idetik/coretik/commit/b26e3516b019c9fc7f2a20307941988db8c633ca))
+* add post query tools to disable term/post meta cache ([f4ca3e8](https://github.com/idetik/coretik/commit/f4ca3e8a53ba4a6e213493c85901e0a2b262aee2))
+
 ## [1.3.14](https://github.com/idetik/coretik/compare/v1.3.13...v1.3.14) (2023-03-18)
 
 
