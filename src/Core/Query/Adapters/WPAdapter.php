@@ -5,6 +5,7 @@ namespace Coretik\Core\Query\Adapters;
 use Coretik\Core\Query\Interfaces\WhereClauseInterface;
 use Coretik\Core\Query\Interfaces\QueryBuilderInterface;
 
+#[\AllowDynamicProperties]
 abstract class WPAdapter implements QueryBuilderInterface
 {
     const PARAMETERS = [];

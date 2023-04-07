@@ -40,7 +40,6 @@ class DefaultMetaDataHandler implements HandlerInterface
             if (false === $single) {
                 $value = [$value];
             }
-
         }
         return $value;
     }

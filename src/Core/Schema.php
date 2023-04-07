@@ -182,7 +182,7 @@ class Schema implements ContainerInterface
             return $object;
         }
 
-        throw new ContainerValueNotFoundException;
+        throw new ContainerValueNotFoundException();
     }
 
     public function __invoke($key = null)

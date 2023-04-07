@@ -20,7 +20,7 @@ $modalArgs = app()->modals()->factory(function ($data) {
                         $format .= sprintf('<li><b>%s</b>: ', $subkey);
                         foreach ($subval as $finalval) {
                             switch (true) {
-                                case is_array($finalval) :
+                                case is_array($finalval):
                                     $format .= implode(', ', $finalval);
                                     break;
                                 case $finalval instanceof \Closure:

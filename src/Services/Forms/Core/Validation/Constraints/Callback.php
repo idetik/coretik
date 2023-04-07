@@ -7,6 +7,8 @@ class Callback extends Constraint
     private $name;
     private $message;
     private $display_message = true;
+    private $callback;
+    private $args;
 
     public function __construct($args)
     {

@@ -5,12 +5,12 @@
     "minimum-stability": "stable",
     "require": {
         "johnbillion/extended-cpts": "^5.0",
-        "pimple/pimple": "^3.3",
-        "nesbot/carbon": "^2.62",
-        "pelago/emogrifier": "^6.0",
+        "pimple/pimple": "^3.5",
+        "nesbot/carbon": "^2.66",
+        "pelago/emogrifier": "^7.0",
         "wesbos/burner-email-providers": "dev-master",
         "globalis/wp-cubi-helpers": "^1.0",
-        "illuminate/collections": "^9.39"
+        "illuminate/collections": "^10.6"
     },
     "authors": [
         {
@@ -25,7 +25,7 @@
         ]
     },
     "require-dev": {
-        "squizlabs/php_codesniffer": "^3.6"
+        "squizlabs/php_codesniffer": "^3.7"
     },
     "suggest": {
         "idetik/coretik-navigation": "Navigation service, resolve breadcrumb and page title",

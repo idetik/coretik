@@ -18,7 +18,7 @@ use Coretik\Core\Query\Interfaces\QuerierInterface;
 trait Relationships
 {
     /**
-     * @todo 
+     * @todo
      * return Relationship Object
      * with attach|save|associate method to set relation
      */
@@ -35,20 +35,20 @@ trait Relationships
                         'user' => $builder->concern((int)$this->post_author) ? $builder->model((int)$this->post_author) : null,
                         default => throw new UnhandledException(sprintf('Relationship not supported between %s and %s builder type.', 'PostModel', $builder->getType()))
                     };
-    
+
                 case $this instanceof TermModel:
                     // Support taxonomy
                     return match ($builder->getType()) {
                         'taxonomy' => !empty($parent_id = $this->parentId()) ? $builder->model($parent_id) : null,
                         default => throw new UnhandledException(sprintf('Relationship not supported between %s and %s builder type.', 'PostModel', $builder->getType()))
                     };
-    
+
                 case $this instanceof UserModel:
                     // Support none
                     return match ($builder->getType()) {
                         default => throw new UnhandledException(sprintf('Relationship not supported between %s and %s builder type.', 'UserModel', $builder->getType()))
                     };
-    
+
                 case $this instanceof CommentModel:
                     // Support comment, user, post
                     return match ($builder->getType()) {
@@ -57,7 +57,7 @@ trait Relationships
                         'user' => !empty($this->user_id) && $builder->concern((int)$this->user_id) ? $builder->model($this->user_id) : null,
                         default => throw new UnhandledException(sprintf('Relationship not supported between %s and %s builder type.', 'CommentModel', $builder->getType()))
                     };
-    
+
                 default:
                     return $builder->model($parent_id);
             }
@@ -173,6 +173,6 @@ trait Relationships
             return $object;
         }
 
-        throw new ContainerValueNotFoundException;
+        throw new ContainerValueNotFoundException();
     }
 }

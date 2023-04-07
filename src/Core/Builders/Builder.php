@@ -39,7 +39,7 @@ abstract class Builder implements BuilderInterface
             if (!\class_exists($handler) || !in_array(HandlerInterface::class, \class_implements($handler))) {
                 throw new Exception('Undefined Handler : ' . $handler);
             }
-            $handler = new $handler;
+            $handler = new $handler();
         }
         $this->handlers->attach($handler);
         return $this;

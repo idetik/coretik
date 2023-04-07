@@ -4,7 +4,7 @@ use Coretik\Core\Utils\Dump;
 
 $args = $builder->args();
 
-$to_string = fn ($value) => match(true) {
+$to_string = fn ($value) => match (true) {
     is_string($value) => $value,
     is_bool($value) => $value ? 'true' : 'false',
     is_array($value) => implode(', ', array_map($to_string, $value)),
