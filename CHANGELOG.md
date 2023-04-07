@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/idetik/coretik/compare/v1.4.0...v1.4.1) (2023-04-07)
+
+
+### Bug Fixes
+
+* PHP 8.2 support ([b4de2b3](https://github.com/idetik/coretik/commit/b4de2b3b64036a2d4b3f91ba5cf40b6a61e62e17))
+
 # [1.4.0](https://github.com/idetik/coretik/compare/v1.3.15...v1.4.0) (2023-04-07)
 
 
