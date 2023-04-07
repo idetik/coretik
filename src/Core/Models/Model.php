@@ -6,6 +6,7 @@ use Coretik\Core\Models\Interfaces\AdapterInterface as Adapter;
 use Coretik\Core\Models\Interfaces\ModelInterface;
 use Coretik\Core\Models\Interfaces\DictionnaryInterface as Dictionnary;
 
+#[\AllowDynamicProperties]
 abstract class Model implements ModelInterface
 {
     use Traits\Bootable;
@@ -130,10 +131,7 @@ abstract class Model implements ModelInterface
         }
     }
 
-    public function get(string $prop)
-    {
-        // return $this->wp_object->$prop;
-    }
+    public function get(string $prop) {}
 
     public function __get($prop)
     {
