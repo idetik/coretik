@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/idetik/coretik/compare/v1.3.15...v1.4.0) (2023-04-07)
+
+
+### Features
+
+* Upgrade dependencies & support PHP 8.2 ([f1bc9c0](https://github.com/idetik/coretik/commit/f1bc9c08be232f9a6ec6d56a591baa5ce0d0a646))
+
 ## [1.3.15](https://github.com/idetik/coretik/compare/v1.3.14...v1.3.15) (2023-03-26)
 
 
