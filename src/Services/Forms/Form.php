@@ -349,8 +349,9 @@ abstract class Form implements Handlable
             return true;
         }
 
-        if (!$this->isValidating()) {
-            return false;
+        if (!$this->isValidating() && !$this->isSubmitting()) {
+            $this->setDefaultValue($field, $val);
+            return true;
         }
 
         if (empty($this->fields[$field])) {
