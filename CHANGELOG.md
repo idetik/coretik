@@ -1,3 +1,10 @@
+## [1.4.2](https://github.com/idetik/coretik/compare/v1.4.1...v1.4.2) (2023-04-08)
+
+
+### Bug Fixes
+
+* Form service: fix set value from templating ([2c5bd1d](https://github.com/idetik/coretik/commit/2c5bd1da8417159ef8de900c8232b92aaee1d28f))
+
 ## [1.4.1](https://github.com/idetik/coretik/compare/v1.4.0...v1.4.1) (2023-04-07)
 
 
