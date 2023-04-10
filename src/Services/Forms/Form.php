@@ -202,21 +202,34 @@ abstract class Form implements Handlable
 
             $this->fields[$field_name] = $field;
 
-            if (!empty($_GET) && array_key_exists($field_name, $_GET)) {
-                $prefilled_value = esc_attr($_GET[$field_name]);
+            if (!\array_key_exists('prefillable', $data) || true === $data['prefillable']) {
+                if (!empty($_GET) && \array_key_exists($field_name, $_GET)) {
 
-                if ($has_email_constraint) {
-                    $prefilled_value = Utils::formNormalizeSpaces($prefilled_value);
-                    $prefilled_value = str_replace(" ", "+", $prefilled_value);
-                    $prefilled_value = sanitize_email($prefilled_value);
-                } else {
-                    $prefilled_value = Utils::formSanitizeText($prefilled_value);
+                    if (is_array($_GET[$field_name])) {
+                        $prefilled_value = \array_map('esc_attr', $_GET[$field_name]);
+                    } else {
+                        $prefilled_value = \esc_attr($_GET[$field_name]);
+                    }
+
+                    if ($has_email_constraint) {
+                        $prefilled_value = Utils::formNormalizeSpaces($prefilled_value);
+                        $prefilled_value = \str_replace(" ", "+", $prefilled_value);
+                        $prefilled_value = \sanitize_email($prefilled_value);
+                    } else {
+                        if (is_array($prefilled_value)) {
+                            $prefilled_value = \array_map([Utils::class, 'formSanitizeText'], $prefilled_value);
+                        } else {
+                            $prefilled_value = Utils::formSanitizeText($prefilled_value);
+                        }
+                    }
+
+                    $this->setDefaultValue($field_name, $prefilled_value);
+                    $this->fields[$field_name]['prefilled'] = true;
                 }
-
-                $this->setDefaultValue($field_name, $prefilled_value);
             } elseif (isset($data['default_value'])) {
                 $this->setDefaultValue($field_name, $data['default_value']);
             }
+
         }
     }
 
@@ -226,7 +239,7 @@ abstract class Form implements Handlable
             $this->default_values = [];
         }
 
-        if (!is_array($values)) {
+        if (!\is_array($values)) {
             $values = [];
         }
 
@@ -243,9 +256,14 @@ abstract class Form implements Handlable
         return $this;
     }
 
-    public function hasDefaultValue($field)
+    public function hasDefaultValue(string $field): bool
     {
         return isset($this->default_values[$field]);
+    }
+
+    public function hasDefaultValues(): bool
+    {
+        return !empty($this->default_values);
     }
 
     public function getDefaultValue($field)
