@@ -1,3 +1,10 @@
+## [1.4.3](https://github.com/idetik/coretik/compare/v1.4.2...v1.4.3) (2023-04-10)
+
+
+### Bug Fixes
+
+* Form service : enhance prefillable fields feature ([2b25774](https://github.com/idetik/coretik/commit/2b257748eacf45b12df82150cf927228507b8928))
+
 ## [1.4.2](https://github.com/idetik/coretik/compare/v1.4.1...v1.4.2) (2023-04-08)
 
 
