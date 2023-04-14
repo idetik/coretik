@@ -1,3 +1,10 @@
+## [1.4.4](https://github.com/idetik/coretik/compare/v1.4.3...v1.4.4) (2023-04-14)
+
+
+### Bug Fixes
+
+* add cacheless method in queries adapters ([3c68b4f](https://github.com/idetik/coretik/commit/3c68b4ff6fb1f89cc58b81a5f75bc7fe89c60c08))
+
 ## [1.4.3](https://github.com/idetik/coretik/compare/v1.4.2...v1.4.3) (2023-04-10)
 
 
