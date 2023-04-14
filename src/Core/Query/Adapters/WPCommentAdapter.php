@@ -109,6 +109,18 @@ class WPCommentAdapter extends WPAdapter
         return $this;
     }
 
+    public function withoutMetas(): self
+    {
+        $this->set('update_comment_meta_cache', false);
+        return $this;
+    }
+
+    public function withoutPosts(): self
+    {
+        $this->set('update_comment_post_cache', false);
+        return $this;
+    }
+
     protected function resolveWhere(WhereClauseInterface $where, $relation)
     {
         switch (true) {

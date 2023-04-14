@@ -100,6 +100,12 @@ class WPTermAdapter extends WPAdapter
         return $this;
     }
 
+    public function withoutMetas(): self
+    {
+        $this->set('update_term_meta_cache', false);
+        return $this;
+    }
+
     protected function resolveWhere(WhereClauseInterface $where, $relation)
     {
         switch (true) {
