@@ -148,18 +148,25 @@ class WPPostAdapter extends WPAdapter
         if (!in_array($context . '__' . $opt, static::PARAMETERS)) {
             throw new \Exception("Invalid contex : " . $context . "__" . $opt);
         }
+
         $values = $values ?: [0];
-        if (isset($this->{$context . '__' . $opt})) {
-            switch ($opt) {
-                case 'in':
-                    $values = array_intersect($this->{$context . '__' . $opt}, $values);
-                    break;
-                case 'not_in':
-                default:
-                    $values = array_unique(array_merge($this->{$context . '__' . $opt}, $values));
-                    break;
-            }
+        if (!isset($this->{$context . '__' . $opt})) {
+            $this->{$context . '__' . $opt} = [];
         }
+
+        switch ($opt) {
+            case 'in':
+                $values = array_intersect($this->{$context . '__' . $opt}, $values);
+                break;
+            case 'not_in':
+            default:
+                if (isset($this->{$context . '__in'})) {
+                    $this->{$context . '__in'} = array_diff($this->{$context . '__in'}, $values);
+                }
+                $values = array_unique(array_merge($this->{$context . '__' . $opt}, $values));
+                break;
+        }
+
         $this->{$context . '__' . $opt} = $values;
         return $this;
     }
