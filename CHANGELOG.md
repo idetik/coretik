@@ -1,3 +1,10 @@
+## [1.4.5](https://github.com/idetik/coretik/compare/v1.4.4...v1.4.5) (2023-04-17)
+
+
+### Bug Fixes
+
+* Core query adapter, fix context in/not_in (wp query) ([61a399c](https://github.com/idetik/coretik/commit/61a399c4df266411334d213460d958ad7d8faab3))
+
 ## [1.4.4](https://github.com/idetik/coretik/compare/v1.4.3...v1.4.4) (2023-04-14)
 
 
