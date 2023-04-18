@@ -1,3 +1,10 @@
+## [1.4.6](https://github.com/idetik/coretik/compare/v1.4.5...v1.4.6) (2023-04-18)
+
+
+### Bug Fixes
+
+* lazy load handlers guard & defaultMetaValue only if needed ([7a2aeb1](https://github.com/idetik/coretik/commit/7a2aeb14b22a583efd64aae6dcbbd4d39d1f2b12))
+
 ## [1.4.5](https://github.com/idetik/coretik/compare/v1.4.4...v1.4.5) (2023-04-17)
 
 
