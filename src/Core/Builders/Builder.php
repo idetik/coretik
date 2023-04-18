@@ -12,6 +12,7 @@ abstract class Builder implements BuilderInterface
     protected $registerPriority = 0;
     protected $services;
     protected $handlers;
+    protected $handlersClassName = [];
 
     abstract public function getName(): string;
     abstract public function getType(): string;
@@ -41,8 +42,14 @@ abstract class Builder implements BuilderInterface
             }
             $handler = new $handler();
         }
+        $this->handlersClassName[] = $handler::class;
         $this->handlers->attach($handler);
         return $this;
+    }
+
+    public function hasHandlerClassName(string $classname): bool
+    {
+        return \in_array($classname, $this->handlersClassName);
     }
 
     public function handlers(array $handlers): self

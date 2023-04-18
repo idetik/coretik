@@ -4,6 +4,7 @@ namespace Coretik\Core\Models\Handlers;
 
 use Coretik\Core\Builders\Interfaces\BuilderInterface;
 use Coretik\Core\Builders\Interfaces\HandlerInterface;
+use Coretik\Core\Builders\Interfaces\ModelableInterface;
 use Coretik\Core\Models\Interfaces\MetableAdapterInterface;
 use Coretik\Core\Utils\Classes;
 
@@ -28,6 +29,10 @@ class Guard implements HandlerInterface
 
     public function guard($check, $object_id, $meta_key, $meta_value, $prev_value)
     {
+        if (!$this->builder instanceof ModelableInterface) {
+            return $check;
+        }
+
         if (!$this->builder->concern($object_id)) {
             return $check;
         }

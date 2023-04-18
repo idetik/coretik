@@ -18,8 +18,6 @@ trait Metable
 {
     protected $metas;
     protected array $metasKeys = [];
-    protected $guardHandler;
-    protected $defaultMetaHandler;
 
     protected function initializeMetable()
     {
@@ -55,15 +53,13 @@ trait Metable
                 return;
             }
 
-            if (!isset($this->defaultMetaHandler)) {
-                $this->defaultMetaHandler = new DefaultMetaDataHandler();
-            }
-
-            if ($builder->getHandlers()->contains($this->defaultMetaHandler)) {
+            if ($builder->hasHandlerClassName(DefaultMetaDataHandler::class)) {
                 return;
             }
-            $this->defaultMetaHandler->handle($builder);
-            $builder->handler($this->defaultMetaHandler);
+
+            $handler = new DefaultMetaDataHandler();
+            $handler->handle($builder);
+            $builder->handler($handler);
         });
 
         $meta->on('protect', function () {
@@ -72,15 +68,13 @@ trait Metable
                 return;
             }
 
-            if (!isset($this->guardHandler)) {
-                $this->guardHandler = new Guard();
-            }
-
-            if ($builder->getHandlers()->contains($this->guardHandler)) {
+            if ($builder->hasHandlerClassName(Guard::class)) {
                 return;
             }
-            $this->guardHandler->handle($builder);
-            $builder->handler($this->guardHandler);
+
+            $handler = new Guard();
+            $handler->handle($builder);
+            $builder->handler($handler);
         });
 
         if (!empty($protected)) {
