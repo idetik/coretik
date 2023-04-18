@@ -1,3 +1,10 @@
+## [1.4.7](https://github.com/idetik/coretik/compare/v1.4.6...v1.4.7) (2023-04-18)
+
+
+### Bug Fixes
+
+* fix handlers loading ([bd9f332](https://github.com/idetik/coretik/commit/bd9f332b28c71c8ba1983d90596e81f8e3908052))
+
 ## [1.4.6](https://github.com/idetik/coretik/compare/v1.4.5...v1.4.6) (2023-04-18)
 
 
