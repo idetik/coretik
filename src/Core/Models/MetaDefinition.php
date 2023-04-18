@@ -2,8 +2,12 @@
 
 namespace Coretik\Core\Models;
 
+use Coretik\Core\Models\Traits\Hooks;
+
 class MetaDefinition
 {
+    use Hooks;
+
     protected $key;
     protected $localName;
     protected $isProtected = false;
@@ -20,6 +24,7 @@ class MetaDefinition
     public function protect()
     {
         $this->isProtected = true;
+        $this->trigger('protect');
         return $this;
     }
 
@@ -39,6 +44,7 @@ class MetaDefinition
     public function setDefaultValue($defaultValue)
     {
         $this->defaultValue = $defaultValue;
+        $this->trigger('set_default_value');
         return $this;
     }
 
@@ -92,6 +98,14 @@ class MetaDefinition
     }
 
     public function __toString()
+    {
+        return $this->key;
+    }
+
+    /**
+     * Method required for Hooks trait
+     */
+    protected function name(): string
     {
         return $this->key;
     }

@@ -7,7 +7,6 @@ use Coretik\Core\Builders\Taxonomy\Args;
 use Coretik\Core\Builders\PostType\Labels;
 use Coretik\Core\Utils\Arr;
 use Coretik\Core\Query\Term as Query;
-use Coretik\Core\Models\Handlers\Guard;
 
 final class TaxonomyBuiltIn extends BuilderModelable
 {
@@ -30,9 +29,6 @@ final class TaxonomyBuiltIn extends BuilderModelable
         $args['labels']['plural'] = $args['labels']['name'];
         $this->args = new Args($args);
         parent::__construct();
-        $this->handlers([
-            new Guard()
-        ]);
         $this->querier(function ($mediator) {
             return new Query($mediator);
         });

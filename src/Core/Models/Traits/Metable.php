@@ -3,6 +3,8 @@
 namespace Coretik\Core\Models\Traits;
 
 use Coretik\Core\Collection;
+use Coretik\Core\Models\Handlers\DefaultMetaDataHandler;
+use Coretik\Core\Models\Handlers\Guard;
 use Coretik\Core\Models\Exceptions\AdapterNotFoundException;
 use Coretik\Core\Models\Interfaces\MetableAdapterInterface;
 use Coretik\Core\Models\MetaDefinition;
@@ -16,6 +18,8 @@ trait Metable
 {
     protected $metas;
     protected array $metasKeys = [];
+    protected $guardHandler;
+    protected $defaultMetaHandler;
 
     protected function initializeMetable()
     {
@@ -45,6 +49,39 @@ trait Metable
         }
 
         $meta = new MetaDefinition($local_key, $meta_key);
+        $meta->on('set_default_value', function () {
+            $builder = app()->schema()->resolve($this);
+            if (!$builder) {
+                return;
+            }
+
+            if (!isset($this->defaultMetaHandler)) {
+                $this->defaultMetaHandler = new DefaultMetaDataHandler();
+            }
+
+            if ($builder->getHandlers()->contains($this->defaultMetaHandler)) {
+                return;
+            }
+            $this->defaultMetaHandler->handle($builder);
+            $builder->handler($this->defaultMetaHandler);
+        });
+
+        $meta->on('protect', function () {
+            $builder = app()->schema()->resolve($this);
+            if (!$builder) {
+                return;
+            }
+
+            if (!isset($this->guardHandler)) {
+                $this->guardHandler = new Guard();
+            }
+
+            if ($builder->getHandlers()->contains($this->guardHandler)) {
+                return;
+            }
+            $this->guardHandler->handle($builder);
+            $builder->handler($this->guardHandler);
+        });
 
         if (!empty($protected)) {
             if (\is_callable($protected)) {

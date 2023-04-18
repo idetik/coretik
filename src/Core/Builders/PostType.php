@@ -8,8 +8,6 @@ use Coretik\Core\Builders\Interfaces\TaxonomiableInterface;
 use Coretik\Core\Builders\PostType\Args;
 use Coretik\Core\Builders\PostType\Labels;
 use Coretik\Core\Query\Post as Query;
-use Coretik\Core\Models\Handlers\Guard;
-use Coretik\Core\Models\Handlers\DefaultMetaDataHandler;
 
 use function Globalis\WP\Cubi\is_frontend;
 
@@ -27,10 +25,6 @@ final class PostType extends BuilderModelable implements RegistrableInterface, T
         $this->args = new Args($args);
         $this->names = $names;
         parent::__construct();
-        $this->handlers([
-            new Guard(),
-            new DefaultMetaDataHandler()
-        ]);
         $this->querier(function ($mediator) {
             return new Query($mediator);
         });
