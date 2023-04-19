@@ -2,16 +2,23 @@
 
 namespace Coretik\Core\Models;
 
-use Coretik\Core\Models\Interfaces\AdapterInterface as Adapter;
-use Coretik\Core\Models\Interfaces\ModelInterface;
-use Coretik\Core\Models\Interfaces\DictionnaryInterface as Dictionnary;
+use Coretik\Core\Models\Interfaces\{
+    AdapterInterface as Adapter,
+    DictionnaryInterface as Dictionnary,
+    ModelInterface,
+};
+use Coretik\Core\Models\Traits\{
+    Bootable,
+    Initializable,
+    Hooks
+};
 
 #[\AllowDynamicProperties]
 abstract class Model implements ModelInterface
 {
-    use Traits\Bootable;
-    use Traits\Initializable;
-    use Traits\Hooks;
+    use Bootable;
+    use Initializable;
+    use Hooks;
 
     protected $id;
     protected $name = '';
@@ -22,7 +29,7 @@ abstract class Model implements ModelInterface
     /**
      * Construct
      */
-    public function __construct($initializer = null)
+    public function __construct($initializer = null, $mediator = null)
     {
         if (!empty($initializer)) {
             if (empty($this->id()) || empty($this->name)) {
@@ -31,6 +38,8 @@ abstract class Model implements ModelInterface
             if (empty($this->adapter)) {
                 throw new \Exception("Unable to load adapter.");
             }
+        } elseif (!empty($mediator)) {
+            $this->name = $mediator->getName();
         }
         static::bootIfNotBooted();
         $this->initialize();

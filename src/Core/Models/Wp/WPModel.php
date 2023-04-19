@@ -8,14 +8,14 @@ class WPModel extends Model
 {
     protected $wp_object;
 
-    public function __construct($initializer = null)
+    public function __construct($initializer = null, $mediator = null)
     {
         if (!empty($initializer)) {
             if (empty($this->wp_object)) {
                 throw new \Exception("Unable to resolve initializer.");
             }
         }
-        parent::__construct($initializer);
+        parent::__construct($initializer, $mediator);
         $this->on('saved', function ($savedModel) {
             $this->wp_object = $this->adapter->get($savedModel->id());
         });

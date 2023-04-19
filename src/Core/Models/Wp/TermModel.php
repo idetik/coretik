@@ -11,7 +11,7 @@ class TermModel extends WPModel
     use Relationships;
     use AcfFields;
 
-    public function __construct($initializer = null)
+    public function __construct($initializer = null, $mediator = null)
     {
         $this->adapter = new WPTermAdapter($this);
         $this->dictionnary = new TermDictionnary();
@@ -28,6 +28,9 @@ class TermModel extends WPModel
                 $this->name = $this->wp_object->taxonomy;
                 break;
             default:
+                if (!empty($mediator)) {
+                    $this->name = $mediator->getName();
+                }
                 break;
         }
         parent::__construct();

@@ -15,7 +15,7 @@ class PostModel extends WPModel
     use Taxonomy;
     use Relationships;
 
-    public function __construct($initializer = null)
+    public function __construct($initializer = null, $mediator = null)
     {
         $this->adapter = new WPPostAdapter($this);
         $this->dictionnary = new PostDictionnary();
@@ -32,6 +32,9 @@ class PostModel extends WPModel
                 $this->name = $this->wp_object->post_type;
                 break;
             default:
+                if (!empty($mediator)) {
+                    $this->name = $mediator->getName();
+                }
                 break;
         }
         parent::__construct();
