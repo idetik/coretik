@@ -1,3 +1,10 @@
+## [1.4.8](https://github.com/idetik/coretik/compare/v1.4.7...v1.4.8) (2023-04-19)
+
+
+### Bug Fixes
+
+* Traits namespace namings & use mediator in model factory to set name on creating ([6d14f7f](https://github.com/idetik/coretik/commit/6d14f7f8b71ebf4460e9b1f2633d6ce82aa815f3))
+
 ## [1.4.7](https://github.com/idetik/coretik/compare/v1.4.6...v1.4.7) (2023-04-18)
 
 
