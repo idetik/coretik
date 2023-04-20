@@ -90,6 +90,11 @@ class TermModel extends WPModel
         return $this->get('parent');
     }
 
+    public function parent(): self
+    {
+        return app()->schema($this->name(), 'taxonomy')->model($this->parentId());
+    }
+
     public function setParentId(int $id): self
     {
         $this->parent = $id;

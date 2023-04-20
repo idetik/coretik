@@ -101,6 +101,11 @@ class PostModel extends WPModel
         return $this->get('post_parent');
     }
 
+    public function parent(): self
+    {
+        return app()->schema($this->name(), 'post')->model($this->parentId());
+    }
+
     public function setParentId(int $id): self
     {
         $this->post_parent = $id;
