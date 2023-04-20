@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/idetik/coretik/compare/v1.4.8...v1.5.0) (2023-04-20)
+
+
+### Features
+
+* add parent method on post & term model ([4b0fb5b](https://github.com/idetik/coretik/commit/4b0fb5b31e77a403e9162ec4bdd7d6b98c158aa4))
+
 ## [1.4.8](https://github.com/idetik/coretik/compare/v1.4.7...v1.4.8) (2023-04-19)
 
 
