@@ -150,16 +150,18 @@ class WPPostAdapter extends WPAdapter
         }
 
         $values = $values ?: [0];
-        if (!isset($this->{$context . '__' . $opt})) {
-            $this->{$context . '__' . $opt} = [];
-        }
-
         switch ($opt) {
             case 'in':
-                $values = array_intersect($this->{$context . '__' . $opt}, $values);
+                if (isset($this->{$context . '__in'})) {
+                    $values = array_intersect($this->{$context . '__' . $opt}, $values);
+                }
                 break;
             case 'not_in':
             default:
+                if (!isset($this->{$context . '__' . $opt})) {
+                    $this->{$context . '__' . $opt} = [];
+                }
+
                 if (isset($this->{$context . '__in'})) {
                     $this->{$context . '__in'} = array_diff($this->{$context . '__in'}, $values);
                 }
