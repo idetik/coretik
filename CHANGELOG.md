@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/idetik/coretik/compare/v1.5.0...v1.5.1) (2023-05-02)
+
+
+### Bug Fixes
+
+* Fix queries context in ([3b67fba](https://github.com/idetik/coretik/commit/3b67fba695bbb92a62762ec7b1cd012c906a461e))
+
 # [1.5.0](https://github.com/idetik/coretik/compare/v1.4.8...v1.5.0) (2023-04-20)
 
 
