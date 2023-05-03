@@ -1,3 +1,10 @@
+## [1.5.2](https://github.com/idetik/coretik/compare/v1.5.1...v1.5.2) (2023-05-03)
+
+
+### Bug Fixes
+
+* Forms service enhance dates constraints ([f6b108e](https://github.com/idetik/coretik/commit/f6b108eaaa820ba50b8ac4ce826d893c191412bc))
+
 ## [1.5.1](https://github.com/idetik/coretik/compare/v1.5.0...v1.5.1) (2023-05-02)
 
 
