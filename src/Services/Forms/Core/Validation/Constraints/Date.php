@@ -7,9 +7,20 @@ use Coretik\Services\Forms\Core\Utils;
 class Date extends Constraint
 {
     private $name    = 'date';
-    private $message = 'La date est invalide.';
+    private $message;
     private $display_message = true;
-    private $format  = 'd/m/Y';
+    private $format;
+
+    public function __construct($args)
+    {
+        $defaults = [
+            'message'  => 'La date est invalide.',
+            'format'   => 'd/m/Y',
+        ];
+        $args = wp_parse_args($args, $defaults);
+        $this->message  = $args['message'];
+        $this->format = $args['format'];
+    }
 
     public function getName()
     {

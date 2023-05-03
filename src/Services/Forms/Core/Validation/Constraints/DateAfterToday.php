@@ -7,9 +7,20 @@ use Coretik\Services\Forms\Core\Utils;
 class DateAfterToday extends Constraint
 {
     private $name            = 'date-after-today';
-    private $message         = "La date doit être supérieure ou égale à la date d'aujourd'hui.";
+    private $message;
     private $display_message = true;
-    private $format          = 'd/m/Y';
+    private $format;
+
+    public function __construct($args)
+    {
+        $defaults = [
+            'message'  => 'La date doit être supérieure ou égale à la date d\'aujourd\'hui.',
+            'format'   => 'd/m/Y',
+        ];
+        $args = wp_parse_args($args, $defaults);
+        $this->message  = $args['message'];
+        $this->format = $args['format'];
+    }
 
     public function getName()
     {
@@ -31,10 +42,10 @@ class DateAfterToday extends Constraint
         if (!Utils::issetValue($value)) {
             return true;
         }
-        $today = new \Datetime('now', get_option('timezone_string'));
+        $today = new \Datetime('now', \wp_timezone());
         $today->setTime(0, 0, 0, 0);
 
-        $date  = \DateTime::createFromFormat($this->format, $value, get_option('timezone_string'));
+        $date  = \DateTime::createFromFormat($this->format, $value, \wp_timezone());
         $date->setTime(0, 0, 0, 0);
 
         return $date && ($date >= $today);

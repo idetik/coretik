@@ -54,20 +54,11 @@ abstract class Constraint
                 }
                 break;
             case 'date':
-                if (true === $args) {
-                    return static::get('Date');
-                }
-                break;
+                return static::get('Date', [$args]);
             case 'date-after-today':
-                if (true === $args) {
-                    return static::get('DateAfterToday');
-                }
-                break;
+                return static::get('DateAfterToday', [$args]);
             case 'date-before-today':
-                if (true === $args) {
-                    return static::get('DateBeforeToday');
-                }
-                break;
+                return static::get('DateBeforeToday', [$args]);
             case 'numeric':
                 if (true === $args) {
                     return static::get('Numeric');
