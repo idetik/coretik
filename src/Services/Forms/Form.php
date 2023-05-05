@@ -202,6 +202,10 @@ abstract class Form implements Handlable
 
             $this->fields[$field_name] = $field;
 
+            if (isset($data['default_value'])) {
+                $this->setDefaultValue($field_name, $data['default_value']);
+            }
+
             if (!\array_key_exists('prefillable', $data) || true === $data['prefillable']) {
                 if (!empty($_GET) && \array_key_exists($field_name, $_GET)) {
 
@@ -226,10 +230,7 @@ abstract class Form implements Handlable
                     $this->setDefaultValue($field_name, $prefilled_value);
                     $this->fields[$field_name]['prefilled'] = true;
                 }
-            } elseif (isset($data['default_value'])) {
-                $this->setDefaultValue($field_name, $data['default_value']);
             }
-
         }
     }
 
