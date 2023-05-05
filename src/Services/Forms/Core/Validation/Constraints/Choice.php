@@ -41,6 +41,15 @@ class Choice extends Constraint
         if (!Utils::issetValue($value)) {
             return true;
         }
-        return array_key_exists($value, $this->choices);
+
+        $value = Utils::forceArray($value);
+
+        foreach ($value as $val) {
+            if (!\array_key_exists($val, $this->choices)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
