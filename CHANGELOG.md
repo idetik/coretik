@@ -1,3 +1,10 @@
+## [1.5.4](https://github.com/idetik/coretik/compare/v1.5.3...v1.5.4) (2023-05-05)
+
+
+### Bug Fixes
+
+* Forms service fix choice constraint ([2c7f9c2](https://github.com/idetik/coretik/commit/2c7f9c26ebdc328faa026402a163a58c29845d78))
+
 ## [1.5.3](https://github.com/idetik/coretik/compare/v1.5.2...v1.5.3) (2023-05-05)
 
 
