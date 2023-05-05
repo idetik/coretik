@@ -1,3 +1,10 @@
+## [1.5.3](https://github.com/idetik/coretik/compare/v1.5.2...v1.5.3) (2023-05-05)
+
+
+### Bug Fixes
+
+* Forms service fix default value from rules ([5aa4e04](https://github.com/idetik/coretik/commit/5aa4e042270140119eae35267f1481f50c79c9aa))
+
 ## [1.5.2](https://github.com/idetik/coretik/compare/v1.5.1...v1.5.2) (2023-05-03)
 
 
