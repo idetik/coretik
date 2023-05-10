@@ -1,3 +1,10 @@
+## [1.5.5](https://github.com/idetik/coretik/compare/v1.5.4...v1.5.5) (2023-05-10)
+
+
+### Bug Fixes
+
+* Forms service add custom message support on choice late constraint ([41a3144](https://github.com/idetik/coretik/commit/41a31445b82a85a8f94689691a859c05025c8090))
+
 ## [1.5.4](https://github.com/idetik/coretik/compare/v1.5.3...v1.5.4) (2023-05-05)
 
 
