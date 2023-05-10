@@ -7,7 +7,7 @@ use Coretik\Services\Forms\Core\Utils;
 class ChoiceLate extends Constraint
 {
     private $name    = 'choice-late';
-    private $message = 'Ce choix n\'est pas valide.';
+    private $message;
     private $display_message = false;
     private $provider;
     private $mapping;
@@ -17,10 +17,12 @@ class ChoiceLate extends Constraint
         $defaults = [
             'provider' => '_return_empty_array',
             'mapping'  => [],
+            'message'  => 'Ce choix n\'est pas valide.',
         ];
         $args = wp_parse_args($args, $defaults);
         $this->provider = $args['provider'];
         $this->mapping  = $args['mapping'];
+        $this->message  = $args['message'];
     }
 
     public function getName()
