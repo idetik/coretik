@@ -1,3 +1,10 @@
+## [1.5.6](https://github.com/idetik/coretik/compare/v1.5.5...v1.5.6) (2023-06-04)
+
+
+### Bug Fixes
+
+* AcfFields trait resolve model id ([c611ae8](https://github.com/idetik/coretik/commit/c611ae8671175b5c034b2dbc30f1a352093a9bfc))
+
 ## [1.5.5](https://github.com/idetik/coretik/compare/v1.5.4...v1.5.5) (2023-05-10)
 
 
