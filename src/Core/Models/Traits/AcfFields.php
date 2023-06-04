@@ -2,10 +2,15 @@
 
 namespace Coretik\Core\Models\Traits;
 
+use Carbon\Carbon;
 use Coretik\Core\Utils\Classes;
 use Coretik\Core\Models\Exceptions\AdapterNotFoundException;
 use Coretik\Core\Models\Interfaces\MetableAdapterInterface;
-use Carbon\Carbon;
+use Coretik\Core\Models\Wp\ {
+    UserModel,
+    TermModel,
+    CommentModel,
+};
 
 trait AcfFields
 {
@@ -20,12 +25,12 @@ trait AcfFields
 
     public function getField(string $key)
     {
-        return \get_field($key, $this->id);
+        return \get_field($key, $this->acfId());
     }
 
     public function getFieldAsDateTime(string $prop): Carbon
     {
-        $object = \get_field_object($prop, $this->id, true, true);
+        $object = \get_field_object($prop, $this->acfId(), true, true);
         if (empty($object) || empty($object['value'])) {
             return null;
         }
@@ -38,6 +43,15 @@ trait AcfFields
 
     public function getUnFormattedField(string $prop)
     {
-        return \get_field($prop, $this->id, false);
+        return \get_field($prop, $this->acfId(), false);
+    }
+
+    public function acfId(): string
+    {
+        return match (true) {
+            $this instanceof TermModel => sprintf('term_%s', $this->id),
+            $this instanceof UserModel => sprintf('user_%s', $this->id),
+            default => $this->id,
+        };
     }
 }
