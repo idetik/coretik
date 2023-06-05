@@ -1,3 +1,10 @@
+## [1.5.7](https://github.com/idetik/coretik/compare/v1.5.6...v1.5.7) (2023-06-05)
+
+
+### Bug Fixes
+
+* TaxonomyClause query include_children ([e7acbf2](https://github.com/idetik/coretik/commit/e7acbf2cbd9fd546abe6008991e0505d6b83a132))
+
 ## [1.5.6](https://github.com/idetik/coretik/compare/v1.5.5...v1.5.6) (2023-06-04)
 
 
