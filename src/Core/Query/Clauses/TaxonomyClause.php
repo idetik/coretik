@@ -34,7 +34,7 @@ class TaxonomyClause extends WhereClause implements TaxonomyClauseInterface
             'field' => $this->field(),
             'terms' => $this->value(),
             'operator' => $this->compare(),
-            'children' => $this->children(),
+            'include_children' => $this->children(),
         ];
     }
 }
