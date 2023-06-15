@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/idetik/coretik/compare/v1.5.7...v1.6.0) (2023-06-15)
+
+
+### Features
+
+* Enable actions system ([1a73d68](https://github.com/idetik/coretik/commit/1a73d68cf4a0a380305f2afaeaf56a5825025757))
+
 ## [1.5.7](https://github.com/idetik/coretik/compare/v1.5.6...v1.5.7) (2023-06-05)
 
 
