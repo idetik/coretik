@@ -4,11 +4,26 @@ namespace Coretik\Core\Models\Traits;
 
 use Coretik\Core\Actions as CoreActions;
 
+/**
+ * To be used by Coretik Model.
+ * 
+ * Provide a callable [$this, 'getActions']
+ *  - arrayof ['actionName' => @param \Coretik\Core\Actions\ActionInterface]
+ */
 trait Actions
 {
-    protected static function hooksActions()
+    use Hooks;
+
+    protected function initializeActions()
     {
-        \add_action('init', [static::class, "handleActions"]);
+        $this->on('launch_actions', function () {
+            if (!\did_action('init')) {
+                \remove_action('init', [$this, 'handleActions']);
+            }
+            $this->handleActions();
+        });
+
+        \add_action('init', [$this, 'handleActions']);
     }
 
     public static function getActionKey()
@@ -16,14 +31,14 @@ trait Actions
         return static::POST_TYPE . '-request';
     }
 
-    public static function handleActions()
+    public function handleActions()
     {
         $action_key = self::getActionKey();
         if (!isset($_REQUEST[$action_key])) {
             return false;
         }
 
-        $actions = self::getActions();
+        $actions = $this->getActions();
         if (!array_key_exists($_REQUEST[$action_key], $actions)) {
             return null;
         }
