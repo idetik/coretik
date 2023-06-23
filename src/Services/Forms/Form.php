@@ -26,7 +26,6 @@ abstract class Form implements Handlable
     protected $metas             = [];
     protected $persistentMetaKey = [];
     protected static $instances = [];
-    protected $context = [];
 
     protected $akismet_is_spam = null;
     protected $config;
