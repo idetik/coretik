@@ -1,3 +1,10 @@
+## [1.6.2](https://github.com/idetik/coretik/compare/v1.6.1...v1.6.2) (2023-08-30)
+
+
+### Bug Fixes
+
+* WP Post query adapter, fix context post__in with many conditions ([d237cf2](https://github.com/idetik/coretik/commit/d237cf25632e1edfc6bc3ff443cbc1be3d99e164))
+
 ## [1.6.1](https://github.com/idetik/coretik/compare/v1.6.0...v1.6.1) (2023-06-23)
 
 
