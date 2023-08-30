@@ -153,7 +153,7 @@ class WPPostAdapter extends WPAdapter
         switch ($opt) {
             case 'in':
                 if (isset($this->{$context . '__in'})) {
-                    $values = array_intersect($this->{$context . '__' . $opt}, $values);
+                    $values = array_intersect($this->{$context . '__' . $opt}, $values) ?: [0];
                 }
                 break;
             case 'not_in':
