@@ -3,19 +3,32 @@
 namespace Coretik\Core;
 
 use Psr\Container\ContainerInterface;
-use Coretik\Core\Builders\Interfaces\BuilderInterface;
-use Coretik\Core\Builders\Interfaces\ModelableInterface;
-use Coretik\Core\Builders\Interfaces\RegistrableInterface;
 use Coretik\Core\Exception\ContainerValueNotFoundException;
 use Coretik\Core\Models\Interfaces\ModelInterface;
-use Coretik\Core\Models\Wp\PostModel;
-use Coretik\Core\Models\Wp\TermModel;
-use Coretik\Core\Models\Wp\UserModel;
-use Coretik\Core\Models\Wp\CommentModel;
-use Coretik\Core\Query\Post as PostQuery;
-use Coretik\Core\Query\User as UserQuery;
-use Coretik\Core\Query\Term as TermQuery;
-use Coretik\Core\Query\Comment as CommentQuery;
+use Coretik\Core\Builders\{
+    PostType,
+    PostTypeBuiltIn,
+    TaxonomyBuiltIn,
+    User,
+    Comment,
+};
+use Coretik\Core\Builders\Interfaces\{
+    BuilderInterface,
+    ModelableInterface,
+    RegistrableInterface,
+};
+use Coretik\Core\Models\Wp\{
+    PostModel,
+    TermModel,
+    UserModel,
+    CommentModel,
+};
+use Coretik\Core\Query\{
+    Post as PostQuery,
+    User as UserQuery,
+    Term as TermQuery,
+    Comment as CommentQuery
+};
 
 class Schema implements ContainerInterface
 {
@@ -24,13 +37,13 @@ class Schema implements ContainerInterface
 
     public function __construct()
     {
-        $this->register(new Builders\PostTypeBuiltIn('page'));
-        $this->register(new Builders\PostTypeBuiltIn('post'));
-        $this->register(new Builders\TaxonomyBuiltIn('category'));
-        $this->register(new Builders\TaxonomyBuiltIn('post_tag'));
-        $this->register(new Builders\PostTypeBuiltIn('attachment'));
-        $this->register(new Builders\User());
-        $this->register(new Builders\Comment());
+        $this->register(new PostTypeBuiltIn('page'));
+        $this->register(new PostTypeBuiltIn('post'));
+        $this->register(new TaxonomyBuiltIn('category'));
+        $this->register(new TaxonomyBuiltIn('post_tag'));
+        $this->register(new PostTypeBuiltIn('attachment'));
+        $this->register(new User());
+        $this->register(new Comment());
     }
 
     public function register(BuilderInterface $builder)
@@ -103,7 +116,7 @@ class Schema implements ContainerInterface
 
     public function unregister(BuilderInterface $builder)
     {
-        if ($builder instanceof Builders\PostTypeBuiltIn) {
+        if ($builder instanceof PostTypeBuiltIn) {
             switch ($builder->getName()) {
                 case 'post':
                     \add_action('admin_menu', function () {
@@ -121,7 +134,7 @@ class Schema implements ContainerInterface
             }
         }
 
-        if ($builder instanceof Builders\PostType) {
+        if ($builder instanceof PostType) {
             \unregister_post_type($builder->getName());
         }
 
