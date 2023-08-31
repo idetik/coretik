@@ -2,18 +2,23 @@
 
 namespace Coretik\Core\Builders;
 
-use Coretik\Core\Builders\Interfaces\BuilderInterface;
-use Coretik\Core\Builders\Interfaces\RegistrableInterface;
-use Coretik\Core\Builders\Interfaces\TaxonomiableInterface;
-use Coretik\Core\Builders\PostType\Args;
-use Coretik\Core\Builders\PostType\Labels;
+use Coretik\Core\Builders\Interfaces\{
+    BuilderInterface,
+    RegistrableInterface,
+    TaxonomiableInterface,
+};
+use Coretik\Core\Builders\PostType\{
+    Args,
+    Labels
+};
+use Coretik\Core\Builders\Traits\Registrable;
 use Coretik\Core\Query\Post as Query;
 
 use function Globalis\WP\Cubi\is_frontend;
 
 final class PostType extends BuilderModelable implements RegistrableInterface, TaxonomiableInterface
 {
-    use Traits\Registrable;
+    use Registrable;
 
     protected $postType;
     protected $args;
@@ -22,8 +27,16 @@ final class PostType extends BuilderModelable implements RegistrableInterface, T
     public function __construct(string $post_type, array $args = [], array $names = [])
     {
         $this->postType = $post_type;
-        $this->args = new Args($args);
-        $this->names = $names;
+
+        if (!empty($names)) {
+            $this->setNames(
+                $names['singular'] ?? '',
+                $names['plural'] ?? ''
+            );
+        }
+
+        $this->setArgs($args);
+
         parent::__construct();
         $this->querier(function ($mediator) {
             return new Query($mediator);
@@ -43,6 +56,31 @@ final class PostType extends BuilderModelable implements RegistrableInterface, T
     public function args(): Args
     {
         return $this->args;
+    }
+
+    public function setArgs(array $args = []): self
+    {
+        $this->args = new Args($args);
+        return $this;
+    }
+
+    public function setNames(string $singular, string $plural): self
+    {
+        $this->setSingularName($singular);
+        $this->setPluralName($plural);
+        return $this;
+    }
+
+    public function setSingularName(string $name): self
+    {
+        $this->names['singular'] = $name;
+        return $this;
+    }
+
+    public function setPluralName(string $name): self
+    {
+        $this->names['plural'] = $name;
+        return $this;
     }
 
     public function addTaxonomy(BuilderInterface $taxonomy)

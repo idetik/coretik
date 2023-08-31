@@ -2,9 +2,16 @@
 
 namespace Coretik\Core\Builders;
 
-final class Status implements Interfaces\BuilderInterface, Interfaces\RegistrableInterface
+use Coretik\Core\Builders\Traits\Registrable;
+use Coretik\Core\Builders\Interfaces\{
+    BuilderInterface,
+    RegistrableInterface
+};
+use SplObjectStorage;
+
+final class Status implements BuilderInterface, RegistrableInterface
 {
-    use Traits\Registrable;
+    use Registrable;
 
     protected $status;
     protected $args;
@@ -27,8 +34,10 @@ final class Status implements Interfaces\BuilderInterface, Interfaces\Registrabl
             'show_in_admin_all_list'    => null,
             'date_floating'             => null,
         ];
-        $this->args = new Collection($args);
-        $this->handlers = new \SplObjectStorage();
+
+        $this->setArgs($args);
+
+        $this->handlers = new SplObjectStorage();
     }
 
     public function getType(): string
@@ -49,6 +58,12 @@ final class Status implements Interfaces\BuilderInterface, Interfaces\Registrabl
     public function args()
     {
         return $this->args;
+    }
+
+    public function setArgs(array $args = []): self
+    {
+        $this->args = new Collection($args);
+        return $this;
     }
 
     public function registerAction(): void

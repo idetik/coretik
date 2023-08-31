@@ -1,23 +1,19 @@
 <?php
 
-/**
- * Todo:
- * 1/ Remove all
- * 2/ Iterate UserTypes Model & save
- * 3/ Set cache buster
- */
-
 namespace Coretik\Core\Builders;
 
-use Coretik\Core\Builders\Interfaces\RegistrableInterface;
-use Coretik\Core\Builders\Interfaces\HandlerInterface;
+use Coretik\Core\Builders\Interfaces\{
+    RegistrableInterface,
+    HandlerInterface
+};
 use Coretik\Core\Collection;
+use Coretik\Core\Builders\Traits\Registrable;
 use Coretik\Core\Builders\Users\Registry;
 use Coretik\Core\Query\User as Query;
 
 final class UserType extends BuilderModelable implements RegistrableInterface
 {
-    use Traits\Registrable {
+    use Registrable {
         registrable as registrableInherited;
     }
 
@@ -26,7 +22,6 @@ final class UserType extends BuilderModelable implements RegistrableInterface
     protected $label;
     protected $caps;
     protected $capsMapped;
-    // protected static $builtIn = ['author', 'editor', 'contributor', 'subscriber'];
 
     public function __construct(string $name, string $label, array $caps = [])
     {

@@ -4,11 +4,14 @@ namespace Coretik\Core\Builders;
 
 use Coretik\Core\Builders\Interfaces\BuilderInterface;
 use Coretik\Core\Builders\Interfaces\HandlerInterface;
+use Coretik\Core\Builders\Traits\Maker;
 use Coretik\Core\Collection;
 use Exception;
 
 abstract class Builder implements BuilderInterface
 {
+    use Maker;
+
     protected $registerPriority = 0;
     protected $services;
     protected $handlers;
