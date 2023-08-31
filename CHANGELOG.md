@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/idetik/coretik/compare/v1.7.0...v1.7.1) (2023-08-31)
+
+
+### Bug Fixes
+
+* README ([c6e4057](https://github.com/idetik/coretik/commit/c6e4057d8c1cde830ce0c0a537b82797603e882e))
+
 # [1.7.0](https://github.com/idetik/coretik/compare/v1.6.2...v1.7.0) (2023-08-31)
 
 
