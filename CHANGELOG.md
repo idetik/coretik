@@ -1,3 +1,17 @@
+# [1.7.0](https://github.com/idetik/coretik/compare/v1.6.2...v1.7.0) (2023-08-31)
+
+
+### Bug Fixes
+
+* Enhance used namespaces in Schema.php ([136853c](https://github.com/idetik/coretik/commit/136853ca01cb2e2826e45c7d347a5bf071a247f6))
+* Fix php error on schema viewer (taxonomy single) ([558f4d7](https://github.com/idetik/coretik/commit/558f4d7abde5d4d1c5c6b6860d2ece7ee3057737))
+
+
+### Features
+
+* Add a maker to create builders ([2f694fa](https://github.com/idetik/coretik/commit/2f694fac0ad9fe8b39c16a29e02c83777c7d40e6))
+* README ([03d5792](https://github.com/idetik/coretik/commit/03d5792e3bc0bda17d7918d0b13d712c77c938b2))
+
 ## [1.6.2](https://github.com/idetik/coretik/compare/v1.6.1...v1.6.2) (2023-08-30)
 
 
