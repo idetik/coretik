@@ -10,6 +10,29 @@ Manage models, queries, services and more...
 
 ## Get started
 
+### Dependency Injection Container
+
+A coretik application uses Pimple as Dependency injection containers.
+As many other dependency injection containers, Pimple manages two different kind of data: services and parameters.
+Please read the official documentation on Github: https://github.com/silexphp/Pimple.
+Coretik comes with severals services built in. You can find them in `src/Services` (doc in the todoux list...)
+
+First, create your application container in your functions.php :
+
+```php
+use Coretik\App;
+use Coretik\Core\Container;
+
+$container = new Container();
+
+$container['my-service'] = function ($container) {
+    return new MyService();
+};
+
+App::run($container);
+```
+
+
 ### Schema : declare custom post type and taxonomies
 
 #### Simple use case
@@ -93,10 +116,10 @@ Taxonomy::make('my_custom_taxonomy')
 
 ### Models
 
-As model in MVC design pattern, it contains only the pure application data. This makes it easier to maintain and scale the application over time
+As model in MVC design pattern, it contains only the pure application data. This makes it easier to maintain and scale the application over time.
 It supports relathionships between post types and taxonomies or others customs stuffs.
 
-### Set a custom model class for object
+
 #### Setup
 
 ```php
@@ -126,7 +149,7 @@ foreach ($models as $model) {
 
 #### Advanced
 
-Models can handle post metas easily, including protected metas. Models provides a meta accessor like object properties. Metas has to be declared in the model constructor.
+Models can handle post metas easily, including protected metas. Models provides a meta accessor like object properties. Metas have to be declared in the model constructor.
 Only declared metas will be saved in database on a CRUD action.
 
 ```php
@@ -195,7 +218,9 @@ class MyPostModel extends PostModel
     /**
      * Relationships
      * 
-     * For now, only post <-> taxonomy relationships are ready to use with wp-admin. Posts to posts relationships (1, n) require an extra handler on the post type builder, who update the post_parent column on save post. We are working to include this feature on a next release.
+     * For now, only post <-> taxonomy relationships are ready to use with wp-admin.
+     * Posts to posts relationships (1, n) require an extra handler on the post type builder, who update the post_parent column on save post.
+     * We are working to include this feature on a next release.
      */
     public function setCategory(ModelInterface|int|string $category): self
     {
@@ -290,7 +315,7 @@ foreach ($models as $model) {
 See `src/Core/Query/Adapters` folder. 
 
 
-### Set a custom query class for object
+### Custom query
 #### Setup
 
 ```php
@@ -366,24 +391,67 @@ $result = app()
 echo $result->title(); // Mr Bar Foo
 ```
 
-### Dependency Injection Container
+### Handlers
 
-A coretik application uses Pimple as Dependency injection containers.
-As many other dependency injection containers, Pimple manages two different kind of data: services and parameters.
-Please read the official documentation on Github: https://github.com/silexphp/Pimple.
-Coretik comes with severals services built in. You can find them in `src/Services` (doc in the todoux list...)
+Handlers were designed to be reusable, maintainable and flexible. Handlers allow us to hook anythings about a post type or taxonomy, and give us the capability to modify the default workflow as you want.
 
-First, create your application container in your functions.php :
+Your handler have to implement `Coretik\Core\Builders\Interfaces\HandlerInterface;`
+
+Let's take an example of an application with many formations belongs to categories. Each formation has many events belongs to the same categories.
+We have a formation post type, an event post type and a category taxonomy.
+I want to update the event category when I change his formation category.
+
 
 ```php
-use Coretik\App;
-use Coretik\Core\Container;
+use Coretik\Core\Builders\Interfaces\HandlerInterface;
+use Coretik\Core\Builders\Interfaces\HandlerInterface;
 
-$container = new Container();
+/**
+ * Reset session domain on formation saving
+ */
+class FormationCategoryOnChangeHandler implements HandlerInterface
+{
+    private $builder;
 
-$container['my-service'] = function ($container) {
-    return new MyService();
-};
+    public function handle(BuilderInterface $builder): void
+    {
+        $this->builder = $builder;
+        \add_action('set_object_terms', [$this, 'setEventsCategory'], 10, 6);
+    }
 
-App::run($container);
+    public function freeze(): void
+    {
+        \remove_action('set_object_terms', [$this, 'setEventsCategory'], 10, 6);
+    }
+
+    public function setEventsCategory($object_id, $terms, $tt_ids, $taxonomy, $append, $old_tt_ids)
+    {
+        if (!$this->builder->concern((int)$object_id)) {
+            return;
+        }
+
+        if (empty(\array_diff($tt_ids, $old_tt_ids))) {
+            return;
+        }
+
+        $model = $this->builder->model((int)$object_id);
+        $model->events()->each(fn ($event) => $event->setCategories($tt_ids)->save());
+    }
+}
+
+```
+
+
+### Macros
+
+Use to extend a builder.
+
+```php
+PostType::make('my_custom_post_type')
+    ->setSingularName('Title')
+    ->setPluralName('Titles')
+    ->attach('myMacroA', fn ($input) => 'my_custom_post_type : ' . $input) // Optional, you can attach all callables you want
+    ->addToSchema();
+
+echo app()->schema('my_custom_post_type')->myMacroA('foo'); // my_custom_post_type : foo
 ```
