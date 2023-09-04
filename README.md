@@ -41,9 +41,6 @@ App::run($container);
 use Coretik\Core\Builders\Taxonomy;
 use Coretik\Core\Builders\PostType;
 
-use App\Model\MyModel;
-use App\Query\MyQuery;
-
 // Declare post type
 PostType::make('my_custom_post_type')
     ->setSingularName('Title')
@@ -224,8 +221,11 @@ class MyPostModel extends PostModel
      */
     public function setCategory(ModelInterface|int|string $category): self
     {
-        $this->detachTerm($category, 'my_category_taxonomy');
-        $this->setTerm($city, 'my_category_taxonomy');
+        $current = $this->category();
+        if (!empty($current)) {
+            $this->detachTerm($current, 'my_category_taxonomy');
+        }
+        $this->setTerm($category, 'my_category_taxonomy');
         return $this;
     }
 
@@ -339,16 +339,9 @@ class MyPostQuery enxtends PostQuery
         return $this;
     }
 
-    public function category(ModelInterface|string|int $category): self
+    public function category(int $category): self
     {
-        if (is_string($category)) {
-            $this->whereTax('my_taxonomy', $category, 'IN', 'slug');
-        } else {
-            if ($category instanceof ModelInterface) {
-                $category = $category->id();
-            }
-            $this->whereTax('my_taxonomy', $category);
-        }
+        $this->whereTax('my_taxonomy', $category);
         return $this;
     }
 
@@ -358,15 +351,9 @@ class MyPostQuery enxtends PostQuery
         return $this;
     }
 
-    public function withAttribute(ModelInterface|string|int $attribute): self
+    public function withAttribute(string $attribute): self
     {
-        if ($attribute instanceof ModelInterface) {
-            $this->whereTax('my_attributes_taxonomy', $attribute->id());
-        } elseif (\is_int($attribute)) {
-            $this->whereTax('my_attributes_taxonomy', $attribute);
-        } else {
-            $this->whereTax('my_attributes_taxonomy', $attribute, 'IN', 'slug');
-        }
+        $this->whereTax('my_attributes_taxonomy', $attribute, 'IN', 'slug');
         return $this;
     }
 }
@@ -399,7 +386,7 @@ Your handler have to implement `Coretik\Core\Builders\Interfaces\HandlerInterfac
 
 Let's take an example of an application with many formations belongs to categories. Each formation has many events belongs to the same categories.
 We have a formation post type, an event post type and a category taxonomy.
-I want to update the event category when I change his formation category.
+I want to update the event category when I change its formation category.
 
 
 ```php
@@ -426,10 +413,12 @@ class FormationCategoryOnChangeHandler implements HandlerInterface
 
     public function setEventsCategory($object_id, $terms, $tt_ids, $taxonomy, $append, $old_tt_ids)
     {
+        // Ensure current post editing belongs to our builder
         if (!$this->builder->concern((int)$object_id)) {
             return;
         }
 
+        // Bypass if any diff about terms after save (You have to verify the taxonomy name if many taxonomies exist)
         if (empty(\array_diff($tt_ids, $old_tt_ids))) {
             return;
         }
