@@ -1,3 +1,18 @@
+# [1.8.0](https://github.com/idetik/coretik/compare/v1.7.2...v1.8.0) (2023-09-13)
+
+
+### Bug Fixes
+
+* Asset loader deferred style ([7c8a529](https://github.com/idetik/coretik/commit/7c8a529b5b0c752d9d292547d1ec7d16b2f949bb))
+* Fix to string formater in the schema viewer service ([470219b](https://github.com/idetik/coretik/commit/470219bbe5190070251cf4064659837a095a0c91))
+* Set taxonomy args 'publicly_queryable' to false if 'public' defined to false ([9250af2](https://github.com/idetik/coretik/commit/9250af2ae321f78f71c5d46f6f600589e3f7cc77))
+
+
+### Features
+
+* Models factories & querier configuration is easier. Models doesn't need constructors anymore ([dc21fa4](https://github.com/idetik/coretik/commit/dc21fa4594e4c6cd19fa8cd166250ae9e6b239b2))
+* String util class provide a 'toString' method from mixed parameter ([e3cad3e](https://github.com/idetik/coretik/commit/e3cad3eb1c9a6a418aba10d493c4a5fa9fb23519))
+
 ## [1.7.2](https://github.com/idetik/coretik/compare/v1.7.1...v1.7.2) (2023-09-04)
 
 
