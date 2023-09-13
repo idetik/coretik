@@ -155,7 +155,7 @@ class Loader
 
     public static function makeDeferredStyleTag($tag)
     {
-        $tag = str_replace('rel="stylesheet"', 'rel="stylesheet" media="print" onload="this.media=\'all\'; this.onload=null;"', $tag);
+        $tag = str_replace('rel="stylesheet"', 'rel="preload" as="style" onload="this.onload=null;this.rel=\"stylesheet\"', $tag);
         return $tag;
     }
 }
