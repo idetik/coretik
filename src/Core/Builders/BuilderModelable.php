@@ -31,14 +31,17 @@ abstract class BuilderModelable extends Builder implements ModelableInterface
         return static::$models[$this->getType()] ?? new ModelsContainer();
     }
 
-    public function factory(callable $factory)
+    public function factory(callable|string $factory)
     {
         $this->factory = new Factory($factory, $this, $this->models());
         return $this;
     }
 
-    public function querier(callable $querier)
+    public function querier(callable|string $querier)
     {
+        if (\is_string($querier)) {
+            $querier = fn ($mediator) => new $querier($mediator);
+        }
         $this->querier = $querier;
         return $this;
     }

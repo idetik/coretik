@@ -29,7 +29,7 @@ class CommentModel extends WPModel
             default:
                 break;
         }
-        parent::__construct();
+        parent::__construct($initializer);
 
         $this->on('created', [$this, 'saveMeta']);
         $this->on('updated', [$this, 'saveMeta']);

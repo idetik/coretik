@@ -33,7 +33,7 @@ class TermModel extends WPModel
                 }
                 break;
         }
-        parent::__construct();
+        parent::__construct($initializer, $mediator);
 
         if (!empty($this->name())) {
             $this->on('created', [$this, 'saveMeta']);

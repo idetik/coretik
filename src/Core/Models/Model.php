@@ -38,12 +38,20 @@ abstract class Model implements ModelInterface
             if (empty($this->adapter)) {
                 throw new \Exception("Unable to load adapter.");
             }
-        } elseif (!empty($mediator)) {
-            $this->name = $mediator->getName();
+        } elseif (empty($this->name) && !empty($mediator)) {
+            $this->setName($mediator->getName());
         }
+
+        if (empty($this->name)) {
+            throw new \Exception("Model name is empty for " . static::class);
+        }
+
         static::bootIfNotBooted();
         $this->initialize();
+        $this->initializeModel();
     }
+
+    protected function initializeModel(): void {}
 
     public function setDictionnary(Dictionnary $dictionnary)
     {

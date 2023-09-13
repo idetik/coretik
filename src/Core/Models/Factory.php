@@ -12,11 +12,16 @@ class Factory
     protected $models;
     protected $model;
 
-    public function __construct(callable $model, ModelableInterface $mediator, ContainerInterface $models = null)
+    public function __construct(callable|string $model, ModelableInterface $mediator, ContainerInterface $models = null)
     {
         if (empty($models)) {
             $models = new Models();
         }
+
+        if (\is_string($model)) {
+            $model = fn ($initializer, $mediator, $args) => new $model($initializer, $mediator, $args);
+        }
+
         $this->model = $model;
         $this->models = $models;
         $this->mediator = $mediator;

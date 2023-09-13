@@ -76,8 +76,8 @@ PostType::make('my_custom_post_type')
     ->setSingularName('Title')
     ->setPluralName('Titles')
     ->setArgs($register_extended_post_type_args) // Optional, 
-    ->factory(fn ($initializer) => new MyModel($initializer)) // Optional, you can add a custom model factory or use the default factory built in Coretik 
-    ->querier(fn ($builder) => new MyQuery($builder)) // Optional, you can add a custom query class or use the default querier built in Coretik
+    ->factory(MyModel::class) // Optional, you can add a custom model factory or use the default factory built in Coretik 
+    ->querier(MyQuery::class) // Optional, you can add a custom query class or use the default querier built in Coretik
     ->handler(MyHandlerA::class) // Optional, you can use many handlers on the same builder
     ->handler(MyHandlerB::class)
     ->attach('myMacroA', 'my_callable') // Optional, you can attach all callables you want
@@ -102,8 +102,8 @@ Taxonomy::make('my_custom_taxonomy')
     ->setSingularName('Title')
     ->setPluralName('Titles')
     ->setArgs($register_extended_taxonomy_args) // Optional, 
-    ->factory(fn ($initializer) => new MyTermModel($initializer)) // Optional, you can add a custom model factory or use the default factory built in Coretik 
-    ->querier(fn ($builder) => new MyTermQuery($builder)) // Optional, you can add a custom query class or use the default querier built in Coretik
+    ->factory(MyTermModel::class) // Optional, you can add a custom model factory or use the default factory built in Coretik 
+    ->querier(MyTermQuery::class) // Optional, you can add a custom query class or use the default querier built in Coretik
     ->handler(MyTermHandlerA::class) // Optional, you can use many handlers on the same builder
     ->handler(MyTermHandlerB::class)
     ->attach('myMacroA', 'my_callable') // Optional, you can attach all callables you want
@@ -131,7 +131,7 @@ class MyPostModel extends PostModel
 }
 
 $postSchema = app()->schema('post');
-$postSchema->factory(fn ($initializer) => new MyPostModel($initializer));
+$postSchema->factory(MyPostModel::class);
 ```
 
 #### Usage
@@ -156,10 +156,8 @@ use Coretik\Core\Collection;
 
 class MyPostModel extends PostModel
 {
-    public function __construct($initializer = null)
+    protected function intializeModel(): void
     {
-        parent::__construct($initializer);
-
         $this->declareMetas([
             'ma_meta_a' => 'bdd_field_name',
             'ma_meta_b' => 'other_bdd_field_name',
@@ -262,7 +260,7 @@ class MyPostModel extends PostModel
 }
 
 $postSchema = app()->schema('my_custom_post_type');
-$postSchema->factory(fn ($initializer) => new MyPostModel($initializer));
+$postSchema->factory(MyPostModel::class);
 ```
 
 Create & save a model :
@@ -359,7 +357,7 @@ class MyPostQuery enxtends PostQuery
 }
 
 $postSchema = app()->schema('my_custom_post_type');
-$postSchema->querier(fn ($builder) => new MyPostQuery($builder));
+$postSchema->querier(MyPostQuery::class);
 ```
 
 #### Usage

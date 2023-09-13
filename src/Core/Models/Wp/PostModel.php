@@ -37,7 +37,7 @@ class PostModel extends WPModel
                 }
                 break;
         }
-        parent::__construct();
+        parent::__construct($initializer, $mediator);
     }
 
     /**

@@ -66,11 +66,11 @@ class Schema implements ContainerInterface
 
                     switch ($builder->getType()) {
                         case 'post':
-                            return \apply_filters('coretik/schema/factory/post', new PostModel($initializer), $initializer, $builder);
+                            return \apply_filters('coretik/schema/factory/post', new PostModel($initializer, $builder), $initializer, $builder);
                         case 'user':
                             return \apply_filters('coretik/schema/factory/user', new UserModel($initializer), $initializer, $builder);
                         case 'taxonomy':
-                            return \apply_filters('coretik/schema/factory/taxonomy', new TermModel($initializer), $initializer, $builder);
+                            return \apply_filters('coretik/schema/factory/taxonomy', new TermModel($initializer, $builder), $initializer, $builder);
                         case 'comment':
                             return \apply_filters('coretik/schema/factory/comment', new CommentModel($initializer), $initializer, $builder);
                         default:
@@ -96,7 +96,7 @@ class Schema implements ContainerInterface
                         case 'taxonomy':
                             return \apply_filters('coretik/schema/querier/taxonomy', new TermQuery($builder), $builder);
                         case 'comment':
-                            return \apply_filters('coretik/schema/querier/comment', new Comment($builder), $builder);
+                            return \apply_filters('coretik/schema/querier/comment', new CommentQuery($builder), $builder);
                         default:
                             return \apply_filters('coretik/schema/querier/' . $builder->getType(), null, $builder);
                     }
