@@ -43,6 +43,9 @@ class Args extends Collection
 
     public function __construct(array $items = [])
     {
+        if (array_key_exists('public', $items) && false === $items['public'] && !array_key_exists('publicly_queryable', $items)) {
+            $items['publicly_queryable'] = false;
+        }
         $items = \array_merge($this->default, $items);
         parent::__construct($items);
     }
