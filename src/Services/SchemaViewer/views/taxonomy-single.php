@@ -1,18 +1,10 @@
 <?php
 
-use Coretik\Core\Utils\Dump;
+use Coretik\Core\Utils\Str;
 
 $args = $builder->args();
 
-$to_string = fn ($value) => match (true) {
-    is_string($value) => $value,
-    is_bool($value) => $value ? 'true' : 'false',
-    is_array($value) => implode(', ', array_map('strval', $value)),
-    $value instanceof Closure => Dump::closure($value),
-    default => strval($value)
-};
-
-$modalArgs = app()->modals()->factory(function ($data) use ($to_string) {
+$modalArgs = app()->modals()->factory(function ($data) {
     $array = [];
     $table = app()->get('ux.table');
     foreach ($data['args'] as $key => $value) {
@@ -24,13 +16,13 @@ $modalArgs = app()->modals()->factory(function ($data) use ($to_string) {
         if (is_array($value)) {
             foreach ($value as $subkey => $subval) {
                 if (is_int($subkey)) {
-                    $format .= sprintf('<li>%s</li>', $to_string($subval));
+                    $format .= sprintf('<li>%s</li>', Str::toString($subval));
                 } else {
-                    $format .= sprintf('<li><b>%s</b>: %s</li>', $to_string($subkey), $to_string($subval));
+                    $format .= sprintf('<li><b>%s</b>: %s</li>', Str::toString($subkey), Str::toString($subval));
                 }
             }
         } else {
-            $format = $value;
+            $format = Str::toString($value);
         }
         $array[] = [$key, $format];
     }

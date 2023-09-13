@@ -1,4 +1,7 @@
 <?php
+
+use Coretik\Core\Utils\Str;
+
 $args = $builder->args();
 
 $modalArgs = app()->modals()->factory(function ($data) {
@@ -14,7 +17,7 @@ $modalArgs = app()->modals()->factory(function ($data) {
         if (is_array($value)) {
             foreach ($value as $subkey => $subval) {
                 if (is_int($subkey)) {
-                    $format .= sprintf('<li>%s</li>', $subval);
+                    $format .= sprintf('<li>%s</li>', Str::toString($subval));
                 } else {
                     if (is_array($subval)) {
                         $format .= sprintf('<li><b>%s</b>: ', $subkey);
@@ -33,12 +36,12 @@ $modalArgs = app()->modals()->factory(function ($data) {
                         }
                         $format .= '</li>';
                     } else {
-                        $format .= sprintf('<li><b>%s</b>: %s</li>', $subkey, $subval);
+                        $format .= sprintf('<li><b>%s</b>: %s</li>', $subkey, Str::toString($subval));
                     }
                 }
             }
         } else {
-            $format = $value;
+            $format = Str::toString($value);
         }
         $array[] = [$key, $format];
     }
