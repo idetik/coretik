@@ -74,7 +74,7 @@ abstract class Constraint
             case 'max-size':
                 return static::get('MaxSize', [$args]);
             case 'file':
-                return static::get('File', [$args]);
+                return static::get('File', [$args, $form]);
             case 'choice':
                 return static::get('Choice', [$args]);
             case 'choice-late':
