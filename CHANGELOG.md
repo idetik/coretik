@@ -1,3 +1,10 @@
+## [1.8.2](https://github.com/idetik/coretik/compare/v1.8.1...v1.8.2) (2023-10-09)
+
+
+### Bug Fixes
+
+* Coretik core action exception ([9083c95](https://github.com/idetik/coretik/commit/9083c95c1ba9f44b40712eb50a04c98bef1b8284))
+
 ## [1.8.1](https://github.com/idetik/coretik/compare/v1.8.0...v1.8.1) (2023-09-26)
 
 
