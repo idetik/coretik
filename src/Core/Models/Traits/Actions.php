@@ -61,6 +61,7 @@ trait Actions
         }
 
         $required = $action->getRequired();
+
         if (!empty(array_diff($required, array_keys($_REQUEST)))) {
             $message = sprintf('Paramètre(s) requis: %s', implode(', ', array_diff($required, array_keys($_REQUEST))));
             $action->onError(new CoreActions\Exception($message));
