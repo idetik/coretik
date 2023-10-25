@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e3d125a34bdf9f25e8abcdf11f7fa2ac",
+    "content-hash": "43eef2e6bfc1f8a363a7cbf2f7434ccd",
     "packages": [
         {
             "name": "globalis/wp-cubi-helpers",
@@ -71,6 +71,58 @@
                 "source": "https://github.com/globalis-ms/wp-cubi-helpers/tree/1.0.5"
             },
             "time": "2023-01-26T16:04:53+00:00"
+        },
+        {
+            "name": "globalis/wp-cubi-transient-cache",
+            "version": "0.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/globalis-ms/wp-cubi-transient-cache.git",
+                "reference": "05c71aa856971c73b33b7688d2ad67576312e644"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/globalis-ms/wp-cubi-transient-cache/zipball/05c71aa856971c73b33b7688d2ad67576312e644",
+                "reference": "05c71aa856971c73b33b7688d2ad67576312e644",
+                "shasum": ""
+            },
+            "require": {
+                "globalis/wp-cubi-helpers": "^1.0.5",
+                "php": ">=8.0"
+            },
+            "require-dev": {
+                "squizlabs/php_codesniffer": "^3.7.1"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "autoload.php",
+                    "helpers.php"
+                ],
+                "psr-4": {
+                    "Globalis\\WP\\Cubi\\TransientCache\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Pierre Dargham",
+                    "homepage": "https://github.com/pierre-dargham/"
+                },
+                {
+                    "name": "GLOBALIS media systems",
+                    "homepage": "https://www.globalis-ms.com/"
+                }
+            ],
+            "homepage": "https://github.com/globalis-ms/wp-cubi-transient-cache",
+            "support": {
+                "issues": "https://github.com/globalis-ms/wp-cubi-transient-cache/issues",
+                "source": "https://github.com/globalis-ms/wp-cubi-transient-cache/tree/0.3.0"
+            },
+            "time": "2023-04-21T14:36:47+00:00"
         },
         {
             "name": "illuminate/collections",
@@ -1306,5 +1358,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.3.0"
 }

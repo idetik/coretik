@@ -2,6 +2,7 @@
 
 namespace Coretik\Services\Menu;
 
+use Globalis\WP\Cubi\TransientCache\NavMenu;
 use Coretik\Services\Menu\Walkers\Aria;
 
 class Menu
@@ -58,11 +59,16 @@ class Menu
             }
         }
 
-        if (\has_nav_menu($theme_location)) {
-            $menu = \wp_nav_menu(array_merge($args, $custom_args));
+        if ($cache) {
+            $menu = NavMenu::get(null, array_merge($args, $custom_args));
         } else {
-            $menu = '';
+            if (\has_nav_menu($theme_location)) {
+                $menu = \wp_nav_menu(array_merge($args, $custom_args));
+            } else {
+                $menu = '';
+            }
         }
+
 
         if ($cache) {
             $this->cache[$theme_location] = $menu;

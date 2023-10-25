@@ -10,7 +10,8 @@
         "pelago/emogrifier": "^7.0",
         "wesbos/burner-email-providers": "dev-master",
         "globalis/wp-cubi-helpers": "^1.0",
-        "illuminate/collections": "^10.6"
+        "illuminate/collections": "^10.6",
+        "globalis/wp-cubi-transient-cache": "^0.3.0"
     },
     "authors": [
         {
