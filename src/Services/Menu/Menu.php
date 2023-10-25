@@ -6,8 +6,8 @@ use Coretik\Services\Menu\Walkers\Aria;
 
 class Menu
 {
-    protected $menus;
-    protected $cache = [];
+    protected array $menus;
+    protected array $cache = [];
 
     public function __construct(array $menus = [])
     {
@@ -15,13 +15,27 @@ class Menu
         \add_action('after_setup_theme', [$this, 'register']);
     }
 
-    public function register()
+    public static function make(array $menus = []): self
+    {
+        $self = new static();
+        foreach ($menus as $location => $title) {
+            $self->addEntry($location, $title);
+        }
+        return $self;
+    }
+
+    public function register(): void
     {
         \register_nav_menus($this->menus);
     }
 
+    public function addEntry(string $theme_location, string $title): self
+    {
+        $this->menus[$theme_location] = $title;
+        return $this;
+    }
 
-    public function html(string $theme_location, $custom_args = [], $builtInWalker = '', $cache = false)
+    public function html(string $theme_location, array $custom_args = [], string $builtInWalker = '', bool $cache = false): string
     {
         if (isset($this->cache[$theme_location])) {
             return $this->cache[$theme_location];
@@ -57,21 +71,21 @@ class Menu
         return $menu;
     }
 
-    public function object(string $theme_location)
+    public function object(string $theme_location): ?\WP_Term
     {
         $locations = \get_nav_menu_locations();
         if (!in_array($theme_location, array_keys($locations))) {
-            return false;
+            return null;
         }
         $menu_id = $locations[$theme_location];
-        return \wp_get_nav_menu_object($menu_id);
+        return \wp_get_nav_menu_object($menu_id) ?: null;
     }
 
-    public function title(string $theme_location): string
+    public function title(string $theme_location, string $default = ''): string
     {
         if (!\has_nav_menu($theme_location)) {
             return '';
         }
-        return $this->object($theme_location)->name;
+        return $this->object($theme_location)?->name ?: $default;
     }
 }
