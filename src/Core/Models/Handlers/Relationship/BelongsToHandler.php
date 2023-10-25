@@ -1,9 +1,10 @@
 <?php
 
-namespace Orpd\Models\Handlers\Relationship;
+namespace Coretik\Core\Models\Handlers\Relationship;
 
 use Coretik\Core\Builders\Interfaces\BuilderInterface;
 use Coretik\Core\Builders\Interfaces\HandlerInterface;
+use Coretik\Core\Models\Interfaces\ModelInterface;
 
 class BelongsToHandler implements HandlerInterface
 {
