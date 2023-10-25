@@ -1,3 +1,21 @@
+# [1.9.0](https://github.com/idetik/coretik/compare/v1.8.3...v1.9.0) (2023-10-25)
+
+
+### Bug Fixes
+
+* use vcs repo (webos burner email providers) ([0932670](https://github.com/idetik/coretik/commit/0932670dc9684c2937ff04fb4de9e5262413bc5a))
+
+
+### Features
+
+* Add BelongsToHandler ([28d8a3c](https://github.com/idetik/coretik/commit/28d8a3c3073783762a5ff0b0d6147fbe5f9fcd0f))
+* Add BelongsToHandler ([9f5598d](https://github.com/idetik/coretik/commit/9f5598de74cbd15872ad4602170200514cc30528))
+* Add CountPostHandler ([55ba409](https://github.com/idetik/coretik/commit/55ba40900ec2207b07730121e739cc22af82e511))
+* Add EndpointHandler ([28abc82](https://github.com/idetik/coretik/commit/28abc8243b28162c50bc0e9744e87bb9606e1c92))
+* Add Globalis Transient Cache package and use it for nav menu ([69ed9c7](https://github.com/idetik/coretik/commit/69ed9c75a651db4de3b85f56c395e728776218e6))
+* Add PostStatusArchiveHandler ([4a2a22c](https://github.com/idetik/coretik/commit/4a2a22cd2c2b4b975769cb27e9bc095b2ee4ac18))
+* Add TriggerModelHooksHandler ([020e83c](https://github.com/idetik/coretik/commit/020e83cc4c0804f35330ac7a1b489c14985cffe8))
+
 ## [1.8.3](https://github.com/idetik/coretik/compare/v1.8.2...v1.8.3) (2023-10-09)
 
 
