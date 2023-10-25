@@ -3,12 +3,18 @@
     "description": "Idetik WP theme core",
     "type": "library",
     "minimum-stability": "stable",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/idetik/burner-email-providers"
+        }
+    ],
     "require": {
         "johnbillion/extended-cpts": "^5.0",
         "pimple/pimple": "^3.5",
         "nesbot/carbon": "^2.66",
         "pelago/emogrifier": "^7.0",
-        "wesbos/burner-email-providers": "dev-master",
+        "wesbos/burner-email-providers": "^1.0",
         "globalis/wp-cubi-helpers": "^1.0",
         "illuminate/collections": "^10.6",
         "globalis/wp-cubi-transient-cache": "^0.3.0"

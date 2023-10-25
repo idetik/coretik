@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "43eef2e6bfc1f8a363a7cbf2f7434ccd",
+    "content-hash": "1381a0ba297fa63100f1b6b5d26d639a",
     "packages": [
         {
             "name": "globalis/wp-cubi-helpers",
@@ -1251,26 +1251,24 @@
         },
         {
             "name": "wesbos/burner-email-providers",
-            "version": "dev-master",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/wesbos/burner-email-providers.git",
-                "reference": "ebb062020e915fe5111a19a1a33240d4dac4daad"
+                "url": "https://github.com/idetik/burner-email-providers.git",
+                "reference": "500a35b7d44c1cb62d5603e84a55b26f42d1ef1a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wesbos/burner-email-providers/zipball/ebb062020e915fe5111a19a1a33240d4dac4daad",
-                "reference": "ebb062020e915fe5111a19a1a33240d4dac4daad",
+                "url": "https://api.github.com/repos/idetik/burner-email-providers/zipball/500a35b7d44c1cb62d5603e84a55b26f42d1ef1a",
+                "reference": "500a35b7d44c1cb62d5603e84a55b26f42d1ef1a",
                 "shasum": ""
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
                     "dev-master": "1.0.x-dev"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1284,10 +1282,9 @@
                 "email"
             ],
             "support": {
-                "issues": "https://github.com/wesbos/burner-email-providers/issues",
                 "source": "https://github.com/wesbos/burner-email-providers"
             },
-            "time": "2022-10-20T10:19:35+00:00"
+            "time": "2023-09-28T09:13:11+00:00"
         }
     ],
     "packages-dev": [
@@ -1351,9 +1348,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "wesbos/burner-email-providers": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
