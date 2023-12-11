@@ -94,6 +94,9 @@ class WPTermAdapter extends WPAdapter
                 if (isset($this->exclude)) {
                     $values = array_unique(array_merge($this->exclude, $values));
                 }
+                if (!empty($this->include)) {
+                    $this->include = array_diff($this->include, $values);
+                }
                 $this->exclude = $values;
                 break;
         }
