@@ -1,3 +1,10 @@
+## [1.9.1](https://github.com/idetik/coretik/compare/v1.9.0...v1.9.1) (2023-12-11)
+
+
+### Bug Fixes
+
+* Core term query, fix not_in context ([b799ce0](https://github.com/idetik/coretik/commit/b799ce014648d7230595d3a628576684c21f5be5))
+
 # [1.9.0](https://github.com/idetik/coretik/compare/v1.8.3...v1.9.0) (2023-10-25)
 
 
