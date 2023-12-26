@@ -152,7 +152,7 @@ class PostModel extends WPModel
 
     public function content($more_link_text = null, $strip_teaser = false): string
     {
-        $content = \get_the_content($more_link_text, $strip_teaser);
+        $content = \get_the_content($more_link_text, $strip_teaser, $this->id());
         /**
          * Filters the post content.
          *
