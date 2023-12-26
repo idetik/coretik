@@ -1,3 +1,10 @@
+## [1.9.2](https://github.com/idetik/coretik/compare/v1.9.1...v1.9.2) (2023-12-26)
+
+
+### Bug Fixes
+
+* PostModel get_the_content ([e5f75c3](https://github.com/idetik/coretik/commit/e5f75c3cf52f11e1d465768b7e2f61b4f8bc636c))
+
 ## [1.9.1](https://github.com/idetik/coretik/compare/v1.9.0...v1.9.1) (2023-12-11)
 
 
