@@ -1,3 +1,10 @@
+## [1.10.1](https://github.com/idetik/coretik/compare/v1.10.0...v1.10.1) (2024-10-02)
+
+
+### Bug Fixes
+
+* bump composer dependencies ([98eb135](https://github.com/idetik/coretik/commit/98eb135438d4ec615e88c6a7b303b83188397687))
+
 # [1.10.0](https://github.com/idetik/coretik/compare/v1.9.2...v1.10.0) (2024-10-02)
 
 
