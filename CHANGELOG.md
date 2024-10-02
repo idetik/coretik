@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/idetik/coretik/compare/v1.9.2...v1.10.0) (2024-10-02)
+
+
+### Features
+
+* Modal service ([bfc0b53](https://github.com/idetik/coretik/commit/bfc0b531243849a8154324120771b289b7f1d277))
+
 ## [1.9.2](https://github.com/idetik/coretik/compare/v1.9.1...v1.9.2) (2023-12-26)
 
 
