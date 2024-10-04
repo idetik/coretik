@@ -2,18 +2,16 @@
 
 namespace Coretik\Core\Models\Handlers;
 
-use Coretik\Core\Builders\Interfaces\BuilderInterface;
-use Coretik\Core\Builders\Interfaces\HandlerInterface;
+use Coretik\Core\Builders\Handler;
 use Coretik\Core\Models\Interfaces\ModelInterface;
 use DateTime;
 use Exception;
 
-class PostStatusArchiveHandler implements HandlerInterface
+class PostStatusArchiveHandler extends Handler
 {
     const POST_STATUS_ARCHIVE_NAME = 'archive';
     const POST_STATUS_ARCHIVE_LABEL = 'Archivé';
 
-    private $builder;
     private array $scheduler = [];
     private $modelIsArchivable;
     private static $registered = false;
@@ -38,12 +36,8 @@ class PostStatusArchiveHandler implements HandlerInterface
         return $instance;
     }
 
-    /**
-     * Handle archive post status
-     */
-    public function handle(BuilderInterface $builder): void
+    public function actions(): void
     {
-        $this->builder = $builder;
         $this->builder->attach('archive', [$this, 'archive']);
         $this->builder->attach('searchAndArchive', [$this, 'archiver']);
         $this->registerArchivePostStatus();
@@ -52,6 +46,12 @@ class PostStatusArchiveHandler implements HandlerInterface
         if (!empty($this->scheduler)) {
             $this->schedule(...$this->scheduler);
         }
+    }
+
+    public function freeze(): void
+    {
+        $this->builder->attach('archive', fn () => null);
+        \remove_action('admin_footer-post.php', [$this, 'hookDisplayArchiveStatus']);
     }
 
     /**
@@ -80,7 +80,7 @@ class PostStatusArchiveHandler implements HandlerInterface
     public function schedule(string|DateTime $datetime, string $recurrence = 'daily')
     {
         if (\is_string($datetime)) {
-            $datetime = new \DateTime($datetime, app()->get('timezone'));
+            $datetime = new DateTime($datetime, app()->get('timezone'));
         }
 
         $hook = 'coretik/handler/post_status_archive/schedule/' . $this->builder->getName() . '/auto_status_archived';
@@ -106,7 +106,8 @@ class PostStatusArchiveHandler implements HandlerInterface
         if (\method_exists($query, 'archivable')) {
             $query->archivable();
         } else {
-            $query->all()
+            $query
+                ->all()
                 ->set('post_status', 'publish');
         }
 
@@ -176,11 +177,5 @@ class PostStatusArchiveHandler implements HandlerInterface
         ]);
 
         static::$registered = true;
-    }
-
-    public function freeze(): void
-    {
-        $this->builder->attach('archive', fn () => null);
-        \remove_action('admin_footer-post.php', [$this, 'hookDisplayArchiveStatus']);
     }
 }

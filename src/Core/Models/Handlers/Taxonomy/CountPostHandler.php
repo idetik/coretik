@@ -2,12 +2,10 @@
 
 namespace Coretik\Core\Models\Handlers\Taxonomy;
 
-use Coretik\Core\Builders\Interfaces\BuilderInterface;
-use Coretik\Core\Builders\Interfaces\HandlerInterface;
+use Coretik\Core\Builders\Handler;
 
-class CountPostHandler implements HandlerInterface
+class CountPostHandler extends Handler
 {
-    private $builder;
     protected $statuses;
 
     public function __construct(array $statuses = ['publish'])
@@ -23,9 +21,8 @@ class CountPostHandler implements HandlerInterface
     /**
      * set update_post_term_count_statuses hook
      */
-    public function handle(BuilderInterface $builder): void
+    public function actions(): void
     {
-        $this->builder = $builder;
         \add_filter('update_post_term_count_statuses', [$this, 'statuses'], 10, 2);
     }
 

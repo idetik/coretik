@@ -2,13 +2,12 @@
 
 namespace Coretik\Core\Models\Handlers\Relationship;
 
+use Coretik\Core\Builders\Handler;
 use Coretik\Core\Builders\Interfaces\BuilderInterface;
-use Coretik\Core\Builders\Interfaces\HandlerInterface;
 use Coretik\Core\Models\Interfaces\ModelInterface;
 
-class BelongsToHandler implements HandlerInterface
+class BelongsToHandler extends Handler
 {
-    private $builder;
     private $belongsToBuilder;
     private $pivot;
 
@@ -41,10 +40,8 @@ class BelongsToHandler implements HandlerInterface
         return $this;
     }
 
-    public function handle(BuilderInterface $builder): void
+    public function actions(): void
     {
-        $this->builder = $builder;
-
         if (empty($this->pivot)) {
             return;
         }
@@ -106,8 +103,6 @@ class BelongsToHandler implements HandlerInterface
             $belongsToId
         );
 
-        $this->freeze();
-        $model->save();
-        $this->handle($this->builder);
+        $this->pause(fn () => $model->save());
     }
 }

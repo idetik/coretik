@@ -2,12 +2,10 @@
 
 namespace Coretik\Core\Models\Handlers;
 
-use Coretik\Core\Builders\Interfaces\BuilderInterface;
-use Coretik\Core\Builders\Interfaces\HandlerInterface;
+use Coretik\Core\Builders\Handler;
 
-class EndpointHandler implements HandlerInterface
+class EndpointHandler extends Handler
 {
-    private $builder;
     private string $endpoint;
     private int $mask = EP_PERMALINK;
     private $handler;
@@ -44,9 +42,8 @@ class EndpointHandler implements HandlerInterface
         return $this;
     }
 
-    public function handle(BuilderInterface $builder): void
+    public function actions(): void
     {
-        $this->builder = $builder;
         \add_action('init', [$this, 'registerEndpoint']);
         \add_action('template_redirect', [$this, 'handleRequest'], 0);
         \add_filter('request', [$this, 'forceQueryVarValue']);

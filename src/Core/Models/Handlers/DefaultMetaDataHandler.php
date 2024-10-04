@@ -2,19 +2,15 @@
 
 namespace Coretik\Core\Models\Handlers;
 
-use Coretik\Core\Builders\Interfaces\BuilderInterface;
-use Coretik\Core\Builders\Interfaces\HandlerInterface;
+use Coretik\Core\Builders\Handler;
 use Coretik\Core\Builders\Interfaces\ModelableInterface;
 
 use function Globalis\WP\Cubi\str_starts_with;
 
-class DefaultMetaDataHandler implements HandlerInterface
+class DefaultMetaDataHandler extends Handler
 {
-    private $builder;
-
-    public function handle(BuilderInterface $builder): void
+    public function actions(): void
     {
-        $this->builder = $builder;
         \add_filter("default_post_metadata", [$this, 'loadMeta'], 10, 5);
     }
 

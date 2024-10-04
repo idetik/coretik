@@ -2,18 +2,15 @@
 
 namespace Coretik\Core\Models\Handlers;
 
-use Coretik\Core\Builders\Interfaces\BuilderInterface;
-use Coretik\Core\Builders\Interfaces\HandlerInterface;
+use Coretik\Core\Builders\Handler;
 use Coretik\Core\Utils\Classes;
 
-class AcfProtectFieldsHandler implements HandlerInterface
+class AcfProtectFieldsHandler extends Handler
 {
-    private $builder;
     private static $stylesLoaded = false;
 
-    public function handle(BuilderInterface $builder): void
+    public function actions(): void
     {
-        $this->builder = $builder;
         \add_filter('admin_init', [$this, 'prepareFields']);
         \add_filter('acf/update_value', [$this, 'maybeRestoreOldValue'], 5, 3);
     }

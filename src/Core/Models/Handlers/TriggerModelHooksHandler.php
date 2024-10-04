@@ -2,19 +2,13 @@
 
 namespace Coretik\Core\Models\Handlers;
 
-use Coretik\Core\Builders\Interfaces\BuilderInterface;
-use Coretik\Core\Builders\Interfaces\HandlerInterface;
+use Coretik\Core\Builders\Handler;
 use WP_Post;
 
-class TriggerModelHooksHandler implements HandlerInterface
+class TriggerModelHooksHandler extends Handler
 {
-    private $builder;
-
-    public function handle(BuilderInterface $builder): void
+    public function actions(): void
     {
-        $this->builder = $builder;
-
-        // Do not fire on explicitly hooks in model....
         \add_action('post_updated', [$this, 'triggerUpdated'], 5, 3);// => updated
         \add_action('save_post_' . $this->builder->getName(), [$this, 'triggerCreated'], 5, 3); // created (update === false)
         \add_action('wp_insert_post', [$this, 'triggerSaved'], 5, 3); //=> saved

@@ -2,19 +2,14 @@
 
 namespace Coretik\Core\Models\Handlers;
 
-use Coretik\Core\Builders\Interfaces\BuilderInterface;
-use Coretik\Core\Builders\Interfaces\HandlerInterface;
+use Coretik\Core\Builders\Handler;
 use Coretik\Core\Builders\Interfaces\ModelableInterface;
-use Coretik\Core\Models\Interfaces\MetableAdapterInterface;
 use Coretik\Core\Utils\Classes;
 
-class Guard implements HandlerInterface
+class Guard extends Handler
 {
-    private $builder;
-
-    public function handle(BuilderInterface $builder): void
+    public function actions(): void
     {
-        $this->builder = $builder;
         \add_filter('update_post_metadata', [$this, 'guard'], 10, 5);
         \add_filter('update_user_metadata', [$this, 'guard'], 10, 5);
         \add_filter('update_term_metadata', [$this, 'guard'], 10, 5);

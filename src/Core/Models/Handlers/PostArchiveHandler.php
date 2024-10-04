@@ -2,20 +2,22 @@
 
 namespace Coretik\Core\Models\Handlers;
 
+use Coretik\Core\Builders\Handler;
 use Coretik\Core\Builders\Interfaces\BuilderInterface;
 use Coretik\Core\Builders\Interfaces\ModelableInterface;
-use Coretik\Core\Builders\Interfaces\HandlerInterface;
 
-class PostArchiveHandler implements HandlerInterface
+class PostArchiveHandler extends Handler
 {
-    private $builder;
-
     public function handle(BuilderInterface $builder): void
     {
         if (!$builder instanceof ModelableInterface) {
             throw new \Exception('Builder doesn\'t implement ModelableInterface');
         }
-        $this->builder = $builder;
+        parent::handle($builder);
+    }
+
+    public function actions(): void
+    {
         \add_action('pre_get_posts', [$this, 'setArchiveQuery']);
     }
 
@@ -38,7 +40,7 @@ class PostArchiveHandler implements HandlerInterface
             return false;
         }
 
-        $vars = $this->builder->query()::defaultArgs();
+        $vars = $this->builder->query()->getQueryArgsDefault();
         foreach ($vars as $key => $val) {
             $query->set($key, $val);
         }
