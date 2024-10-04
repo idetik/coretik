@@ -1,3 +1,13 @@
+## [1.10.2](https://github.com/idetik/coretik/compare/v1.10.1...v1.10.2) (2024-10-04)
+
+
+### Bug Fixes
+
+* Enhance php interface & clean code ([f3f483c](https://github.com/idetik/coretik/commit/f3f483c8bc74bab3c7f61ef2b9df8915c3dc0f00))
+* Populate builder interface ([c5d9d3b](https://github.com/idetik/coretik/commit/c5d9d3b075dc214729b31ae3a18dc762a7ca55d1))
+* Populate builder interface ([486723a](https://github.com/idetik/coretik/commit/486723ab5448925b858e398b37d3a644e43b90bc))
+* Refacto builder handlers & provide an abstract handler ([6a08b78](https://github.com/idetik/coretik/commit/6a08b785632c1e0847a8aa54d1bbf8d6ce1d4c27))
+
 ## [1.10.1](https://github.com/idetik/coretik/compare/v1.10.0...v1.10.1) (2024-10-02)
 
 
