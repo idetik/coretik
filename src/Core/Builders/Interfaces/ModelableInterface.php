@@ -11,7 +11,6 @@ interface ModelableInterface
     public function model($initializer): Model;
     public function querier(callable $querier);
     public function query(): QuerierInterface;
-    // public static function query(): QuerierInterface;
     public function wpObject(int $id);
     public function hasFactory(): bool;
     public function hasQuerier(): bool;

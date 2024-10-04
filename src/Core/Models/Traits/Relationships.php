@@ -8,7 +8,6 @@ use Coretik\Core\Models\Exceptions\CannotResolveException;
 use Coretik\Core\Exception\ContainerValueNotFoundException;
 use Coretik\Core\Exception\UnhandledException;
 use Coretik\Core\Collection;
-use Illuminate\Support\LazyCollection;
 use Coretik\Core\Models\Wp\PostModel;
 use Coretik\Core\Models\Wp\TermModel;
 use Coretik\Core\Models\Wp\UserModel;

@@ -8,12 +8,13 @@ use Coretik\Core\Query\Interfaces\QueryBuilderInterface;
 use Coretik\Core\Query\Clauses\TaxonomyClause;
 use Coretik\Core\Query\Clauses\MetaClause;
 use Coretik\Core\Query\Clauses\WhereClause;
-use Coretik\Core\Query\Clauses\DateClause;
 use Coretik\Core\Collection;
 use Illuminate\Support\LazyCollection;
 
 abstract class Query implements QuerierInterface
 {
+    const PRIMARY_KEY = '';
+
     protected $builder;
     protected $query;
     protected $mediator;
