@@ -31,7 +31,7 @@ abstract class Builder implements BuilderInterface
         return $this->registerPriority;
     }
 
-    public function attach(string $name, callable $service)
+    public function attach(string $name, callable $service): self
     {
         $this->services[$name] = $service;
         return $this;

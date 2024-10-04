@@ -9,4 +9,5 @@ interface BuilderInterface
     public function getType(): string;
     public function handler(HandlerInterface $handler): self;
     public function runHandlers(): self;
+    public function attach(string $name, callable $service): self;
 }
