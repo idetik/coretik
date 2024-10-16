@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/idetik/coretik/compare/v1.10.2...v1.11.0) (2024-10-16)
+
+
+### Features
+
+* Add boot<Trait>Once method to manage global WP hooks ([ad3a735](https://github.com/idetik/coretik/commit/ad3a735c8c63a450fb25284efe055d20696a21a5))
+
 ## [1.10.2](https://github.com/idetik/coretik/compare/v1.10.1...v1.10.2) (2024-10-04)
 
 
