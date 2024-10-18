@@ -1,3 +1,10 @@
+## [1.11.1](https://github.com/idetik/coretik/compare/v1.11.0...v1.11.1) (2024-10-18)
+
+
+### Bug Fixes
+
+* Fix async form return template view ([caecd18](https://github.com/idetik/coretik/commit/caecd1854429cc300a58da90c65aba2f2008cd3c))
+
 # [1.11.0](https://github.com/idetik/coretik/compare/v1.10.2...v1.11.0) (2024-10-16)
 
 
