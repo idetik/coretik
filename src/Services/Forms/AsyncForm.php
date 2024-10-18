@@ -29,7 +29,7 @@ abstract class AsyncForm extends Form implements Asyncable
 
     public function view($data = [], bool $return = false)
     {
-        parent::view(
+        return parent::view(
             array_merge($this->view_data, $data, [
                 'ajax_refresh' => true,
                 'ajax_endpoint' => $this->endpoint(),
