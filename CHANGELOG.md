@@ -1,3 +1,10 @@
+## [1.11.2](https://github.com/idetik/coretik/compare/v1.11.1...v1.11.2) (2024-10-19)
+
+
+### Bug Fixes
+
+* Make bootIfNotBooted method as public ([9d726df](https://github.com/idetik/coretik/commit/9d726df3cfe20d58ca6660b911d85660f8395b63))
+
 ## [1.11.1](https://github.com/idetik/coretik/compare/v1.11.0...v1.11.1) (2024-10-18)
 
 
