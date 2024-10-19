@@ -10,7 +10,7 @@ trait Bootable
     protected static $traitInitializers = [];
     protected static $traitBooted = [];
 
-    protected static function bootIfNotBooted()
+    public static function bootIfNotBooted()
     {
         if (!isset(static::$booted[static::class])) {
             static::$booted[static::class] = true;
