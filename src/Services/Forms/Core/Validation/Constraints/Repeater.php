@@ -3,14 +3,13 @@
 namespace Coretik\Services\Forms\Core\Validation\Constraints;
 
 use Coretik\Services\Forms\Core\Utils;
-use Coretik\Services\Forms\Core\Validation;
-use Coretik\Services\Forms\Validator;
+use Coretik\Services\Forms\Core\Validation\Validation;
+use Coretik\Services\Forms\Core\Validation\Validator;
 
 class Repeater extends Constraint
 {
-    private $name    = 'repeater';
-    private $message = 'Ce champs contient des erreurs.';
-    private $display_message = false;
+    protected string $name = 'repeater';
+    protected string $message = 'Ce champs contient des erreurs.';
     private $validation = null; //Form Validation object
     protected $form;
 
@@ -48,21 +47,6 @@ class Repeater extends Constraint
                 $this->constraints[$constraint_name]['args'] = $args;
             }
         }
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    public function isMessageDisplayed()
-    {
-        return $this->display_message;
     }
 
     public function validate($fieldname, $value, $values)
@@ -127,7 +111,7 @@ class Repeater extends Constraint
 
     private function validateSubFields(array $subFields, $constraints)
     {
-        $this->validation = new Validation();
+        $this->validation = new Validation($this->form);
 
         foreach ($subFields as $index => $row) {
             $this->validation->setData($row);

@@ -6,29 +6,14 @@ use Coretik\Services\Forms\Core\Utils;
 
 class PaymentCardCvc extends Constraint
 {
-    private $name    = 'payment-card-cvc';
-    private $message = 'Invalid card CVC';
-    private $display_message = true;
+    protected string $name = 'payment-card-cvc';
+    protected string $message = 'Invalid card CVC';
+    protected bool $display_message = true;
     private $payment_card_number_field;
 
     public function __construct($payment_card_number_field)
     {
         $this->payment_card_number_field = $payment_card_number_field;
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    public function isMessageDisplayed()
-    {
-        return $this->display_message;
     }
 
     public function validate($fieldname, $value, $values)

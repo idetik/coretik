@@ -6,9 +6,9 @@ use Coretik\Services\Forms\Core\Utils;
 
 class PaymentCardExpiry extends Constraint
 {
-    private $name    = 'payment-card-expiry';
-    private $message = 'This card expiry date has already passed';
-    private $display_message = true;
+    protected string $name = 'payment-card-expiry';
+    protected string $message = 'This card expiry date has already passed';
+    protected bool $display_message = true;
     private $field_month;
     private $field_year;
 
@@ -20,21 +20,6 @@ class PaymentCardExpiry extends Constraint
         if (!empty($args['field-year'])) {
             $this->field_year = $args['field-year'];
         }
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    public function isMessageDisplayed()
-    {
-        return $this->display_message;
     }
 
     public function validate($fieldname, $value, $values)

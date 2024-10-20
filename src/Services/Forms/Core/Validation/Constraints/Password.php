@@ -6,9 +6,9 @@ use Coretik\Services\Forms\Core\Utils;
 
 class Password extends Constraint
 {
-    private $name    = 'password';
-    private $message = 'Le mot de passe est invalide.';
-    private $display_message = true;
+    protected string $name = 'password';
+    protected string $message = 'Le mot de passe est invalide.';
+    protected bool $display_message = true;
 
     // constraints
     private $constraints = [
@@ -19,7 +19,6 @@ class Password extends Constraint
         'least_one_cap'     => ['activate' => false, 'message' => 'Le mot de passe doit contenir au moins une majuscule.', 'args' => false, 'callback' => 'leastOneCap'],
         'confirm_password'  => ['activate' => false, 'message' => 'Le mot de passe est invalide.', 'args' => false, 'callback' => 'confirmPassword'],
     ];
-
 
     public function __construct($password_constraints = [])
     {
@@ -46,21 +45,6 @@ class Password extends Constraint
                 $this->constraints[$constraint_name]['args'] = $args;
             }
         }
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    public function isMessageDisplayed()
-    {
-        return $this->display_message;
     }
 
     public function validate($fieldname, $value, $values)

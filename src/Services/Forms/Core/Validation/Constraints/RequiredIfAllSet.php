@@ -6,29 +6,13 @@ use Coretik\Services\Forms\Core\Utils;
 
 class RequiredIfAllSet extends Constraint
 {
-    private $name = 'required-if-all-set';
-    private $message = 'Ce champs est requis';
-    private $display_message = false;
+    protected string $name = 'required-if-all-set';
+    protected string $message = 'Ce champs est requis';
     private $conditionnals;
 
     public function __construct($conditionnals)
     {
         $this->conditionnals = $conditionnals;
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    public function isMessageDisplayed()
-    {
-        return $this->display_message;
     }
 
     public function validate($fieldname, $value, $values)

@@ -6,24 +6,9 @@ use Coretik\Services\Forms\Core\Utils;
 
 class Email extends Constraint
 {
-    private $name    = 'email';
-    private $message = 'L\'adresse email est invalide.';
-    private $display_message = true;
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    public function isMessageDisplayed()
-    {
-        return $this->display_message;
-    }
+    protected string $name    = 'email';
+    protected string $message = 'L\'adresse email est invalide.';
+    protected bool $display_message = true;
 
     public static function getEmailDomain($email)
     {

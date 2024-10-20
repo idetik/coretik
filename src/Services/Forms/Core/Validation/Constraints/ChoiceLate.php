@@ -6,9 +6,7 @@ use Coretik\Services\Forms\Core\Utils;
 
 class ChoiceLate extends Constraint
 {
-    private $name    = 'choice-late';
-    private $message;
-    private $display_message = false;
+    protected string $name = 'choice-late';
     private $provider;
     private $mapping;
 
@@ -25,16 +23,6 @@ class ChoiceLate extends Constraint
         $this->message  = $args['message'];
     }
 
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
     public function setMessage($message)
     {
         $this->message = $message;
@@ -43,11 +31,6 @@ class ChoiceLate extends Constraint
     public function setDisplayMessage($display_message)
     {
         $this->display_message = $display_message;
-    }
-
-    public function isMessageDisplayed()
-    {
-        return $this->display_message;
     }
 
     public function validate($fieldname, $value, $values)

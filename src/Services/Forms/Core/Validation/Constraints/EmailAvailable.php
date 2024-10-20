@@ -6,24 +6,9 @@ use Coretik\Services\Forms\Core\Utils;
 
 class EmailAvailable extends Constraint
 {
-    private $name    = 'email-available';
-    private $message = 'Cette adresse email existe déjà.';
-    private $display_message = true;
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    public function isMessageDisplayed()
-    {
-        return $this->display_message;
-    }
+    protected string $name    = 'email-available';
+    protected string $message = 'Cette adresse email existe déjà.';
+    protected bool $display_message = true;
 
     public function validate($fieldname, $value, $values)
     {

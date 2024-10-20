@@ -6,9 +6,8 @@ use Coretik\Services\Forms\Core\Utils;
 
 class DateBeforeToday extends Constraint
 {
-    private $name            = 'date-before-today';
-    private $message;
-    private $display_message = true;
+    protected string $name = 'date-before-today';
+    protected bool $display_message = true;
     private $format;
 
     public function __construct($args)
@@ -20,21 +19,6 @@ class DateBeforeToday extends Constraint
         $args = wp_parse_args($args, $defaults);
         $this->message  = $args['message'];
         $this->format = $args['format'];
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    public function isMessageDisplayed()
-    {
-        return $this->display_message;
     }
 
     public function validate($fieldname, $value, $values)

@@ -6,26 +6,11 @@ use Coretik\Services\Forms\Core\Utils;
 
 class EmailNoBurnerOrDisposable extends Constraint
 {
-    private $name    = 'email-no-burner-or-disposable';
-    private $message = "Sorry, we don't allow disposable email addresses. Please try a different email account.";
-    private $display_message = true;
+    protected string $name    = 'email-no-burner-or-disposable';
+    protected string $message = "Sorry, we don't allow disposable email addresses. Please try a different email account.";
+    protected bool $display_message = true;
 
     protected static $burnersDomains = null;
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    public function isMessageDisplayed()
-    {
-        return $this->display_message;
-    }
 
     public static function getEmailDomain($email)
     {

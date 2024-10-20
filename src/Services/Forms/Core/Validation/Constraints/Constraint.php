@@ -5,14 +5,26 @@ namespace Coretik\Services\Forms\Core\Validation\Constraints;
 abstract class Constraint
 {
     protected $form = null;
-
-    abstract public function getName();
-
-    abstract public function getMessage();
-
-    abstract public function isMessageDisplayed();
+    protected bool $display_message = false;
+    protected string $name = '';
+    protected string $message = '';
 
     abstract public function validate($fieldname, $value, $values);
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getMessage(): string
+    {
+        return \apply_filters('coretik/forms/constraint/message', $this->message, $this->name, $this);
+    }
+
+    public function isMessageDisplayed(): bool
+    {
+        return $this->display_message;
+    }
 
     protected static function get($class, array $args = [])
     {
@@ -28,6 +40,12 @@ abstract class Constraint
 
     public static function factory($key, $args, $form = null)
     {
+        $constraint = apply_filters('coretik/forms/constraint/factory', null, $key, $args, $form);
+        $constraint = apply_filters('coretik/forms/constraint/factory/' . $key, $constraint, $args, $form);
+        if (!empty($constraint)) {
+            return $constraint;
+        }
+
         switch ($key) {
             case 'callback':
                 return static::get('Callback', [$args]);
@@ -37,7 +55,6 @@ abstract class Constraint
                 } else {
                     return false;
                 }
-                break;
             case 'email':
                 if (true === $args) {
                     return static::get('Email');

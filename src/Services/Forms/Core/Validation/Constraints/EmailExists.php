@@ -6,24 +6,9 @@ use Coretik\Services\Forms\Core\Utils;
 
 class EmailExists extends Constraint
 {
-    private $name    = 'email-exists';
-    private $message = "Cette adresse email n'existe pas.";
-    private $display_message = true;
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    public function isMessageDisplayed()
-    {
-        return $this->display_message;
-    }
+    protected string $name    = 'email-exists';
+    protected string $message = "Cette adresse email n'existe pas.";
+    protected bool $display_message = true;
 
     public function validate($fieldname, $value, $values)
     {

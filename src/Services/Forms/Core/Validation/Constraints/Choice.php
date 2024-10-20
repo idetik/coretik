@@ -6,29 +6,13 @@ use Coretik\Services\Forms\Core\Utils;
 
 class Choice extends Constraint
 {
-    private $name    = 'choice';
-    private $message = 'Ce choix n\'est pas valide.';
-    private $display_message = false;
+    protected string $name    = 'choice';
+    protected string $message = 'Ce choix n\'est pas valide.';
     private $choices;
 
     public function __construct($choices)
     {
         $this->choices = $choices;
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    public function isMessageDisplayed()
-    {
-        return $this->display_message;
     }
 
     public function getChoices()
@@ -45,7 +29,10 @@ class Choice extends Constraint
         $value = Utils::forceArray($value);
 
         foreach ($value as $val) {
-            if (!\array_key_exists($val, $this->choices)) {
+            if (
+                !\array_key_exists($val, $this->choices)
+                && !\in_array($val, $this->choices)
+                ) {
                 return false;
             }
         }

@@ -6,9 +6,9 @@ use Coretik\Services\Forms\Core\Mimes;
 
 class File extends Constraint
 {
-    private $name    = 'file';
-    private $message = 'Le fichier est invalide.';
-    private $display_message = true;
+    protected string $name = 'file';
+    protected string $message = 'Le fichier est invalide.';
+    protected bool $display_message = true;
     private $maxSize;
     private $types;
     private $required;
@@ -27,21 +27,6 @@ class File extends Constraint
         $this->required = $args['required'];
         $this->form = $form;
         $this->formName = $form?->getFormName() ?: 'coretik-form';
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    public function isMessageDisplayed()
-    {
-        return $this->display_message;
     }
 
     protected function required()

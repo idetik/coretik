@@ -6,24 +6,9 @@ use Coretik\Services\Forms\Core\Utils;
 
 class Integer extends Constraint
 {
-    private $name    = 'integer';
-    private $message = 'La valeur doit être un nombre entier.';
-    private $display_message = true;
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    public function isMessageDisplayed()
-    {
-        return $this->display_message;
-    }
+    protected string $name = 'integer';
+    protected string $message = 'La valeur doit être un nombre entier.';
+    protected bool $display_message = true;
 
     public function validate($fieldname, $value, $values)
     {
