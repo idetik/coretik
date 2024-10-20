@@ -1,3 +1,10 @@
+## [1.11.3](https://github.com/idetik/coretik/compare/v1.11.2...v1.11.3) (2024-10-20)
+
+
+### Bug Fixes
+
+* Refact form constraints & add wp hooks ([b2fb1d4](https://github.com/idetik/coretik/commit/b2fb1d4ba53cb007a94eac6e53e7849ffda7904c))
+
 ## [1.11.2](https://github.com/idetik/coretik/compare/v1.11.1...v1.11.2) (2024-10-19)
 
 
