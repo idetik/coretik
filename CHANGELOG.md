@@ -1,3 +1,10 @@
+## [1.11.4](https://github.com/idetik/coretik/compare/v1.11.3...v1.11.4) (2024-10-23)
+
+
+### Bug Fixes
+
+* Add Utils method Classes::basename ([3553701](https://github.com/idetik/coretik/commit/35537014c95cbb6ade958b94c1141a8742e6bfe0))
+
 ## [1.11.3](https://github.com/idetik/coretik/compare/v1.11.2...v1.11.3) (2024-10-20)
 
 
