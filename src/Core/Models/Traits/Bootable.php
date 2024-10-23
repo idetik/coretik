@@ -35,21 +35,21 @@ trait Bootable
         foreach ($traits as $trait) {
 
             // Boot once
-            $method = 'boot'.class_basename($trait).'Once';
+            $method = 'boot'.Classes::basename($trait).'Once';
             if (method_exists($class, $method) && ! in_array($method, static::$traitBooted)) {
                 forward_static_call([$class, $method]);
                 static::$traitBooted[] = $method;
             }
 
             // Classic boot
-            $method = 'boot'.class_basename($trait);
+            $method = 'boot'.Classes::basename($trait);
             if (method_exists($class, $method) && ! in_array($method, $booted)) {
                 forward_static_call([$class, $method]);
                 $booted[] = $method;
             }
 
             // Register initializers
-            if (method_exists($class, $method = 'initialize'.class_basename($trait))) {
+            if (method_exists($class, $method = 'initialize'.Classes::basename($trait))) {
                 static::$traitInitializers[$class][] = $method;
                 static::$traitInitializers[$class] = array_unique(
                     static::$traitInitializers[$class]
