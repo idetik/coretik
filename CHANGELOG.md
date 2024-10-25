@@ -1,3 +1,10 @@
+# [1.12.0](https://github.com/idetik/coretik/compare/v1.11.4...v1.12.0) (2024-10-25)
+
+
+### Features
+
+* Add models archiving events ([f875fec](https://github.com/idetik/coretik/commit/f875fec6ca4fd378f5259ff3b6fd41c183f82ab1))
+
 ## [1.11.4](https://github.com/idetik/coretik/compare/v1.11.3...v1.11.4) (2024-10-23)
 
 
