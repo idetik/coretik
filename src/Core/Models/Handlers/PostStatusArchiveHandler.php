@@ -126,7 +126,9 @@ class PostStatusArchiveHandler extends Handler
             $target = $target->id();
         }
 
+        model($this->builder->getName(), $target)->trigger('archiving');
         \wp_update_post(['ID' => $target, 'post_status' => static::POST_STATUS_ARCHIVE_NAME]);
+        model($this->builder->getName(), $target)->trigger('archived');
     }
 
     public function hookDisplayArchiveStatus()
