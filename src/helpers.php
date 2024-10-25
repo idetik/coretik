@@ -1,6 +1,9 @@
 <?php
 
 use Coretik\App;
+use Coretik\Core\Builders\Interfaces\BuilderInterface;
+use Coretik\Core\Models\Interfaces\ModelInterface;
+use Coretik\Core\Query\Interfaces\QueryInterface;
 
 if (! function_exists('app')) {
     /**
@@ -11,5 +14,41 @@ if (! function_exists('app')) {
     function app()
     {
         return App::instance();
+    }
+}
+
+if (! function_exists('schema')) {
+    /**
+     * Create an app instance
+     *
+     * @return BuilderInterface
+     */
+    function schema(string $name, string $type): BuilderInterface
+    {
+        return app()->schema($name, $type);
+    }
+}
+
+if (! function_exists('model')) {
+    /**
+     * Create an app instance
+     *
+     * @return ModelInterface
+     */
+    function model(string $name, ?int $id = null): ModelInterface
+    {
+        return app()->schema($name)->model($id);
+    }
+}
+
+if (! function_exists('query')) {
+    /**
+     * Create an app instance
+     *
+     * @return QueryInterface
+     */
+    function query(string $name): QueryInterface
+    {
+        return app()->schema($name)->query();
     }
 }
