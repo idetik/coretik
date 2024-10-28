@@ -14,7 +14,7 @@ trait Actions
 {
     use Hooks;
 
-    protected function initializeActions()
+    protected function initializeActions(): void
     {
         $this->on('launch_actions', function () {
             if (!\did_action('init')) {
@@ -26,25 +26,26 @@ trait Actions
         \add_action('init', [$this, 'handleActions']);
     }
 
-    public static function getActionKey()
+    public function getActionKey(): string
     {
-        return static::POST_TYPE . '-request';
+        return $this->name() . '-request';
     }
 
-    public function handleActions()
+    public function handleActions(): void
     {
-        $action_key = self::getActionKey();
+        $action_key = $this->getActionKey();
         if (!isset($_REQUEST[$action_key])) {
-            return false;
+            return;
         }
+
+        $request_action = $_REQUEST[$action_key];
 
         $actions = $this->getActions();
-        if (!array_key_exists($_REQUEST[$action_key], $actions)) {
-            return null;
+        if (!array_key_exists($request_action, $actions)) {
+            return;
         }
 
-        $action = $actions[$_REQUEST[$action_key]];
-
+        $action = $actions[$request_action];
         switch (true) {
             case $action instanceof CoreActions\ActionAdminInterface:
                 if (!is_admin()) {
@@ -57,11 +58,10 @@ trait Actions
                 }
                 break;
             default:
-                return null;
+                return;
         }
 
         $required = $action->getRequired();
-
         if (!empty(array_diff($required, array_keys($_REQUEST)))) {
             $message = sprintf('Paramètre(s) requis: %s', implode(', ', array_diff($required, array_keys($_REQUEST))));
             $action->onError(new CoreActions\Exception($message));
@@ -71,7 +71,7 @@ trait Actions
         $params = [];
         $params['action_key'] = $action_key;
         foreach ($required as $field) {
-            $params[$field] = $_REQUEST[$field];
+            $params[$field] = \esc_attr($_REQUEST[$field]);
         }
 
         try {
