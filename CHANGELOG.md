@@ -1,3 +1,10 @@
+## [1.12.1](https://github.com/idetik/coretik/compare/v1.12.0...v1.12.1) (2024-10-28)
+
+
+### Bug Fixes
+
+* Model action system is on ([902a213](https://github.com/idetik/coretik/commit/902a21373df1ecc418635d7994f39f195cc3e777))
+
 # [1.12.0](https://github.com/idetik/coretik/compare/v1.11.4...v1.12.0) (2024-10-25)
 
 
