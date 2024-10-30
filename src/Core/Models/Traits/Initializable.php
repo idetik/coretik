@@ -9,7 +9,7 @@ trait Initializable
     protected function initialize()
     {
         // Initizalize traits
-        if (isset(static::$traitInitializers)) {
+        if (isset(static::$traitInitializers) && array_key_exists(static::class, static::$traitInitializers)) {
             foreach (static::$traitInitializers[static::class] as $method) {
                 $this->{$method}();
             }
