@@ -1,3 +1,10 @@
+## [1.12.2](https://github.com/idetik/coretik/compare/v1.12.1...v1.12.2) (2024-10-30)
+
+
+### Bug Fixes
+
+* Fix initializable trait ([a8d22ff](https://github.com/idetik/coretik/commit/a8d22ff6a0c8ab254ea17543d8d880ba6d3a6eef))
+
 ## [1.12.1](https://github.com/idetik/coretik/compare/v1.12.0...v1.12.1) (2024-10-28)
 
 
