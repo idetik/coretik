@@ -7,4 +7,5 @@ interface QuerierInterface
     public function getQueryArgsDefault();
     public function newQueryBuilderInstance();
     public function results(): array;
+    public function run();
 }

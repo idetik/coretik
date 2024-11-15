@@ -3,7 +3,7 @@
 use Coretik\App;
 use Coretik\Core\Builders\Interfaces\BuilderInterface;
 use Coretik\Core\Models\Interfaces\ModelInterface;
-use Coretik\Core\Query\Interfaces\QueryInterface;
+use Coretik\Core\Query\Interfaces\QuerierInterface;
 
 if (! function_exists('app')) {
     /**
@@ -45,9 +45,9 @@ if (! function_exists('query')) {
     /**
      * Create an app instance
      *
-     * @return QueryInterface
+     * @return QuerierInterface
      */
-    function query(string $name): QueryInterface
+    function query(string $name): QuerierInterface
     {
         return app()->schema($name)->query();
     }
