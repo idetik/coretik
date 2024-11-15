@@ -1,3 +1,10 @@
+## [1.12.3](https://github.com/idetik/coretik/compare/v1.12.2...v1.12.3) (2024-11-15)
+
+
+### Bug Fixes
+
+* query helper ([720a93c](https://github.com/idetik/coretik/commit/720a93c91a2145f92597212fe743caa94ccfd3c8))
+
 ## [1.12.2](https://github.com/idetik/coretik/compare/v1.12.1...v1.12.2) (2024-10-30)
 
 
