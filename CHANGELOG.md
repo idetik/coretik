@@ -1,3 +1,10 @@
+# [1.13.0](https://github.com/idetik/coretik/compare/v1.12.3...v1.13.0) (2025-02-26)
+
+
+### Features
+
+* make modular assets loader from native WP 6.7 flow ([cb7909c](https://github.com/idetik/coretik/commit/cb7909c400a7cdc99289d636f65f43f6489a348d))
+
 ## [1.12.3](https://github.com/idetik/coretik/compare/v1.12.2...v1.12.3) (2024-11-15)
 
 
