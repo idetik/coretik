@@ -91,15 +91,31 @@ class Loader
         }
     }
 
+    public function enqueueScriptModule(string $handleItem, string $file, array $deps = [], $ver = null, $in_footer = true, $async = true)
+    {
+        if (!\function_exists('wp_enqueue_script_module')) {
+            $this->enqueueScript($handleItem, $file, $deps, $ver, $in_footer, $async);
+            \add_filter('script_loader_tag', function ($tag, $scriptHandle, $src) use ($handleItem) {
+                if (str_ends_with($scriptHandle, $handleItem)) {
+                    return static::makeModularTag($tag);
+                }
+                return $tag;
+            }, 10, 3);
+        } else {
+            $handle = sprintf('%s/%s', $this->handleFamily, $handleItem);
+            \wp_enqueue_script_module(
+                $handle,
+                $this->url($file, $this->useScriptVersion),
+                $deps,
+                $ver,
+            );
+        }
+
+    }
+
     public function enqueueModularScript(string $handleItem, string $file, array $deps = [], $ver = null, $in_footer = true, $async = true)
     {
-        $this->enqueueScript($handleItem, $file, $deps, $ver, $in_footer, $async);
-        \add_filter('script_loader_tag', function ($tag, $scriptHandle, $src) use ($handleItem) {
-            if (str_ends_with($scriptHandle, $handleItem)) {
-                return static::makeModularTag($tag);
-            }
-            return $tag;
-        }, 10, 3);
+        $this->enqueueScriptModule($handleItem, $file, $deps, $ver, $in_footer, $async);
     }
 
     public function enqueueNoModularScript(string $handleItem, string $file, array $deps = [], $ver = null, $in_footer = true, $async = true)
