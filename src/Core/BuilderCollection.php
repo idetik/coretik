@@ -13,7 +13,7 @@ class BuilderCollection extends Collection
 
     protected function resolve(int $id)
     {
-        foreach ($this->data as $builder) {
+        foreach ($this->items as $builder) {
             if ($builder->concern($id)) {
                 return $builder;
             }
