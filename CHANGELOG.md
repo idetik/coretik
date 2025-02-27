@@ -1,3 +1,10 @@
+## [1.13.1](https://github.com/idetik/coretik/compare/v1.13.0...v1.13.1) (2025-02-27)
+
+
+### Bug Fixes
+
+* BuilderCollection resolver ([e9dd3d0](https://github.com/idetik/coretik/commit/e9dd3d0713ac157a2a4cc1721cf2b1e0b73ccaf8))
+
 # [1.13.0](https://github.com/idetik/coretik/compare/v1.12.3...v1.13.0) (2025-02-26)
 
 
