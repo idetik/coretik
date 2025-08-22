@@ -1,3 +1,15 @@
+## [1.13.2](https://github.com/idetik/coretik/compare/v1.13.1...v1.13.2) (2025-08-22)
+
+
+### Bug Fixes
+
+* Add filter 'coretik/template/wrapper' to choose a custom base ([81bd13c](https://github.com/idetik/coretik/commit/81bd13cb716b0b04f0f8e9c067ad6d8034eb894b))
+
+
+### Performance Improvements
+
+* Bump dependencies ([765056c](https://github.com/idetik/coretik/commit/765056c266a76d0469156876e54f39a70969840f))
+
 ## [1.13.1](https://github.com/idetik/coretik/compare/v1.13.0...v1.13.1) (2025-02-27)
 
 
