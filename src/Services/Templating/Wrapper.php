@@ -52,6 +52,8 @@ class Wrapper
                 break;
         }
 
+        $template_base = \apply_filters('coretik/template/wrapper', $template_base, self::$base, $main);
+
         if (false === $template_base) {
             return $main;
         } else {
