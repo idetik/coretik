@@ -110,7 +110,6 @@ class Loader
                 $ver,
             );
         }
-
     }
 
     public function enqueueModularScript(string $handleItem, string $file, array $deps = [], $ver = null, $in_footer = true, $async = true)

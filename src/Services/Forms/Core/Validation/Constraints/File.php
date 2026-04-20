@@ -94,7 +94,6 @@ class File extends Constraint
             if (false === $ext) {
                 throw new \RuntimeException('Format du fichier invalide.');
             }
-
         } catch (\RuntimeException $e) {
             $this->message = $e->getMessage();
             return false;

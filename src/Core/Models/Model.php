@@ -51,7 +51,9 @@ abstract class Model implements ModelInterface
         $this->initializeModel();
     }
 
-    protected function initializeModel(): void {}
+    protected function initializeModel(): void
+    {
+    }
 
     public function setDictionnary(Dictionnary $dictionnary)
     {
@@ -148,7 +150,9 @@ abstract class Model implements ModelInterface
         }
     }
 
-    public function get(string $prop) {}
+    public function get(string $prop)
+    {
+    }
 
     public function __get($prop)
     {

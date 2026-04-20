@@ -32,7 +32,7 @@ class Choice extends Constraint
             if (
                 !\array_key_exists($val, $this->choices)
                 && !\in_array($val, $this->choices)
-                ) {
+            ) {
                 return false;
             }
         }

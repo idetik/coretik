@@ -207,7 +207,6 @@ abstract class Form implements Handlable
 
             if (!\array_key_exists('prefillable', $data) || true === $data['prefillable']) {
                 if (!empty($_GET) && \array_key_exists($field_name, $_GET)) {
-
                     if (is_array($_GET[$field_name])) {
                         $prefilled_value = \array_map('esc_attr', $_GET[$field_name]);
                     } else {

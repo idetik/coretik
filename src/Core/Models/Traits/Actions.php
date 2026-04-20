@@ -6,7 +6,7 @@ use Coretik\Core\Actions as CoreActions;
 
 /**
  * To be used by Coretik Model.
- * 
+ *
  * Provide a callable [$this, 'getActions']
  *  - arrayof ['actionName' => @param \Coretik\Core\Actions\ActionInterface]
  */

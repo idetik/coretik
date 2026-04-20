@@ -11,7 +11,7 @@ class Callback extends Constraint
     public function __construct($args)
     {
         $defaults = [
-            'message'  =>'Ce champs contient une erreur.',
+            'message'  => 'Ce champs contient une erreur.',
             'args'     => [],
         ];
         $args = wp_parse_args($args, $defaults);
