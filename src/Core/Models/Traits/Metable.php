@@ -36,7 +36,7 @@ trait Metable
         $this->metasKeys[] = $meta->key();
     }
 
-    protected function declareMeta(string $local_key, string $meta_key = null, $protected = null): MetaDefinition
+    protected function declareMeta(string $local_key, ?string $meta_key = null, $protected = null): MetaDefinition
     {
         if ($this->metas->has($local_key)) {
             return $this->metaDefinition($local_key);
