@@ -1,3 +1,11 @@
+## [1.13.3](https://github.com/idetik/coretik/compare/v1.13.2...v1.13.3) (2026-04-20)
+
+
+### Bug Fixes
+
+* Bugfix php syntax ([08d3c42](https://github.com/idetik/coretik/commit/08d3c42322dc635f0ed2f5cb1fcc012bdba3065e))
+* Sniff ([adfb157](https://github.com/idetik/coretik/commit/adfb157a9025a13dce368d5adc8e283df1c66e5d))
+
 ## [1.13.2](https://github.com/idetik/coretik/compare/v1.13.1...v1.13.2) (2025-08-22)
 
 
