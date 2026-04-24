@@ -1,3 +1,10 @@
+## [1.13.5](https://github.com/idetik/coretik/compare/v1.13.4...v1.13.5) (2026-04-24)
+
+
+### Bug Fixes
+
+* PHP 8.4 compat ([9eb9f65](https://github.com/idetik/coretik/commit/9eb9f6503b735b108cfdff86492778835f94e43f))
+
 ## [1.13.4](https://github.com/idetik/coretik/compare/v1.13.3...v1.13.4) (2026-04-24)
 
 
