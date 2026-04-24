@@ -82,7 +82,7 @@ class Validation
         return $this->validationData;
     }
 
-    public function run(array $data = null)
+    public function run(?array $data = null)
     {
         if ($data !== null) {
             $this->setData($data);
