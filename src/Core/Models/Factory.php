@@ -12,7 +12,7 @@ class Factory
     protected $models;
     protected $model;
 
-    public function __construct(callable|string $model, ModelableInterface $mediator, ContainerInterface $models = null)
+    public function __construct(callable|string $model, ModelableInterface $mediator, ?ContainerInterface $models = null)
     {
         if (empty($models)) {
             $models = new Models();
