@@ -1,3 +1,20 @@
+# [2.0.0-next.3](https://github.com/idetik/coretik/compare/v2.0.0-next.2...v2.0.0-next.3) (2026-10-09)
+
+
+### Bug Fixes
+
+* query cache returned outdated results after writes ([f43ec3a](https://github.com/idetik/coretik/commit/f43ec3aca5e0ccd19e8ed2c06c4d271caf0b5bce)), closes [#15](https://github.com/idetik/coretik/issues/15)
+
+
+* feat!: model events no longer register WordPress hooks ([72f38d5](https://github.com/idetik/coretik/commit/72f38d556cd3e5da3b80bd748ab8fd67b53fa656)), closes [#16](https://github.com/idetik/coretik/issues/16)
+
+
+### BREAKING CHANGES
+
+* the protected hookName() and getInternalId() methods are removed; the Actions trait no longer uses the Hooks trait itself (models only).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
 # [2.0.0-next.2](https://github.com/idetik/coretik/compare/v2.0.0-next.1...v2.0.0-next.2) (2026-10-09)
 
 
