@@ -164,4 +164,28 @@ class FormSubmissionTest extends TestCase
         $this->assertSame('none', $form->getValue('address[a][x]', 'none'));
         $this->assertSame('none', $form->getValue('missing', 'none'));
     }
+
+    public function testDisabledBooleanConstraintIsIgnored(): void
+    {
+        $form = new class ('contact') extends Form {
+            public int $runs = 0;
+
+            public function getRules(): array
+            {
+                return ['email' => ['name' => 'Email', 'constraints' => ['email' => false, 'phone' => false]]];
+            }
+
+            protected function isValidContext(): bool
+            {
+                return true;
+            }
+
+            protected function run(): void
+            {
+                $this->runs++;
+            }
+        };
+
+        $this->assertSame(1, $this->submit($form, ['email' => 'not an email'])->runs);
+    }
 }
