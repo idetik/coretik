@@ -9,6 +9,10 @@ on:
   pull_request:
     branches: [ "master", "next" ]
 
+# Composer calls the GitHub API for VCS repositories (composer update): authenticated, to not hit the anonymous rate limit
+env:
+  COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.GITHUB_TOKEN }}"}}'
+
 jobs:
   tests:
 
