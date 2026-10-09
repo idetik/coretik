@@ -10,6 +10,7 @@ use Coretik\Core\Models\Interfaces\MetableAdapterInterface;
 use Coretik\Core\Models\MetaDefinition;
 use Coretik\Core\Models\Exceptions\UndefinedMetaKeyException;
 use Carbon\Carbon;
+use Carbon\Exceptions\InvalidFormatException;
 use DateTimeInterface;
 
 /**
@@ -320,17 +321,15 @@ trait Metable
             return Carbon::instance(Carbon::createFromFormat('Y-m-d', $value)->startOfDay());
         }
 
-        $format = $this->getDateFormat();
-
-        // https://bugs.php.net/bug.php?id=75577
-        if (version_compare(PHP_VERSION, '7.3.0-dev', '<')) {
-            $format = str_replace('.v', '.u', $format);
-        }
-
         // Finally, we will just assume this date is in the format used by default on
         // the database connection and use that format to create the Carbon object
         // that is returned back out to the developers after we convert it here.
-        return Carbon::createFromFormat($format, $value);
+        try {
+            return Carbon::createFromFormat($this->getDateFormat(), $value);
+        } catch (InvalidFormatException $e) {
+            // Other formats, e.g. dates stored with microseconds before 2.0
+            return Carbon::parse($value);
+        }
     }
 
     /**
@@ -373,8 +372,11 @@ trait Metable
         return $this->asDateTime($value)->getTimestamp();
     }
 
+    /**
+     * WordPress database date format (post_date…)
+     */
     protected function getDateFormat()
     {
-        return 'Y-m-d H:i:s.u';
+        return 'Y-m-d H:i:s';
     }
 }

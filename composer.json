@@ -10,13 +10,14 @@
         }
     ],
     "require": {
+        "php": ">=8.2",
         "johnbillion/extended-cpts": "^5.0",
         "pimple/pimple": "^3.5",
-        "nesbot/carbon": "^2.66",
+        "nesbot/carbon": "^3.0",
         "pelago/emogrifier": "^7.0",
         "wesbos/burner-email-providers": "^1.0",
         "globalis/wp-cubi-helpers": "^1.0",
-        "illuminate/collections": "^10.6",
+        "illuminate/collections": "^11.0 || ^12.0",
         "globalis/wp-cubi-transient-cache": "^0.3.0"
     },
     "authors": [
