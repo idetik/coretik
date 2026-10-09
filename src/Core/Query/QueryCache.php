@@ -2,6 +2,9 @@
 
 namespace Coretik\Core\Query;
 
+/**
+ * @phpstan-consistent-constructor
+ */
 class QueryCache
 {
     private $cache = [];
@@ -9,10 +12,10 @@ class QueryCache
 
     public static function instance()
     {
-        if (empty(static::$instance)) {
-            static::$instance = new static();
+        if (empty(self::$instance)) {
+            self::$instance = new static();
         }
-        return static::$instance;
+        return self::$instance;
     }
 
     public function has(string $key): bool

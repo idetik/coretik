@@ -57,7 +57,6 @@ abstract class AsyncForm extends Form implements Asyncable
 
     protected function onValidationError()
     {
-        parent::onValidationError();
         if (static::SCROLL_TO_ERRORS) {
             $this->view_data['errors'][] = __('Ce formulaire contient des erreurs, veuillez vérifier votre saisie.', 'coretik');
         }
@@ -73,6 +72,5 @@ abstract class AsyncForm extends Form implements Asyncable
             ]
         ];
         \wp_send_json($response, 200);
-        exit;
     }
 }

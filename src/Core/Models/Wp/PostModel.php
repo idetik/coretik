@@ -2,6 +2,8 @@
 
 namespace Coretik\Core\Models\Wp;
 
+use Coretik\Core\Models\Model;
+use Coretik\Core\Models\Interfaces\AcfFieldsInterface;
 use Coretik\Core\Models\Traits\AcfFields;
 use Coretik\Core\Models\Traits\Taxonomy;
 use Coretik\Core\Models\Traits\Relationships;
@@ -9,7 +11,16 @@ use Coretik\Core\Models\Adapters\WPPostAdapter;
 use Coretik\Core\Query\Post as Query;
 use Coretik\Core\Models\Exceptions\UndefinedMetaKeyException;
 
-class PostModel extends WPModel
+/**
+ * WordPress fields, read and written through __get() / __set()
+ *
+ * @property int $post_author
+ * @property int $post_parent
+ * @property string $post_type
+ * @property string $post_status
+ * @property array $tax_input
+ */
+class PostModel extends WPModel implements AcfFieldsInterface
 {
     use AcfFields;
     use Taxonomy;
@@ -61,7 +72,7 @@ class PostModel extends WPModel
     /**
      * Force post type to the current model
      */
-    public function create(): self
+    public function create(): static
     {
         $this->post_type = $this->name();
         return parent::create();
@@ -101,9 +112,15 @@ class PostModel extends WPModel
         return $this->get('post_parent');
     }
 
-    public function parent(): self
+    /**
+     * Parent model, null without parent. Its class is the one of the builder factory.
+     */
+    public function parent(): ?Model
     {
-        return app()->schema($this->name(), 'post')->model($this->parentId());
+        if (empty($this->parentId())) {
+            return null;
+        }
+        return app()->schema()->modelable($this->name(), 'post')->model($this->parentId());
     }
 
     public function setParentId(int $id): self

@@ -4,6 +4,9 @@ namespace Coretik\Core\Models\Handlers;
 
 use Coretik\Core\Builders\Handler;
 
+/**
+ * @phpstan-consistent-constructor
+ */
 class EndpointHandler extends Handler
 {
     private string $endpoint;

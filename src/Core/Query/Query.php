@@ -11,6 +11,9 @@ use Coretik\Core\Query\Clauses\WhereClause;
 use Coretik\Core\Collection;
 use Illuminate\Support\LazyCollection;
 
+/**
+ * @phpstan-consistent-constructor
+ */
 abstract class Query implements QuerierInterface
 {
     const PRIMARY_KEY = '';
@@ -67,15 +70,21 @@ abstract class Query implements QuerierInterface
         return $this;
     }
 
-    public function whereTax()
+    /**
+     * @see TaxonomyClause::__construct() for the arguments
+     */
+    public function whereTax(...$args)
     {
-        $this->where(new TaxonomyClause(...\func_get_args()));
+        $this->where(new TaxonomyClause(...$args));
         return $this;
     }
 
-    public function whereMeta()
+    /**
+     * @see MetaClause::__construct() for the arguments
+     */
+    public function whereMeta(...$args)
     {
-        $this->where(new MetaClause(...\func_get_args()));
+        $this->where(new MetaClause(...$args));
         return $this;
     }
 
@@ -84,6 +93,51 @@ abstract class Query implements QuerierInterface
         $newQuery = new static($this->mediator);
         $group($newQuery);
         $this->builder->nest($newQuery->builder());
+        return $this;
+    }
+
+    /**
+     * Set a query parameter (see the query builder PARAMETERS)
+     */
+    public function set(string $key, $value): static
+    {
+        $this->builder->set($key, $value);
+        return $this;
+    }
+
+    public function childOf(int|array $values): static
+    {
+        $this->builder->childOf($values);
+        return $this;
+    }
+
+    public function all(): static
+    {
+        $this->builder->all();
+        return $this;
+    }
+
+    public function limit(int $number): static
+    {
+        $this->builder->limit($number);
+        return $this;
+    }
+
+    public function in(array $ids): static
+    {
+        $this->builder->in($ids);
+        return $this;
+    }
+
+    public function notIn(array $ids): static
+    {
+        $this->builder->notIn($ids);
+        return $this;
+    }
+
+    public function not(int $id): static
+    {
+        $this->builder->not($id);
         return $this;
     }
 
@@ -205,11 +259,16 @@ abstract class Query implements QuerierInterface
         $this->builder = clone $this->builder;
     }
 
+    /**
+     * Forward query builder specific methods (e.g. page(), withoutMetas())
+     */
     public function __call($method, $parameters)
     {
-        if (\method_exists($this->builder, $method)) {
-            \call_user_func([$this->builder, $method], ...$parameters);
-            return $this;
+        if (!\method_exists($this->builder, $method)) {
+            throw new \BadMethodCallException(\sprintf('Call to undefined method %s::%s()', static::class, $method));
         }
+
+        \call_user_func([$this->builder, $method], ...$parameters);
+        return $this;
     }
 }

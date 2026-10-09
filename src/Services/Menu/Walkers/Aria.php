@@ -55,7 +55,7 @@ class Aria extends \Walker_Nav_Menu
          * @since 4.4.0
          *
          * @param \stdClass $args  An object of wp_nav_menu() arguments.
-         * @param WP_Post  $item  Menu item data object.
+         * @param \WP_Post  $item  Menu item data object.
          * @param int      $depth Depth of menu item. Used for padding.
          */
         $args = apply_filters('nav_menu_item_args', $args, $item, $depth);
@@ -67,7 +67,7 @@ class Aria extends \Walker_Nav_Menu
          * @since 4.1.0 The `$depth` parameter was added.
          *
          * @param string[] $classes Array of the CSS classes that are applied to the menu item's `<li>` element.
-         * @param WP_Post  $item    The current menu item.
+         * @param \WP_Post  $item    The current menu item.
          * @param \stdClass $args    An object of wp_nav_menu() arguments.
          * @param int      $depth   Depth of menu item. Used for padding.
          */
@@ -81,7 +81,7 @@ class Aria extends \Walker_Nav_Menu
          * @since 4.1.0 The `$depth` parameter was added.
          *
          * @param string   $menu_id The ID that is applied to the menu item's `<li>` element.
-         * @param WP_Post  $item    The current menu item.
+         * @param \WP_Post  $item    The current menu item.
          * @param \stdClass $args    An object of wp_nav_menu() arguments.
          * @param int      $depth   Depth of menu item. Used for padding.
          */
@@ -138,7 +138,7 @@ class Aria extends \Walker_Nav_Menu
          *     @type string $href         The href attribute.
          *     @type string $aria_current The aria-current attribute.
          * }
-         * @param WP_Post  $item  The current menu item.
+         * @param \WP_Post  $item  The current menu item.
          * @param \stdClass $args  An object of wp_nav_menu() arguments.
          * @param int      $depth Depth of menu item. Used for padding.
          */
@@ -161,7 +161,7 @@ class Aria extends \Walker_Nav_Menu
          * @since 4.4.0
          *
          * @param string   $title The menu item's title.
-         * @param WP_Post  $item  The current menu item.
+         * @param \WP_Post  $item  The current menu item.
          * @param \stdClass $args  An object of wp_nav_menu() arguments.
          * @param int      $depth Depth of menu item. Used for padding.
          */
@@ -183,7 +183,7 @@ class Aria extends \Walker_Nav_Menu
          * @since 3.0.0
          *
          * @param string   $item_output The menu item's starting HTML output.
-         * @param WP_Post  $item        Menu item data object.
+         * @param \WP_Post  $item        Menu item data object.
          * @param int      $depth       Depth of menu item. Used for padding.
          * @param \stdClass $args        An object of wp_nav_menu() arguments.
          */

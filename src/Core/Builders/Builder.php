@@ -83,10 +83,15 @@ abstract class Builder implements BuilderInterface
         return $this->handlers;
     }
 
+    /**
+     * Call a service attached with attach() (macro)
+     */
     public function __call($method, $args = [])
     {
-        if ($this->services->has($method)) {
-            return \call_user_func($this->services->get($method), ...$args);
+        if (!$this->services->has($method)) {
+            throw new \BadMethodCallException(\sprintf('Call to undefined method %s::%s(): attach() a service first', static::class, $method));
         }
+
+        return \call_user_func($this->services->get($method), ...$args);
     }
 }

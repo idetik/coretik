@@ -40,7 +40,7 @@ class Loader
 
         if ($versioning ?? $this->useScriptVersion) {
             $version = $this->version();
-            if (false != $version && !empty($version)) {
+            if (!empty($version)) {
                 $url = str_replace(['.css', '.js'], ['-' . $version . '.css', '-' . $version . '.js'], $url);
             }
         }

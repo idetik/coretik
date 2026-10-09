@@ -2,6 +2,7 @@
 
 namespace Coretik\Core\Models\Handlers;
 
+use Coretik\Core\Models\Interfaces\MetableInterface;
 use Coretik\Core\Builders\Handler;
 use Coretik\Core\Builders\Interfaces\ModelableInterface;
 
@@ -35,7 +36,7 @@ class DefaultMetaDataHandler extends Handler
 
         $model = $this->builder->model((int)$object_id);
 
-        if ($model->hasMeta($meta_key) && !empty($model->metaDefinition($meta_key)?->defaultValue())) {
+        if ($model instanceof MetableInterface && $model->hasMeta($meta_key) && !empty($model->metaDefinition($meta_key)?->defaultValue())) {
             $value = $model->metaDefinition($meta_key)->defaultValue();
 
             if (false === $single) {

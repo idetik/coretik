@@ -6,6 +6,9 @@ use Coretik\Core\Builders\Handler;
 use Coretik\Core\Builders\Interfaces\BuilderInterface;
 use Coretik\Core\Models\Interfaces\ModelInterface;
 
+/**
+ * @phpstan-consistent-constructor
+ */
 class BelongsToHandler extends Handler
 {
     private $belongsToBuilder;

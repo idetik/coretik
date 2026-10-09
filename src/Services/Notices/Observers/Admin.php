@@ -2,12 +2,17 @@
 
 namespace Coretik\Services\Notices\Observers;
 
+use Coretik\Services\Notices\Container;
 use Coretik\Services\Notices\Iterators\FilterValidIterator;
 
 class Admin implements \SplObserver
 {
     public function update(\SplSubject $container): void
     {
+        if (!$container instanceof Container) {
+            return;
+        }
+
         if (!\is_admin()) {
             return;
         }

@@ -7,13 +7,11 @@ class Utils
     public static function jsonReturnSuccessAndExit($message)
     {
         wp_send_json_success(['message' => $message]);
-        exit;
     }
 
     public static function jsonReturnErrorAndExit($message)
     {
         wp_send_json_error(['message' => $message]);
-        exit;
     }
 
     public static function sanitizeFormField($string, $strip_tags = true)
@@ -57,11 +55,9 @@ class Utils
     public static function issetValue($value, $in_array = false)
     {
         if (false === $in_array) {
-            return isset($value) && null !== $value && '' !== $value;
-        } else {
-            return is_array($in_array) && isset($in_array[$value]) && static::issetValue($in_array[$value]);
+            return isset($value) && '' !== $value;
         }
-        return false;
+        return is_array($in_array) && isset($in_array[$value]) && static::issetValue($in_array[$value]);
     }
 
     public static function forceArray($items)

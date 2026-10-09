@@ -59,7 +59,7 @@ trait Relationships
                     };
 
                 default:
-                    return \method_exists($this, 'parentId') && !empty($parent_id = $this->parentId()) ? $builder->model($parent_id) : null;
+                    throw new UnhandledException(\sprintf('Relationship not supported for %s.', static::class));
             }
         } catch (CannotResolveException $e) {
             return null;

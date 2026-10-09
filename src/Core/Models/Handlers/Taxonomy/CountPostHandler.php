@@ -4,6 +4,9 @@ namespace Coretik\Core\Models\Handlers\Taxonomy;
 
 use Coretik\Core\Builders\Handler;
 
+/**
+ * @phpstan-consistent-constructor
+ */
 class CountPostHandler extends Handler
 {
     protected $statuses;

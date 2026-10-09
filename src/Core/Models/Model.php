@@ -96,7 +96,7 @@ abstract class Model implements ModelInterface
         return $args;
     }
 
-    public function create(): self
+    public function create(): static
     {
         // Not allowed, already exists
         if (!empty($this->id())) {

@@ -2,8 +2,9 @@
 
 namespace Coretik\Core\Models\Handlers;
 
+use Coretik\Core\Models\Interfaces\MetableInterface;
+use Coretik\Core\Models\Interfaces\AcfFieldsInterface;
 use Coretik\Core\Builders\Handler;
-use Coretik\Core\Utils\Classes;
 
 class AcfProtectFieldsHandler extends Handler
 {
@@ -33,6 +34,9 @@ class AcfProtectFieldsHandler extends Handler
         }
 
         $model = $this->builder->model($model_id);
+        if (!$model instanceof MetableInterface) {
+            return;
+        }
         $protected_fields = $model->protectedMetaKeys(false);
 
         foreach ($protected_fields as $field_name) {
@@ -53,7 +57,7 @@ class AcfProtectFieldsHandler extends Handler
 
         $model = $this->builder->model((int)$model_id);
 
-        if (\in_array('Coretik\Core\Models\Traits\Metable', Classes::classUsesDeep($model))) {
+        if ($model instanceof AcfFieldsInterface) {
             $key = $model->getLocalKeyFromMetaKey($field['name']);
             if ($model->isProtectedMeta($key)) {
                 return $model->getField($field['name']);
@@ -67,6 +71,9 @@ class AcfProtectFieldsHandler extends Handler
     {
         $model_id = (int)\acf_decode_post_id(\acfe_get_post_id())['id'];
         $model = $this->builder->model($model_id);
+        if (!$model instanceof MetableInterface) {
+            return $field;
+        }
         if (!$force && !$model->isProtectedMeta($field['name'])) {
             return $field;
         }
@@ -168,11 +175,11 @@ class AcfProtectFieldsHandler extends Handler
 
     protected static function addStyles()
     {
-        if (static::$stylesLoaded) {
+        if (self::$stylesLoaded) {
             return;
         }
 
-        static::$stylesLoaded = true;
+        self::$stylesLoaded = true;
 
         add_action('admin_footer', function () {
             ?>

@@ -1,7 +1,5 @@
 includes:
     - vendor/szepeviktor/phpstan-wordpress/extension.neon
-    # Errors found when PHPStan was introduced (1.14.x): to be fixed, never extended
-    - phpstan-baseline.neon
 
 parameters:
     level: 5
@@ -13,7 +11,18 @@ parameters:
     scanFiles:
         - vendor/php-stubs/acf-pro-stubs/acf-pro-stubs.php
     treatPhpDocTypesAsCertain: false
+    # WP_Post::__get() exposes metas and menu items properties
+    universalObjectCratesClasses:
+        - WP_Post
     ignoreErrors:
+        # Builder::make() forwards its arguments to the constructor of each builder
+        - identifier: new.static
+          path: src/Core/Builders/Traits/Maker.php
+        # Public traits for projects, unused in the package itself
+        - identifier: trait.unused
+        # ACF Extended (optional)
+        - identifier: function.notFound
+          message: '#acfe_#'
         # Optional dependencies, only used when available
         - identifier: class.notFound
           message: '#(WP_CLI|Freelancehunt\\Validators\\CreditCard)#'

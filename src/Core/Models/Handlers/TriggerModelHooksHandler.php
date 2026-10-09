@@ -10,7 +10,7 @@ class TriggerModelHooksHandler extends Handler
 {
     public function actions(): void
     {
-        \add_action('post_updated', [$this, 'triggerUpdated'], 5, 3);// => updated
+        \add_action('post_updated', [$this, 'triggerUpdated'], 5, 2);// => updated
         \add_action('save_post_' . $this->builder->getName(), [$this, 'triggerCreated'], 5, 3); // created (update === false)
         \add_action('wp_insert_post', [$this, 'triggerSaved'], 5, 3); //=> saved
         \add_action('delete_post', [$this, 'triggerDelete'], 5, 2);

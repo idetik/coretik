@@ -47,8 +47,8 @@ class Handler
                     break;
 
                 case $form instanceof Handlable:
-                    $hook = defined($form::class . '::HOOK') ? $form::HOOK : 'template_redirect';
-                    $priority = defined($form::class . '::PRIORITY') ? $form::PRIORITY : 10;
+                    $hook = \defined($form::class . '::HOOK') ? \constant($form::class . '::HOOK') : 'template_redirect';
+                    $priority = \defined($form::class . '::PRIORITY') ? \constant($form::class . '::PRIORITY') : 10;
                     add_action($hook, function () use ($form) {
                         static::handleRequest($form);
                     }, $priority);

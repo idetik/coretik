@@ -7,6 +7,9 @@ use Coretik\Core\Models\Interfaces\ModelInterface;
 use DateTime;
 use Exception;
 
+/**
+ * @phpstan-consistent-constructor
+ */
 class PostStatusArchiveHandler extends Handler
 {
     const POST_STATUS_ARCHIVE_NAME = 'archive';
@@ -69,7 +72,7 @@ class PostStatusArchiveHandler extends Handler
     }
 
     /**
-     * @param ?callable $policy A callback with $model as parameter who return a boolean
+     * @param callable $policy A callback with $model as parameter who return a boolean
      */
     public function setModelPolicy(callable $policy)
     {
@@ -140,9 +143,7 @@ class PostStatusArchiveHandler extends Handler
             return;
         }
 
-        $model = $this->builder->model((int)$post->ID, $post);
-
-        if (static::POST_STATUS_ARCHIVE_NAME === $model->post_status) {
+        if (static::POST_STATUS_ARCHIVE_NAME === $post->post_status) {
             $complete = ' selected=\"selected\"';
         }
 
@@ -162,7 +163,7 @@ class PostStatusArchiveHandler extends Handler
 
     public function registerArchivePostStatus()
     {
-        if (static::$registered) {
+        if (self::$registered) {
             return;
         }
 
@@ -178,6 +179,6 @@ class PostStatusArchiveHandler extends Handler
             ),
         ]);
 
-        static::$registered = true;
+        self::$registered = true;
     }
 }

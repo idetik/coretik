@@ -4,6 +4,9 @@ namespace Coretik\Services\Modals;
 
 use function Globalis\WP\Cubi\include_template_part;
 
+/**
+ * @phpstan-consistent-constructor
+ */
 class Modal implements ModalInterface
 {
     protected bool $isOpen;
@@ -20,7 +23,7 @@ class Modal implements ModalInterface
      * @param string|callable $body - Template filename or print body content in callable
      * @param array $data - Data passed to body template or callable
      * @param bool $open - Set modal open
-     * @param bool $template_file_modal - Template modal wrapper filename, with $body var to place inside
+     * @param string $template_file_modal - Template modal wrapper filename, with $body var to place inside
      */
     public function __construct(callable|string $body, array $data = [], bool $open = false, string $template_file_modal = '')
     {
@@ -35,7 +38,7 @@ class Modal implements ModalInterface
      * Summary of make
      * @param array $modalData
      * @throws \InvalidArgumentException
-     * @return Modal
+     * @return static
      */
     public static function make(array $modalData = []): static
     {
