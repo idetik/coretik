@@ -19,7 +19,7 @@ class NoticeWarning extends Notice
     {
         ?>
         <div class="notice notice-warning is-dismissible">
-            <p><?= $this->message ?></p>
+            <p><?= \wp_kses_post($this->message) ?></p>
         </div>
         <?php
     }

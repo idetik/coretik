@@ -381,65 +381,48 @@ abstract class Form implements Handlable
         return true;
     }
 
+    /**
+     * Field value, escaped for an HTML attribute (arrays are escaped recursively).
+     * Nested fields use brackets: getValue('address[city]').
+     */
     public function getValue($field, $default = '')
     {
+        $path = [];
         $bracket = strpos($field, '[');
         if (false !== $bracket) {
             preg_match_all("/\[([^\]]+)\]/", $field, $matches);
+            $path = $matches[1];
             $field = substr($field, 0, $bracket);
         }
 
         if ($this->isValidating()) {
             $data = $this->validation->getData();
-            if (isset($data[$field])) {
-                $data = $data[$field];
-                if (!empty($matches[1])) {
-                    for ($i = 0; $i < count($matches); $i++) {
-                        if (!isset($matches[1][$i])) {
-                            continue;
-                        }
-                        if (!isset($data[$matches[1][$i]])) {
-                            return $default;
-                        }
-                        $data = $data[$matches[1][$i]];
-                    }
-                }
-                return is_array($data) ? $data : esc_attr($data);
-            }
-        } else if ($this->isSubmitting()) {
-            if (isset($_POST[$this->getFormName()][$field])) {
-                $data = $_POST[$this->getFormName()][$field];
-                if (!empty($matches[1])) {
-                    for ($i = 0; $i < count($matches); $i++) {
-                        if (!isset($matches[1][$i])) {
-                            continue;
-                        }
-                        if (!isset($data[$matches[1][$i]])) {
-                            return $default;
-                        }
-                        $data = $data[$matches[1][$i]];
-                    }
-                }
-                return is_array($data) ? $data : esc_attr($data);
-            }
+        } elseif ($this->isSubmitting()) {
+            $data = $_POST[$this->getFormName()];
+        } elseif ($this->hasDefaultValue($field)) {
+            $data = [$field => $this->getDefaultValue($field)];
         } else {
-            if ($this->hasDefaultValue($field)) {
-                $data = $this->getDefaultValue($field);
-                if (!empty($matches[1])) {
-                    for ($i = 0; $i < count($matches); $i++) {
-                        if (!isset($matches[1][$i])) {
-                            continue;
-                        }
-                        if (!isset($data[$matches[1][$i]])) {
-                            return $default;
-                        }
-                        $data = $data[$matches[1][$i]];
-                    }
-                }
-                return is_array($data) ? $data : esc_attr($data);
-            }
+            return $default;
         }
-        return $default;
+
+        if (!isset($data[$field])) {
+            return $default;
+        }
+
+        $data = $data[$field];
+        foreach ($path as $key) {
+            if (!is_array($data) || !isset($data[$key])) {
+                return $default;
+            }
+            $data = $data[$key];
+        }
+
+        return $this->escapeValue($data);
+    }
+
+    protected function escapeValue($value)
+    {
+        return is_array($value) ? array_map([$this, 'escapeValue'], $value) : esc_attr($value);
     }
 
     public function getValues()

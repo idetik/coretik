@@ -26,6 +26,7 @@ class FormSubmissionTest extends TestCase
         Functions\when('sanitize_text_field')->returnArg();
         Functions\when('wp_unslash')->returnArg();
         Functions\when('remove_accents')->returnArg();
+        Functions\when('esc_attr')->alias(fn ($text) => \htmlspecialchars((string)$text, ENT_QUOTES));
         Functions\when('wp_strip_all_tags')->alias(fn ($text) => \strip_tags($text));
     }
 
@@ -140,5 +141,27 @@ class FormSubmissionTest extends TestCase
         \Brain\Monkey\Filters\expectApplied('coretik/forms/blacklist')->andReturn(['crypto']);
 
         $this->assertSame(0, $this->submit($this->form(), ['message' => ['nested' => 'Buy CRYPTO now']])->runs);
+    }
+
+    public function testGetValueEscapesSubmittedStringsAndArrays(): void
+    {
+        $form = $this->form();
+        $_POST = [$form->getFormName() => [
+            'message' => '"><script>x</script>',
+            'choices' => ['a' => '<b>', 'b' => ['c' => '"quoted"']],
+        ]];
+
+        $this->assertSame('&quot;&gt;&lt;script&gt;x&lt;/script&gt;', $form->getValue('message'));
+        $this->assertSame(['a' => '&lt;b&gt;', 'b' => ['c' => '&quot;quoted&quot;']], $form->getValue('choices'));
+    }
+
+    public function testGetValueReadsNestedPaths(): void
+    {
+        $form = $this->form();
+        $_POST = [$form->getFormName() => ['address' => ['a' => ['b' => ['c' => 'deep']]]]];
+
+        $this->assertSame('deep', $form->getValue('address[a][b][c]'));
+        $this->assertSame('none', $form->getValue('address[a][x]', 'none'));
+        $this->assertSame('none', $form->getValue('missing', 'none'));
     }
 }
