@@ -22,8 +22,9 @@ jobs:
     container: php:${{ matrix.php-version }}-cli
 
     steps:
-    - uses: actions/checkout@v4
+    # git must be installed before checkout: without it, the REST API archive skips export-ignore files (tests)
     - run: apt-get update && apt-get install -y --no-install-recommends git unzip
+    - uses: actions/checkout@v4
     - run: php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/usr/local/bin --filename=composer && rm composer-setup.php
     - run: composer install --no-interaction --no-progress
     - run: vendor/bin/phpunit
