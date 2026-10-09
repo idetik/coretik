@@ -1,3 +1,15 @@
+# [2.0.0-next.2](https://github.com/idetik/coretik/compare/v2.0.0-next.1...v2.0.0-next.2) (2026-10-09)
+
+
+* feat!: complete interfaces, fail loudly on unknown methods, empty PHPStan baseline ([89aac12](https://github.com/idetik/coretik/commit/89aac12067ee9f264cc01e2fff18828b63751951))
+
+
+### BREAKING CHANGES
+
+* interfaces declare new methods; unknown methods on App, builders and queries throw a BadMethodCallException; Query methods set/childOf/all/limit/in/notIn/not/whereMeta/whereTax have typed signatures; parent() returns ?Model.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
 # [2.0.0-next.1](https://github.com/idetik/coretik/compare/v1.15.0...v2.0.0-next.1) (2026-10-09)
 
 
