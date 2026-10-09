@@ -2,7 +2,7 @@
 
 ## From 1.x to 2.0
 
-2.0 is released as prereleases first (`2.0.0-next.N`). To try one in a project:
+2.0 is released as prereleases first (`2.0.0-beta.N`). To try one in a project:
 
 ```json
 "require": {

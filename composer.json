@@ -71,6 +71,9 @@
             "providers": [
                 "Coretik\\Acorn\\CoretikServiceProvider"
             ]
+        },
+        "branch-alias": {
+            "dev-next": "2.0.x-dev"
         }
     }
 }
