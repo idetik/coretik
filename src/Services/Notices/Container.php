@@ -4,6 +4,7 @@ namespace Coretik\Services\Notices;
 
 use Coretik\Services\Notices\Connection\UserConnection;
 use Coretik\Services\Notices\Connection\NoConnection;
+use Coretik\Services\Notices\Connection\SessionConnection;
 use ArrayIterator;
 use IteratorAggregate;
 use SplSubject;
@@ -40,7 +41,7 @@ class Container implements SplSubject, ArrayAccess, IteratorAggregate
         if (\is_user_logged_in()) {
             $this->setStorage(new UserConnection((int) \get_current_user_id()));
         } elseif (app()->has('session')) {
-            $this->setStorage(new SessionConnection($this->app->get('session')));
+            $this->setStorage(new SessionConnection(app()->get('session')));
         }
         $this->notices = $this->storage->get()->getArrayCopy();
         $this->initialized = true;

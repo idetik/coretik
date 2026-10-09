@@ -28,7 +28,7 @@ trait AcfFields
         return \get_field($key, $this->acfId());
     }
 
-    public function getFieldAsDateTime(string $prop): Carbon
+    public function getFieldAsDateTime(string $prop): ?Carbon
     {
         $object = \get_field_object($prop, $this->acfId(), true, true);
         if (empty($object) || empty($object['value'])) {
@@ -37,7 +37,7 @@ trait AcfFields
         return $this->asDateTime(\DateTime::createFromFormat(
             $object['return_format'],
             $object['value'],
-            app()->get('settings')->timezone
+            \wp_timezone()
         ));
     }
 
@@ -51,6 +51,7 @@ trait AcfFields
         return match (true) {
             $this instanceof TermModel => sprintf('term_%s', $this->id),
             $this instanceof UserModel => sprintf('user_%s', $this->id),
+            $this instanceof CommentModel => sprintf('comment_%s', $this->id),
             default => $this->id,
         };
     }

@@ -95,7 +95,7 @@ abstract class Model implements ModelInterface
     {
         // Not allowed, already exists
         if (!empty($this->id())) {
-            return null;
+            return $this;
         }
 
         $this->trigger('creating');
@@ -112,9 +112,9 @@ abstract class Model implements ModelInterface
 
     protected function update(): self
     {
-         // Not allowed, doesnt exists
+        // Not allowed, doesnt exists
         if (empty($this->id())) {
-            return null;
+            return $this;
         }
 
         $this->trigger('updating');

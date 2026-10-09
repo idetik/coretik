@@ -3,6 +3,7 @@
 namespace Coretik\Core\Models\Traits;
 
 use Coretik\Core\Builders\Interfaces\BuilderInterface;
+use Coretik\Core\Builders\Interfaces\ModelableInterface;
 use Coretik\Core\Models\Interfaces\ModelInterface;
 use Coretik\Core\Models\Exceptions\CannotResolveException;
 use Coretik\Core\Exception\ContainerValueNotFoundException;
@@ -58,7 +59,7 @@ trait Relationships
                     };
 
                 default:
-                    return $builder->model($parent_id);
+                    return \method_exists($this, 'parentId') && !empty($parent_id = $this->parentId()) ? $builder->model($parent_id) : null;
             }
         } catch (CannotResolveException $e) {
             return null;
@@ -152,7 +153,7 @@ trait Relationships
         }
     }
 
-    protected function resolveBuilder(string|BuilderInterface|ModelInterface $builder): BuilderInterface
+    protected function resolveBuilder(string|BuilderInterface|ModelInterface $builder): BuilderInterface&ModelableInterface
     {
         if ($builder instanceof ModelInterface) {
             $builder = match (true) {
@@ -164,14 +165,18 @@ trait Relationships
             };
         }
 
-        if ($builder instanceof BuilderInterface) {
-            return $builder;
+        if (\is_string($builder)) {
+            $builder = app()->schema()->get($builder);
         }
 
-        if (!empty(($object = app()->schema()->get($builder)))) {
-            return $object;
+        if (empty($builder)) {
+            throw new ContainerValueNotFoundException();
         }
 
-        throw new ContainerValueNotFoundException();
+        if (!$builder instanceof ModelableInterface || !$builder instanceof BuilderInterface) {
+            throw new UnhandledException(\sprintf('Relationships require a modelable builder, %s given.', \get_debug_type($builder)));
+        }
+
+        return $builder;
     }
 }

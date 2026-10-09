@@ -1,0 +1,19 @@
+includes:
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon
+    # Errors found when PHPStan was introduced (1.14.x): to be fixed, never extended
+    - phpstan-baseline.neon
+
+parameters:
+    level: 5
+    paths:
+        - src
+    excludePaths:
+        # Templates: variables are provided by the including code
+        - src/Services/*/views/*
+    scanFiles:
+        - vendor/php-stubs/acf-pro-stubs/acf-pro-stubs.php
+    treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        # Optional dependencies, only used when available
+        - identifier: class.notFound
+          message: '#(WP_CLI|Freelancehunt\\Validators\\CreditCard)#'

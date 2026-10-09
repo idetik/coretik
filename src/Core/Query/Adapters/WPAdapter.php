@@ -12,7 +12,7 @@ abstract class WPAdapter implements QueryBuilderInterface
     const PARAMETERS = [];
 
     abstract protected function resolveWhere(WhereClauseInterface $where, $relation);
-    abstract public function addContext(array $values, string $opt, string $context);
+    abstract public function addContext(array $values, string $opt = 'in', string $context = '');
     abstract public function childOf(int|array $values): self;
 
     public function __construct(array $defaultArgs = [])

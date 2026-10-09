@@ -8,7 +8,7 @@ class RequiredOnSubmit extends Constraint
 {
     protected string $name = 'required-on-submit';
     protected string $message = 'Ce champs est requis';
-    private $display_message = false;
+    protected bool $display_message = false;
 
     public function validate($fieldname, $value, $values)
     {

@@ -112,6 +112,7 @@ class Repeater extends Constraint
     private function validateSubFields(array $subFields, $constraints)
     {
         $this->validation = new Validation($this->form);
+        $result = [];
 
         foreach ($subFields as $index => $row) {
             $this->validation->setData($row);
