@@ -1,3 +1,18 @@
+# [1.14.0](https://github.com/idetik/coretik/compare/v1.13.7...v1.14.0) (2026-10-09)
+
+
+### Bug Fixes
+
+* escape array form values and notices messages ([529cfec](https://github.com/idetik/coretik/commit/529cfecf1f2228f06782b5d0a13e0027d8087f3c))
+* file uploads only checked the content type against any allowed type ([e648338](https://github.com/idetik/coretik/commit/e6483381ddb9e3dcb98f2ca406ad55b0621e6481))
+* forms ran their action on a forged nonce ([261a7bf](https://github.com/idetik/coretik/commit/261a7bfaf565c9a8122feceffb536729ad27b1a0))
+* protected metas were not reliably guarded ([fa5d3e4](https://github.com/idetik/coretik/commit/fa5d3e49617898760438484a183eff239b4032d6))
+
+
+### Features
+
+* opt-in forms rate limit and words blacklist ([5ca78f6](https://github.com/idetik/coretik/commit/5ca78f6a8ab1576f2f3edd95d2e061df0f021f7d))
+
 ## [1.13.7](https://github.com/idetik/coretik/compare/v1.13.6...v1.13.7) (2026-10-09)
 
 
