@@ -4,6 +4,17 @@ namespace Coretik;
 
 use Coretik\Core\Container;
 
+/**
+ * Container services are reachable as methods (invokable services are called with the arguments).
+ *
+ * @method \Coretik\Core\Schema|\Coretik\Core\Builders\Interfaces\BuilderInterface|null schema(?string $name = null, ?string $type = null)
+ * @method \Coretik\Services\Modals\Container modals()
+ * @method \Coretik\Services\Notices\Factory notices()
+ * @method mixed forms()
+ * @method mixed option(string $key, mixed $default = false)
+ * @method mixed menu()
+ * @property \Coretik\Core\Models\Wp\Option $option
+ */
 class App
 {
     private $container;
@@ -85,6 +96,11 @@ class App
             }
             return $obj;
         }
+    }
+
+    public function has(string $key): bool
+    {
+        return $this->container->has($key);
     }
 
     public function get(string $key)

@@ -10,6 +10,7 @@ use Coretik\Core\Models\Interfaces\MetableAdapterInterface;
 use Coretik\Core\Models\MetaDefinition;
 use Coretik\Core\Models\Exceptions\UndefinedMetaKeyException;
 use Carbon\Carbon;
+use DateTimeInterface;
 
 /**
  * All meta have to be declared
@@ -269,7 +270,7 @@ trait Metable
      * Return a timestamp as DateTime object with time set to 00:00:00.
      *
      * @param  mixed  $value
-     * @return \Caron\Carbon
+     * @return \Carbon\Carbon
      */
     protected function asDate($value)
     {

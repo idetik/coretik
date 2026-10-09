@@ -57,7 +57,7 @@ class WPPostAdapter extends WPAdapter implements MetableAdapterInterface, CRUDIn
         $args['ID'] = $this->model->id();
         $post_id = \wp_update_post($args);
         if (!$post_id) {
-            throw new \RuntimeException("Update post: failure - {$post}");
+            throw new \RuntimeException("Update post: failure - {$this->model->id()}");
         }
     }
 

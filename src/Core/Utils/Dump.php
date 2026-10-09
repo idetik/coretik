@@ -22,7 +22,7 @@ class Dump
     protected static function getClass(\ReflectionParameter $reflectionParameter)
     {
         return  $reflectionParameter->getType() && !$reflectionParameter->getType()->isBuiltin()
-            ? new ReflectionClass($reflectionParameter->getType()->getName())
+            ? new \ReflectionClass($reflectionParameter->getType()->getName())
             : null;
     }
 

@@ -40,8 +40,9 @@ class Email
             return $to;
         }
 
-        if (!empty($recipient['name']) && !empty($recipient['email'])) {
-            return sprintf('%s <%s>', $recipient['name'] ?? '', $recipient['email']);
+        // A single recipient: ['name' => ..., 'email' => ...]
+        if (!empty($to['name']) && !empty($to['email'])) {
+            return sprintf('%s <%s>', $to['name'], $to['email']);
         }
 
         $return = [];

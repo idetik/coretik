@@ -17,10 +17,22 @@ class EmailNoBurnerOrDisposable extends Constraint
         return mb_substr(mb_strrchr($email, '@'), 1);
     }
 
+    /**
+     * Resolved through Composer: ROOT_DIR is only defined by wp-cubi.
+     */
+    protected static function burnerEmailsFile(): string
+    {
+        $package = 'wesbos/burner-email-providers';
+        if (\class_exists(\Composer\InstalledVersions::class) && \Composer\InstalledVersions::isInstalled($package)) {
+            return \Composer\InstalledVersions::getInstallPath($package) . '/emails.txt';
+        }
+        return (\defined('ROOT_DIR') ? \constant('ROOT_DIR') : '') . '/vendor/' . $package . '/emails.txt';
+    }
+
     public static function isBurnerEmailDomain($email)
     {
         if (is_null(self::$burnersDomains)) {
-            $file = ROOT_DIR . '/vendor/wesbos/burner-email-providers/emails.txt';
+            $file = static::burnerEmailsFile();
             if (!file_exists($file) || !is_readable($file)) {
                 self::$burnersDomains = [];
             } else {
