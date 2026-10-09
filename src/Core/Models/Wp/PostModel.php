@@ -120,7 +120,7 @@ class PostModel extends WPModel implements AcfFieldsInterface
         if (empty($this->parentId())) {
             return null;
         }
-        return app()->schema()->modelable($this->name(), 'post')->model($this->parentId());
+        return coretik()->schema()->modelable($this->name(), 'post')->model($this->parentId());
     }
 
     public function setParentId(int $id): self

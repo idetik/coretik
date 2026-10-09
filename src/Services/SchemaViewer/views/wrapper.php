@@ -6,8 +6,8 @@
             <div class="schema-box">
                 <h3>Post types</h3>
                 <?php
-                if (app()->schema()->has('post')) {
-                    foreach (app()->schema()->type('post')->all() as $builder) {
+                if (coretik()->schema()->has('post')) {
+                    foreach (coretik()->schema()->type('post')->all() as $builder) {
                         include 'post-type-single.php';
                     }
                 }
@@ -16,8 +16,8 @@
             <div class="schema-box">
                 <h3>Taxonomies</h3>
                 <?php
-                if (app()->schema()->has('taxonomy')) {
-                    foreach (app()->schema()->type('taxonomy')->all() as $builder) {
+                if (coretik()->schema()->has('taxonomy')) {
+                    foreach (coretik()->schema()->type('taxonomy')->all() as $builder) {
                         include 'taxonomy-single.php';
                     }
                 }
@@ -28,9 +28,9 @@
             <div class="schema-box">
                 <h3>User types</h3>
                 <?php
-                if (app()->schema()->has('user')) {
+                if (coretik()->schema()->has('user')) {
                     foreach (
-                        app()->schema()->type('user')->filter(function ($builder) {
+                        coretik()->schema()->type('user')->filter(function ($builder) {
                             return $builder->getName() !== 'users';
                         })->all() as $builder
                     ) {
@@ -42,9 +42,9 @@
             <div class="schema-box">
                 <h3>Comments</h3>
                 <?php
-                if (app()->schema()->has('comment')) {
+                if (coretik()->schema()->has('comment')) {
                     foreach (
-                        app()->schema()->type('comment')->all() as $builder
+                        coretik()->schema()->type('comment')->all() as $builder
                     ) {
                         include 'comment-single.php';
                     }
@@ -60,6 +60,6 @@
     <!-- <pre> -->
         <?php //var_dump(get_post_types()); ?>
         <?php //var_dump(get_post_stati()); ?>
-        <?php //var_dump(app()->schema()->toArray()); ?>
+        <?php //var_dump(coretik()->schema()->toArray()); ?>
     <!-- </pre> -->
 </div>

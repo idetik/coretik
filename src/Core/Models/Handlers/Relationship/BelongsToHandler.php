@@ -29,7 +29,7 @@ class BelongsToHandler extends Handler
 
     public function setBelongsToBuilder(string|BuilderInterface|ModelInterface $belongsTo): self
     {
-        $this->belongsToBuilder = app()->schema()->resolve($belongsTo);
+        $this->belongsToBuilder = coretik()->schema()->resolve($belongsTo);
         return $this;
     }
 

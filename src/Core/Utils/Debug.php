@@ -18,7 +18,7 @@ class Debug
     {
         mysql_enable_nocache_mod();
 
-        $table = app()->get('ux.table')
+        $table = coretik()->get('ux.table')
                     ->setColumns(['Scenario', 'Time elapsed', 'Memory usage (mb)', 'Memory peak (mb)', 'Result'])
                     ->withFooter(false);
 

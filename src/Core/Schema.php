@@ -214,7 +214,7 @@ class Schema implements ContainerInterface
             return $builder;
         }
 
-        if (!empty(($object = app()->schema()->get($builder)))) {
+        if (!empty(($object = coretik()->schema()->get($builder)))) {
             return $object;
         }
 

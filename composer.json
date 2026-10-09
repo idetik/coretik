@@ -17,7 +17,7 @@
         "pelago/emogrifier": "^7.0",
         "wesbos/burner-email-providers": "^1.0",
         "globalis/wp-cubi-helpers": "^1.0",
-        "illuminate/collections": "^11.0 || ^12.0",
+        "illuminate/collections": "^11.0 || ^12.0 || ^13.0",
         "globalis/wp-cubi-transient-cache": "^0.3.0"
     },
     "authors": [
@@ -46,7 +46,9 @@
         "php-stubs/acf-pro-stubs": "^6.8",
         "wp-phpunit/wp-phpunit": "^7.1",
         "yoast/phpunit-polyfills": "^4.0",
-        "johnpbloch/wordpress-core": "^7.1"
+        "johnpbloch/wordpress-core": "^7.1",
+        "illuminate/support": "^11.0 || ^12.0 || ^13.0",
+        "illuminate/container": "^11.0 || ^12.0 || ^13.0"
     },
     "scripts": {
         "test": "phpunit",
@@ -56,11 +58,19 @@
     "suggest": {
         "idetik/coretik-navigation": "Navigation service, resolve breadcrumb and page title",
         "idetik/coretik-page-builder": "Page builder service",
-        "freelancehunt/php-credit-card-validator": "Required by the payment-card-number and payment-card-cvc form constraints"
+        "freelancehunt/php-credit-card-validator": "Required by the payment-card-number and payment-card-cvc form constraints",
+        "roots/acorn": "Laravel components in WordPress: coretik registers its service provider (app('coretik'))"
     },
     "config": {
         "platform": {
             "php": "8.2.0"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Coretik\\Acorn\\CoretikServiceProvider"
+            ]
         }
     }
 }

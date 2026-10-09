@@ -125,3 +125,19 @@ add_filter('coretik/app/init/schemaViewer', '__return_true');
 ```
 
 **coretik can boot from a mu-plugin.** In 1.x, `App::run()` before WordPress loaded its pluggable functions (e.g. on `muplugins_loaded`) caused a fatal error: notices now wait for `init`.
+
+### `coretik()` helper and Acorn
+
+The coretik application helper is now `coretik()`. Acorn (Laravel components in WordPress) defines its own `app()` helper, which Laravel components rely on: both could not be used in the same project.
+
+```php
+// 1.x
+app()->schema('product')->query();
+
+// 2.0
+coretik()->schema('product')->query();
+```
+
+- Without Acorn, `app()` is kept as a deprecated alias of `coretik()`: replace it progressively (a search and replace of `app()->` by `coretik()->` is enough in most themes).
+- With Acorn, `app()` is the Laravel helper. coretik registers a service provider through Acorn package discovery: `app('coretik')` returns the coretik application.
+- Acorn 6 (Laravel 13 components) is supported: `illuminate/collections` 13 is allowed.
