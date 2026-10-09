@@ -109,3 +109,19 @@ Query results are cached for the request. The cache is now flushed on each write
 
 - It keeps the 100 latest queries (`coretik/query/cache/max_entries` filter), so long running processes (imports, WP-CLI) no longer grow without limit.
 - Disable it with `add_filter('coretik/query/cache', '__return_false')`.
+
+### Safer defaults
+
+**Scripts are no longer async by default.** `enqueueScript()`, `enqueueScriptModule()`, `enqueueModularScript()` and `enqueueNoModularScript()` of the assets loader added `async` to every script in 1.x, which could break the order of dependent scripts. Pass `$async = true` where you want it: it now uses the WordPress loading strategy (WordPress 6.3+), which keeps the dependencies order.
+
+```php
+app()->assets()->enqueueScript('main', 'scripts/main.js', ['jquery'], null, true, true); // async
+```
+
+**The schema viewer is only enabled with `WP_DEBUG`.** To keep it in production:
+
+```php
+add_filter('coretik/app/init/schemaViewer', '__return_true');
+```
+
+**coretik can boot from a mu-plugin.** In 1.x, `App::run()` before WordPress loaded its pluggable functions (e.g. on `muplugins_loaded`) caused a fatal error: notices now wait for `init`.

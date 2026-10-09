@@ -60,10 +60,21 @@ class Container implements SplSubject, ArrayAccess, IteratorAggregate
 
     public function listen(): void
     {
+        // Pluggable functions (is_user_logged_in…) are not loaded yet when coretik boots from a mu-plugin
+        if (!$this->pluggableLoaded()) {
+            \add_action('init', [$this, 'listen'], 0);
+            return;
+        }
+
         if (!$this->initialized) {
             $this->initialize();
         }
         $this->notify();
+    }
+
+    protected function pluggableLoaded(): bool
+    {
+        return \function_exists('is_user_logged_in');
     }
 
     public function attach(\SplObserver $observer): void
