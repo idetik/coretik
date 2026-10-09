@@ -92,9 +92,16 @@ class Registry extends \SplObjectStorage
         return $roles;
     }
 
+    /**
+     * Roles depend on their definitions, and on the registered post types and taxonomies (allow_all and post type caps).
+     */
     public function hash()
     {
-        return md5(serialize($this->toArray()));
+        $objects = [
+            'post_types' => \array_values(\get_post_types()),
+            'taxonomies' => \array_values(\get_taxonomies()),
+        ];
+        return md5(serialize([$this->toArray(), $objects]));
     }
 
     public function hasDiff()

@@ -21,6 +21,8 @@ class RegistryTest extends TestCase
 
     private $notices;
 
+    private array $postTypes = ['post' => 'post', 'page' => 'page'];
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -35,6 +37,8 @@ class RegistryTest extends TestCase
         Functions\when('update_option')->alias(function ($key, $value) {
             $this->options[$key] = $value;
         });
+        Functions\when('get_post_types')->alias(fn () => $this->postTypes);
+        Functions\when('get_taxonomies')->justReturn(['category' => 'category']);
         Functions\when('get_role')->alias(fn ($name) => (object)['name' => $name, 'capabilities' => []]);
         Functions\when('remove_role')->alias(function ($name) {
             $this->removedRoles[] = $name;
@@ -193,5 +197,26 @@ class RegistryTest extends TestCase
         $this->flushRequest(false, 'valid');
 
         $this->assertSame('previous-hash', $this->options[CacheBuster::CACHE_KEY]);
+    }
+
+    public function testNewPostTypeRequiresRolesUpdate(): void
+    {
+        $registry = $this->request(new UserType('administrator', 'Administrator', ['allow_all']));
+        $this->assertFalse($registry->hasDiff());
+
+        // allow_all roles must be granted the caps of a new post type
+        $this->postTypes['product'] = 'product';
+        $this->assertTrue($registry->hasDiff());
+    }
+
+    public function testSingleAssociativeCapDoesNotTriggerWarning(): void
+    {
+        \Brain\Monkey\Functions\when('post_type_exists')->justReturn(false);
+        \Brain\Monkey\Functions\when('taxonomy_exists')->justReturn(false);
+
+        $type = new UserType('manager', 'Manager', ['custom' => ['read']]);
+        (new \ReflectionMethod(UserType::class, 'map'))->invoke($type);
+
+        $this->assertSame(['read' => true], $type->getCaps(true));
     }
 }
