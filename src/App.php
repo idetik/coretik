@@ -47,7 +47,7 @@ class App
 
     protected function init()
     {
-        if ($this->container->has('schemaViewer') && \apply_filters('coretik/app/init/schemaViewer', true)) {
+        if ($this->container->has('schemaViewer') && \apply_filters('coretik/app/init/schemaViewer', \defined('WP_DEBUG') && \WP_DEBUG)) {
             \add_action('admin_menu', [$this->get('schemaViewer'), 'init']);
         }
 

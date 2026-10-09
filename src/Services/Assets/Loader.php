@@ -70,28 +70,26 @@ class Loader
         return $this->handleFamily;
     }
 
-    public function enqueueScript(string $handleItem, string $file, array $deps = [], $ver = null, $in_footer = true, $async = true)
+    /**
+     * $async uses the WordPress loading strategy (WordPress 6.3+), which keeps the dependencies order.
+     */
+    public function enqueueScript(string $handleItem, string $file, array $deps = [], $ver = null, $in_footer = true, $async = false)
     {
-        $handle = sprintf('%s/%s', $this->handleFamily, $handleItem);
+        $args = ['in_footer' => (bool)$in_footer];
+        if ($async) {
+            $args['strategy'] = 'async';
+        }
+
         \wp_enqueue_script(
-            $handle,
+            sprintf('%s/%s', $this->handleFamily, $handleItem),
             $this->url($file, $this->useScriptVersion),
             $deps,
             $ver,
-            $in_footer
+            $args
         );
-
-        if ($async) {
-            \add_filter('script_loader_tag', function ($tag, $scriptHandle, $src) use ($handle) {
-                if ($scriptHandle === $handle) {
-                    return static::makeAsyncTag($tag);
-                }
-                return $tag;
-            }, 10, 3);
-        }
     }
 
-    public function enqueueScriptModule(string $handleItem, string $file, array $deps = [], $ver = null, $in_footer = true, $async = true)
+    public function enqueueScriptModule(string $handleItem, string $file, array $deps = [], $ver = null, $in_footer = true, $async = false)
     {
         if (!\function_exists('wp_enqueue_script_module')) {
             $this->enqueueScript($handleItem, $file, $deps, $ver, $in_footer, $async);
@@ -112,12 +110,12 @@ class Loader
         }
     }
 
-    public function enqueueModularScript(string $handleItem, string $file, array $deps = [], $ver = null, $in_footer = true, $async = true)
+    public function enqueueModularScript(string $handleItem, string $file, array $deps = [], $ver = null, $in_footer = true, $async = false)
     {
         $this->enqueueScriptModule($handleItem, $file, $deps, $ver, $in_footer, $async);
     }
 
-    public function enqueueNoModularScript(string $handleItem, string $file, array $deps = [], $ver = null, $in_footer = true, $async = true)
+    public function enqueueNoModularScript(string $handleItem, string $file, array $deps = [], $ver = null, $in_footer = true, $async = false)
     {
         $this->enqueueScript($handleItem, $file, $deps, $ver, $in_footer, $async);
         \add_filter('script_loader_tag', function ($tag, $scriptHandle, $src) use ($handleItem) {
