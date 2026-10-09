@@ -56,5 +56,10 @@
         "idetik/coretik-navigation": "Navigation service, resolve breadcrumb and page title",
         "idetik/coretik-page-builder": "Page builder service",
         "freelancehunt/php-credit-card-validator": "Required by the payment-card-number and payment-card-cvc form constraints"
+    },
+    "config": {
+        "platform": {
+            "php": "8.2.0"
+        }
     }
 }
