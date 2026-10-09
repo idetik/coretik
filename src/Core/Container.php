@@ -43,37 +43,48 @@ class Container extends PimpleContainer implements ContainerInterface
     {
         parent::__construct($values);
 
-        $this['schema'] = function ($container) {
+        $defaults = [];
+        $defaults['schema'] = function ($container) {
             return new Schema();
         };
-        $this['option'] = $this->factory(function ($container) {
+        $defaults['option'] = $this->factory(function ($container) {
             return new Models\Wp\Option();
         });
-        $this['ux.table'] = $this->factory(function ($container) {
+        $defaults['ux.table'] = $this->factory(function ($container) {
             return new Table();
         });
-        $this['schemaViewer'] = $this->factory(function ($container) {
+        $defaults['schemaViewer'] = $this->factory(function ($container) {
             return new SchemaViewer();
         });
-        $this['templating.wrapper'] = function ($container) {
+        $defaults['templating.wrapper'] = function ($container) {
             return new TemplateWrapper();
         };
-        $this['modals'] = function ($container) {
+        $defaults['modals'] = function ($container) {
             return new Modals();
         };
-        $this['notices.container'] = function ($container) {
+        $defaults['notices.container'] = function ($container) {
             $notice_container = new Notices();
             $notice_container->attach(new NoticesAdminObserver());
             $notice_container->attach(new NoticesWPCliObserver());
             return $notice_container;
         };
-        $this['notices'] = function ($container) {
+        $defaults['notices'] = function ($container) {
             return new NoticeFactory($container->get('notices.container'));
         };
 
-        $this['settings'] = [
-            'text-domain' => 'coretik',
-        ];
+        foreach ($defaults as $id => $value) {
+            // Values given to the constructor take precedence over defaults
+            if (!$this->offsetExists($id)) {
+                $this[$id] = $value;
+            }
+        }
+
+        $settings = ['text-domain' => 'coretik'];
+        if (!$this->offsetExists('settings')) {
+            $this['settings'] = $settings;
+        } elseif (\is_array($this->raw('settings'))) {
+            $this['settings'] = \array_merge($settings, $this->raw('settings'));
+        }
 
         \do_action('coretik/container/construct', $this);
     }
