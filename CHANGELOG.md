@@ -1,3 +1,11 @@
+## [1.13.7](https://github.com/idetik/coretik/compare/v1.13.6...v1.13.7) (2026-10-09)
+
+
+### Bug Fixes
+
+* AJAX post queries exposed drafts and private posts ([e3bbf35](https://github.com/idetik/coretik/commit/e3bbf359ab46e7087afc81593a72ccf8f7dcc9a8))
+* user roles registry deleted updated roles and flushed without nonce ([c863eb7](https://github.com/idetik/coretik/commit/c863eb7146d70ffe1b460a0ec3e06631d051b47f))
+
 ## [1.13.6](https://github.com/idetik/coretik/compare/v1.13.5...v1.13.6) (2026-10-09)
 
 
