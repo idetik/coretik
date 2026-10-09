@@ -86,3 +86,26 @@ New interfaces, implemented by the WordPress models: `MetableInterface` (models 
 - `PostModel::parent()` and `TermModel::parent()` return `null` without parent (1.x loaded a model with id 0). Their return type is `?Model`: the parent class is the one of the builder factory.
 - `Model::create()` returns `static`.
 - `belongsTo()` throws an `UnhandledException` for models other than posts, terms and comments (1.x failed on an undefined variable).
+
+### Model events
+
+Model events (`$model->on()` / `$model->trigger()`) no longer register WordPress hooks: 1.x added a hook with a unique name for each instance and event, never removed, which made memory grow with the number of loaded models. `on()` and `trigger()` keep the same signature and behavior (priority, number of arguments).
+
+- New `$model->off($event, $callback = null)` to stop listening.
+- New global WordPress action fired for every model event: `coretik/model/{name}/{event}`, e.g. to listen to all saved products:
+
+  ```php
+  add_action('coretik/model/product/saved', function (ProductModel $product, array $args) {
+      // ...
+  }, 10, 2);
+  ```
+
+- The protected `hookName()` and `getInternalId()` methods are removed.
+- The `Actions` trait relies on the model events: use it in models only (as documented).
+
+### Query cache
+
+Query results are cached for the request. The cache is now flushed on each write that could change a result (posts, terms, users, comments, metas…): in 1.x, a query run again after a write returned outdated results.
+
+- It keeps the 100 latest queries (`coretik/query/cache/max_entries` filter), so long running processes (imports, WP-CLI) no longer grow without limit.
+- Disable it with `add_filter('coretik/query/cache', '__return_false')`.

@@ -144,6 +144,15 @@ abstract class Model implements ModelInterface
     }
 
     /**
+     * Every model event also fires coretik/model/{name}/{event} (e.g. coretik/model/product/saved),
+     * to listen to all models of a type.
+     */
+    protected function globalHookName(string $hook_name): ?string
+    {
+        return 'coretik/model/' . $this->name() . '/' . $hook_name;
+    }
+
+    /**
      * Run a write through the adapter. WP hooks fired meanwhile (save_post, post_updated…) belong to this write:
      * handlers can skip them with isPersisting(), the model triggers its own events.
      */

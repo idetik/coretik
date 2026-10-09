@@ -76,4 +76,18 @@ class QueryTest extends IntegrationTestCase
         $this->assertSame(2, $query->count());
         $this->assertSame(3, $query->total());
     }
+
+    public function testCachedResultsAreRefreshedAfterWrites(): void
+    {
+        $this->assertSame(3, app()->schema('product')->query()->all()->count());
+
+        // Same query again after a write: 1.x returned the cached result
+        self::factory()->post->create(['post_type' => 'product', 'post_status' => 'publish']);
+        $this->assertSame(4, app()->schema('product')->query()->all()->count());
+
+        $id = self::factory()->post->create(['post_type' => 'product', 'post_status' => 'publish', 'meta_input' => ['price' => '5']]);
+        $this->assertCount(1, app()->schema('product')->query()->whereMeta('price', '5')->ids());
+        update_post_meta($id, 'price', '6');
+        $this->assertCount(0, app()->schema('product')->query()->whereMeta('price', '5')->ids());
+    }
 }
