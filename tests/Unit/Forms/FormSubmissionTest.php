@@ -79,4 +79,66 @@ class FormSubmissionTest extends TestCase
     {
         $this->assertSame(0, $this->submit($this->form(), ['message' => 'Hello'], 'valid', ['form_coretik_confirm' => 'on'])->runs);
     }
+
+    public function testRateLimitIsDisabledByDefault(): void
+    {
+        for ($i = 0; $i < 10; $i++) {
+            $this->assertSame(1, $this->submit($this->form(), ['message' => 'Hello'])->runs);
+        }
+    }
+
+    public function testRateLimitBlocksSubmissionsOverMax(): void
+    {
+        \Brain\Monkey\Filters\expectApplied('coretik/forms/rate_limit')->andReturn(['max' => 2]);
+
+        $this->assertSame(1, $this->submit($this->form(), ['message' => 'Hello'])->runs);
+        $this->assertSame(1, $this->submit($this->form(), ['message' => 'Hello'])->runs);
+
+        $form = $this->submit($this->form(), ['message' => 'Hello']);
+        $this->assertSame(0, $form->runs);
+        $this->assertSame('Too many submissions', $form->getSubmissionResult()['error']);
+    }
+
+    public function testRateLimitIsPerClientIp(): void
+    {
+        \Brain\Monkey\Filters\expectApplied('coretik/forms/rate_limit')->andReturn(['max' => 1]);
+
+        $this->assertSame(1, $this->submit($this->form(), ['message' => 'Hello'])->runs);
+        $_SERVER['REMOTE_ADDR'] = '203.0.113.11';
+        $this->assertSame(1, $this->submit($this->form(), ['message' => 'Hello'])->runs);
+    }
+
+    public function testRateLimitWindowExpires(): void
+    {
+        \Brain\Monkey\Filters\expectApplied('coretik/forms/rate_limit')->andReturn(['max' => 1, 'window' => 60]);
+
+        $this->submit($this->form(), ['message' => 'Hello']);
+        foreach ($this->transients as $key => $hits) {
+            $this->transients[$key]['start'] -= 61;
+        }
+
+        $this->assertSame(1, $this->submit($this->form(), ['message' => 'Hello'])->runs);
+    }
+
+    public function testBlacklistIsDisabledByDefault(): void
+    {
+        $this->assertSame(1, $this->submit($this->form(), ['message' => 'Casino night'])->runs);
+    }
+
+    public function testBlacklistMatchesWholeWords(): void
+    {
+        \Brain\Monkey\Filters\expectApplied('coretik/forms/blacklist/enabled')->andReturn(true);
+
+        $this->assertSame(0, $this->submit($this->form(), ['message' => 'Best casino online'])->runs);
+        $this->assertSame(1, $this->submit($this->form(), ['message' => 'Cocktail chez Hitchcock'])->runs);
+        $this->assertSame(0, $this->submit($this->form(), ['message' => 'ivan@yandex.ru'])->runs);
+    }
+
+    public function testBlacklistIsFilterable(): void
+    {
+        \Brain\Monkey\Filters\expectApplied('coretik/forms/blacklist/enabled')->andReturn(true);
+        \Brain\Monkey\Filters\expectApplied('coretik/forms/blacklist')->andReturn(['crypto']);
+
+        $this->assertSame(0, $this->submit($this->form(), ['message' => ['nested' => 'Buy CRYPTO now']])->runs);
+    }
 }
