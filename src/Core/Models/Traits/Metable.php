@@ -102,7 +102,7 @@ trait Metable
     }
 
     /**
-     * @param mixed $local_key : string or array of string
+     * @param mixed $key local or meta key
      */
     public function metaDefinition($key)
     {
@@ -115,7 +115,7 @@ trait Metable
     }
 
     /**
-     * @param string $local_key Check if local key exists
+     * @param string $key local or meta key
      */
     public function hasMeta(string $key)
     {

@@ -160,10 +160,6 @@ abstract class Form implements Handlable
     {
         $form = $this;
         $fields = $this->getRules();
-        if (!is_array($fields)) {
-            throw new \Exception('Fields not found in definition class [' . __CLASS__ . '].');
-            return;
-        }
 
         //Populate $this->fields from definition file:
         $this->fields = [];

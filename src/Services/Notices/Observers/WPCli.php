@@ -2,6 +2,7 @@
 
 namespace Coretik\Services\Notices\Observers;
 
+use Coretik\Services\Notices\Container;
 use Coretik\Services\Notices\Iterators\FilterValidIterator;
 use Coretik\Services\Notices\NoticeSuccess;
 use Coretik\Services\Notices\NoticeError;
@@ -10,6 +11,10 @@ class WPCli implements \SplObserver
 {
     public function update(\SplSubject $container): void
     {
+        if (!$container instanceof Container) {
+            return;
+        }
+
         if (!\defined('WP_CLI') || !WP_CLI) {
             return;
         }

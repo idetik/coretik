@@ -54,7 +54,7 @@ class WPCommentAdapter extends WPAdapter implements MetableAdapterInterface, CRU
     public function delete(bool $force_delete = false)
     {
         $delete = \wp_delete_comment($this->model->id(), $force_delete);
-        if (empty($delete) || false === $delete) {
+        if (empty($delete)) {
             throw new \RuntimeException("Deleting comment: failure - {$this->model->id()}");
         }
         return true;

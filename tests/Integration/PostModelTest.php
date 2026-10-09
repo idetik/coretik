@@ -94,4 +94,15 @@ class PostModelTest extends IntegrationTestCase
         wp_update_post(['ID' => $product->id(), 'post_title' => 'Huge tent']);
         $this->assertSame(2, $updated);
     }
+
+    public function testParent(): void
+    {
+        $parentId = self::factory()->post->create(['post_type' => 'product']);
+        $childId = self::factory()->post->create(['post_type' => 'product', 'post_parent' => $parentId]);
+
+        $this->assertNull(app()->schema('product')->model($parentId)->parent());
+        $parent = app()->schema('product')->model($childId)->parent();
+        $this->assertInstanceOf(ProductModel::class, $parent);
+        $this->assertSame($parentId, $parent->id());
+    }
 }

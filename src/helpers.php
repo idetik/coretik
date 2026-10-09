@@ -37,7 +37,7 @@ if (! function_exists('model')) {
      */
     function model(string $name, ?int $id = null): ModelInterface
     {
-        return app()->schema($name)->model($id);
+        return app()->schema()->modelable($name)->model($id);
     }
 }
 
@@ -49,6 +49,6 @@ if (! function_exists('query')) {
      */
     function query(string $name): QuerierInterface
     {
-        return app()->schema($name)->query();
+        return app()->schema()->modelable($name)->query();
     }
 }

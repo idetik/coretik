@@ -14,6 +14,8 @@ use Coretik\Core\Container;
  * @method mixed option(string $key, mixed $default = false)
  * @method mixed menu()
  * @property \Coretik\Core\Models\Wp\Option $option
+ *
+ * @phpstan-consistent-constructor
  */
 class App
 {
@@ -89,13 +91,15 @@ class App
 
     public function __call($method, $args)
     {
-        if ($this->container->has($method)) {
-            $obj = $this->container->get($method);
-            if (\is_callable($obj)) {
-                return \call_user_func_array($obj, $args);
-            }
-            return $obj;
+        if (!$this->container->has($method)) {
+            throw new \BadMethodCallException(\sprintf('Call to undefined method %s::%s(): no "%s" service in the container', static::class, $method, $method));
         }
+
+        $obj = $this->container->get($method);
+        if (\is_callable($obj)) {
+            return \call_user_func_array($obj, $args);
+        }
+        return $obj;
     }
 
     public function has(string $key): bool

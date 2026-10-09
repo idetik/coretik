@@ -2,11 +2,19 @@
 
 namespace Coretik\Core\Models\Wp;
 
+use Coretik\Core\Models\Model;
+use Coretik\Core\Models\Interfaces\AcfFieldsInterface;
 use Coretik\Core\Models\Traits\AcfFields;
 use Coretik\Core\Models\Adapters\WPTermAdapter;
 use Coretik\Core\Models\Traits\Relationships;
 
-class TermModel extends WPModel
+/**
+ * WordPress fields, read and written through __get() / __set()
+ *
+ * @property int $parent
+ * @property string $taxonomy
+ */
+class TermModel extends WPModel implements AcfFieldsInterface
 {
     use Relationships;
     use AcfFields;
@@ -90,9 +98,15 @@ class TermModel extends WPModel
         return $this->get('parent');
     }
 
-    public function parent(): self
+    /**
+     * Parent model, null without parent. Its class is the one of the builder factory.
+     */
+    public function parent(): ?Model
     {
-        return app()->schema($this->name(), 'taxonomy')->model($this->parentId());
+        if (empty($this->parentId())) {
+            return null;
+        }
+        return app()->schema()->modelable($this->name(), 'taxonomy')->model($this->parentId());
     }
 
     public function setParentId(int $id): self

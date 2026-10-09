@@ -7,6 +7,12 @@ use Coretik\Core\Query\Interfaces\MetaClauseInterface;
 use Coretik\Core\Query\Interfaces\WhereClauseInterface;
 use Coretik\Core\Utils\Arr;
 
+/**
+ * Query parameters are dynamic properties (see PARAMETERS)
+ *
+ * @property array $meta_query
+ * @property array $tax_query
+ */
 class WPPostAdapter extends WPAdapter
 {
     use Metable;

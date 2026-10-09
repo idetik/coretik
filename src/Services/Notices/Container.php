@@ -108,7 +108,7 @@ class Container implements SplSubject, ArrayAccess, IteratorAggregate
         return $this->notices[$offset] ?? null;
     }
 
-    public function getIterator(): Traversable
+    public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->notices);
     }

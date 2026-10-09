@@ -152,10 +152,13 @@ class Schema implements ContainerInterface
         return isset($this->objects[$offset]);
     }
 
-    public function get(string $offset, $type = null)
+    /**
+     * A builder by name (and type), null when it does not exist. See modelable() to get a modelable builder or an exception.
+     */
+    public function get(string $offset, $type = null): ?BuilderInterface
     {
         if (!empty($type)) {
-            return $this->objects[$type]->get($offset) ?? null;
+            return isset($this->objects[$type]) ? $this->objects[$type]->get($offset) : null;
         }
 
         foreach ($this->objects as $type => $data) {
@@ -167,11 +170,25 @@ class Schema implements ContainerInterface
     }
 
     /**
+     * A modelable builder (post type, taxonomy, user, comment).
+     *
+     * @throws ContainerValueNotFoundException when the builder does not exist or is not modelable
+     */
+    public function modelable(string $name, ?string $type = null): BuilderInterface&ModelableInterface
+    {
+        $builder = $this->get($name, $type);
+        if (!$builder instanceof ModelableInterface) {
+            throw new ContainerValueNotFoundException(\sprintf('No modelable builder "%s" in the schema.', $name));
+        }
+        return $builder;
+    }
+
+    /**
      * @param string $type in 'post', 'user', 'status', ...etc
      */
-    public function type(string $type)
+    public function type(string $type): BuilderCollection
     {
-        return $this->objects[$type];
+        return $this->objects[$type] ?? new BuilderCollection();
     }
 
     public function toArray()
