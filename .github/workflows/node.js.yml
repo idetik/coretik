@@ -18,12 +18,13 @@ jobs:
       matrix:
         php-version: ['8.2', '8.3', '8.4']
 
+    # Official PHP image: only GitHub owned / verified actions are allowed on this repository
+    container: php:${{ matrix.php-version }}-cli
+
     steps:
     - uses: actions/checkout@v4
-    - uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php-version }}
-        coverage: none
+    - run: apt-get update && apt-get install -y --no-install-recommends git unzip
+    - run: php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/usr/local/bin --filename=composer && rm composer-setup.php
     - run: composer install --no-interaction --no-progress
     - run: vendor/bin/phpunit
 
