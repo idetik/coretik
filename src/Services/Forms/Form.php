@@ -822,17 +822,42 @@ abstract class Form implements Handlable
         exit;
     }
 
-    public function embedToUrl(string $url)
+    /**
+     * Add the submitted values to an URL (e.g. for analytics on a thank-you page).
+     * URLs end up in server logs and analytics: pass the $fields to embed explicitly.
+     * Without $fields, email fields and values looking like an email or a phone number are excluded.
+     */
+    public function embedToUrl(string $url, ?array $fields = null)
     {
         $trackingParameters = [];
 
         foreach ($this->getValues() as $key => $value) {
+            if (null !== $fields ? !\in_array($key, $fields, true) : $this->isPersonalData($key, $value)) {
+                continue;
+            }
             if (is_string($value) && mb_strlen($value) <= 100) {
                 $trackingParameters[$key] = $value;
             }
         }
 
-        return \add_query_arg($trackingParameters, $url);
+        $trackingParameters = \apply_filters('coretik/forms/embed_to_url', $trackingParameters, $this);
+
+        return \add_query_arg(\array_map('rawurlencode', $trackingParameters), $url);
+    }
+
+    protected function isPersonalData(string $key, $value): bool
+    {
+        if (isset($this->fields[$key]['constraints']['email'])) {
+            return true;
+        }
+
+        if (!is_string($value)) {
+            return false;
+        }
+
+        $value = trim($value);
+        return false !== \filter_var($value, FILTER_VALIDATE_EMAIL)
+            || 1 === \preg_match('/^\+?[\d\s.\-()]{8,}$/', $value);
     }
 
     public function triggerJsEvent($event, $data = [])
