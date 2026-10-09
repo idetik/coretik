@@ -1,3 +1,50 @@
+# [2.0.0-beta.1](https://github.com/idetik/coretik/compare/v1.15.0...v2.0.0-beta.1) (2026-10-09)
+
+
+### Bug Fixes
+
+* query cache returned outdated results after writes ([f43ec3a](https://github.com/idetik/coretik/commit/f43ec3aca5e0ccd19e8ed2c06c4d271caf0b5bce)), closes [#15](https://github.com/idetik/coretik/issues/15)
+* **release:** publish 2.0 prereleases as beta versions ([9806178](https://github.com/idetik/coretik/commit/9806178b010e07afee2d66e5d95d63bd590cf705))
+
+
+### chore
+
+* **deps:** update dependencies to their latest versions ([6fabc2d](https://github.com/idetik/coretik/commit/6fabc2d6783f982c31e641fad619bd9759c327ae))
+
+
+* feat!: safer defaults for scripts loading and the schema viewer ([03b3532](https://github.com/idetik/coretik/commit/03b35325700ce0bda2ba4fa10cf6540cfe3389c6))
+* feat!: model events no longer register WordPress hooks ([72f38d5](https://github.com/idetik/coretik/commit/72f38d556cd3e5da3b80bd748ab8fd67b53fa656)), closes [#16](https://github.com/idetik/coretik/issues/16)
+* feat!: complete interfaces, fail loudly on unknown methods, empty PHPStan baseline ([89aac12](https://github.com/idetik/coretik/commit/89aac12067ee9f264cc01e2fff18828b63751951))
+* fix!: date metas use the WordPress date format ([948e964](https://github.com/idetik/coretik/commit/948e9647a012c9fda524613093846933f0ac14d3))
+* feat!: require PHP 8.2, illuminate/collections 11 or 12 and Carbon 3 ([b0c6b0b](https://github.com/idetik/coretik/commit/b0c6b0bb74d3c0ca110343ad784befd9d3a3ebd0))
+
+
+### Features
+
+* coretik() helper and Acorn compatibility ([2742886](https://github.com/idetik/coretik/commit/2742886f0679d42a78ec31f243b6e8dd8e1cc9e9))
+
+
+### BREAKING CHANGES
+
+* **deps:** pelago/emogrifier ^8.2 requires sabberworm/php-css-parser ^9 and drops Symfony 4.4 and 6.0 to 6.2 components.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+* scripts enqueued with the assets loader are no longer async by default; the schema viewer is disabled without WP_DEBUG.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+* the protected hookName() and getInternalId() methods are removed; the Actions trait no longer uses the Hooks trait itself (models only).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+* interfaces declare new methods; unknown methods on App, builders and queries throw a BadMethodCallException; Query methods set/childOf/all/limit/in/notIn/not/whereMeta/whereTax have typed signatures; parent() returns ?Model.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+* date metas are stored as Y-m-d H:i:s instead of Y-m-d H:i:s.u.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+* PHP 8.2 is required; illuminate/collections ^11 || ^12 and nesbot/carbon ^3 replace ^10 and ^2. Carbon 3 diffIn*() methods return signed floats.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
 # [2.0.0-next.7](https://github.com/idetik/coretik/compare/v2.0.0-next.6...v2.0.0-next.7) (2026-10-09)
 
 
