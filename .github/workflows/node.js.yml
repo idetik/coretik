@@ -30,9 +30,39 @@ jobs:
     - run: vendor/bin/phpunit
     - run: vendor/bin/phpstan analyse --no-progress --memory-limit=1G
 
+  integration:
+
+    runs-on: ubuntu-latest
+
+    # WordPress test suite with a real database
+    container: php:8.4-cli
+
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: coretik_tests
+        options: >-
+          --health-cmd="mysqladmin ping -proot"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
+    env:
+      WP_TESTS_DB_HOST: mysql
+
+    steps:
+    - run: apt-get update && apt-get install -y --no-install-recommends git unzip
+    - run: docker-php-ext-install mysqli
+    - uses: actions/checkout@v4
+    - run: php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/usr/local/bin --filename=composer && rm composer-setup.php
+    - run: composer install --no-interaction --no-progress
+    - run: vendor/bin/phpunit -c phpunit-integration.xml.dist
+
   build:
 
-    needs: tests
+    needs: [tests, integration]
     runs-on: ubuntu-latest
 
     strategy:

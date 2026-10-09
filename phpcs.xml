@@ -22,4 +22,9 @@
   
   <!-- Custom rule: disallow long `array()` syntax, use short `[]` syntax instead -->
   <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+
+  <!-- WordPress test case methods (set_up, tear_down) -->
+  <rule ref="PSR1.Methods.CamelCapsMethodName">
+    <exclude-pattern>tests/Integration/*</exclude-pattern>
+  </rule>
 </ruleset>

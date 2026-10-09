@@ -7,7 +7,6 @@ use Coretik\Core\Models\Adapters\WPCommentAdapter;
 use Coretik\Core\Models\Adapters\WPPostAdapter;
 use Coretik\Core\Models\Adapters\WPTermAdapter;
 use Coretik\Core\Models\Adapters\WPUserAdapter;
-use PHPUnit\Framework\Attributes\DataProvider;
 
 class MetaAdaptersTest extends AdapterTestCase
 {
@@ -27,7 +26,9 @@ class MetaAdaptersTest extends AdapterTestCase
         return \array_diff_key(static::adapters(), ['post' => true]);
     }
 
-    #[DataProvider('readAdapters')]
+    /**
+     * @dataProvider readAdapters
+     */
     public function testMetaReturnsFalsyStoredValues(string $adapter, string $type): void
     {
         Functions\expect('metadata_exists')->with($type, 12, 'count')->andReturn(true);
@@ -36,7 +37,9 @@ class MetaAdaptersTest extends AdapterTestCase
         $this->assertSame('0', (new $adapter($this->model()))->meta('count', 'default'));
     }
 
-    #[DataProvider('readAdapters')]
+    /**
+     * @dataProvider readAdapters
+     */
     public function testMetaReturnsDefaultWhenMissing(string $adapter, string $type): void
     {
         Functions\expect('metadata_exists')->with($type, 12, 'count')->andReturn(false);
@@ -45,7 +48,9 @@ class MetaAdaptersTest extends AdapterTestCase
         $this->assertSame('default', (new $adapter($this->model()))->meta('count', 'default'));
     }
 
-    #[DataProvider('adapters')]
+    /**
+     * @dataProvider adapters
+     */
     public function testUpdateMetaUpdatesExistingFalsyMeta(string $adapter, string $type): void
     {
         Functions\when('metadata_exists')->justReturn(true);
@@ -56,7 +61,9 @@ class MetaAdaptersTest extends AdapterTestCase
         (new $adapter($this->model()))->updateMeta('count', 1);
     }
 
-    #[DataProvider('adapters')]
+    /**
+     * @dataProvider adapters
+     */
     public function testUpdateMetaAddsMissingMeta(string $adapter, string $type): void
     {
         Functions\when('metadata_exists')->justReturn(false);
@@ -66,7 +73,9 @@ class MetaAdaptersTest extends AdapterTestCase
         (new $adapter($this->model()))->updateMeta('count', 1);
     }
 
-    #[DataProvider('adapters')]
+    /**
+     * @dataProvider adapters
+     */
     public function testUpdateMetaWithUnchangedValueDoesNotThrow(string $adapter, string $type): void
     {
         Functions\when('metadata_exists')->justReturn(true);
@@ -78,7 +87,9 @@ class MetaAdaptersTest extends AdapterTestCase
         $this->addToAssertionCount(1);
     }
 
-    #[DataProvider('adapters')]
+    /**
+     * @dataProvider adapters
+     */
     public function testUpdateMetaWithUnchangedArrayDoesNotThrow(string $adapter, string $type): void
     {
         Functions\when('metadata_exists')->justReturn(true);
@@ -89,7 +100,9 @@ class MetaAdaptersTest extends AdapterTestCase
         $this->addToAssertionCount(1);
     }
 
-    #[DataProvider('adapters')]
+    /**
+     * @dataProvider adapters
+     */
     public function testUpdateMetaFailureThrows(string $adapter, string $type): void
     {
         Functions\when('metadata_exists')->justReturn(true);
@@ -100,7 +113,9 @@ class MetaAdaptersTest extends AdapterTestCase
         (new $adapter($this->model()))->updateMeta('count', 'new');
     }
 
-    #[DataProvider('adapters')]
+    /**
+     * @dataProvider adapters
+     */
     public function testAddMetaFailureThrows(string $adapter, string $type): void
     {
         Functions\when('metadata_exists')->justReturn(false);

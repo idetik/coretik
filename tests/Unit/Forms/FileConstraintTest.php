@@ -5,7 +5,6 @@ namespace Coretik\Tests\Unit\Forms;
 use Brain\Monkey\Functions;
 use Coretik\Services\Forms\Core\Validation\Constraints\File;
 use Coretik\Tests\TestCase;
-use PHPUnit\Framework\Attributes\DataProvider;
 
 class FileConstraintTest extends TestCase
 {
@@ -60,7 +59,9 @@ class FileConstraintTest extends TestCase
         ];
     }
 
-    #[DataProvider('validFiles')]
+    /**
+     * @dataProvider validFiles
+     */
     public function testValidFileIsAccepted(string $name, string $content, array $types): void
     {
         $this->validate($name, $content, ['types' => $types]);
@@ -80,7 +81,9 @@ class FileConstraintTest extends TestCase
         ];
     }
 
-    #[DataProvider('invalidFiles')]
+    /**
+     * @dataProvider invalidFiles
+     */
     public function testInvalidFileIsRejected(string $name, string $content, array $types): void
     {
         $constraint = $this->validate($name, $content, ['types' => $types]);
