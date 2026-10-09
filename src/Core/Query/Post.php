@@ -21,6 +21,12 @@ class Post extends Query
         return $this->get()->posts;
     }
 
+    public function total(): int
+    {
+        // found_posts is not computed with no_found_rows
+        return \max((int)$this->get()->found_posts, $this->count());
+    }
+
     public function getQueryArgsDefault()
     {
         return [
