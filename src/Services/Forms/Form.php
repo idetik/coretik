@@ -549,7 +549,11 @@ abstract class Form implements Handlable
 
     public function submittedOk()
     {
-        return $this->isSubmitting() && !$this->hasErrors() && !$this->isSpam();
+        // Not based on hasErrors(): it returns false when errors are hidden (spam, wrong nonce)
+        return $this->isSubmitting()
+            && !empty($this->submission_result['ok'])
+            && (!$this->isValidating() || empty($this->validation->getErrors()))
+            && !$this->isSpam();
     }
 
     public function errorClass($fields)
