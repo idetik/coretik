@@ -153,6 +153,11 @@ abstract class Query implements QuerierInterface
 
     public function run()
     {
+        if (!\apply_filters('coretik/query/cache', true, $this)) {
+            $this->query = $this->builder->query();
+            return;
+        }
+
         $hash = $this->hash();
 
         if (!$this->cache()->has($hash)) {
