@@ -302,6 +302,14 @@ One way to query all wp_post filtered by default query args, and browse result m
 
 See `src/Core/Query/Post::getQueryArgsDefault()`
 
+By default, only published posts are queried on frontend and in AJAX requests. Other statuses (draft, private, future…) are queried in admin, cron and CLI, and in AJAX for users who can edit the post type. Use the `coretik/query/post/default_status` filter to change it:
+
+```php
+add_filter('coretik/query/post/default_status', function ($status, string $post_type) {
+    return 'my_custom_post_type' === $post_type && is_user_logged_in() ? ['publish', 'private'] : $status;
+}, 10, 2);
+```
+
 ```php
 $models = app()->schema('my_custom_post_type')->query()->models();
 
