@@ -2,6 +2,7 @@
 
 namespace Coretik\Core\Query\Adapters;
 
+use Coretik\Core\Query\Interfaces\DateClauseInterface;
 use Coretik\Core\Query\Interfaces\WhereClauseInterface;
 use Coretik\Core\Query\Interfaces\QueryBuilderInterface;
 
@@ -42,6 +43,32 @@ abstract class WPAdapter implements QueryBuilderInterface
     {
         $this->resolveWhere($where, 'OR');
         return $this;
+    }
+
+    /**
+     * Resolve a plain where clause as a query parameter: where('post_parent', 5) is set('post_parent', 5).
+     */
+    protected function resolveParameter(WhereClauseInterface $where, string $relation): void
+    {
+        if ($where instanceof DateClauseInterface) {
+            throw new \InvalidArgumentException('Date clauses are not supported: use set(\'date_query\', [...]).');
+        }
+
+        $key = $where->key();
+
+        if (!\in_array($key, static::PARAMETERS)) {
+            throw new \InvalidArgumentException(\sprintf('Unknown query parameter "%s" for %s: use whereMeta() to filter on a meta.', $key, static::class));
+        }
+
+        if ('=' !== $where->compare()) {
+            throw new \InvalidArgumentException(\sprintf('Query parameter "%s" only supports the "=" operator, "%s" given.', $key, $where->compare()));
+        }
+
+        if ('AND' !== $relation) {
+            throw new \InvalidArgumentException(\sprintf('Query parameter "%s" cannot be used in an OR clause.', $key));
+        }
+
+        $this->set($key, $where->value());
     }
 
     public function all(): self

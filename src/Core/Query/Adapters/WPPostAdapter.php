@@ -194,6 +194,8 @@ class WPPostAdapter extends WPAdapter
             case $where instanceof TaxonomyClauseInterface:
                 $this->addTaxQuery(Arr::whereValuesAreSet($where->toArray()), $relation);
                 break;
+            default:
+                $this->resolveParameter($where, $relation);
         }
     }
 }

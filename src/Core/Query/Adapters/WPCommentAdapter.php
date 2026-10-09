@@ -127,6 +127,8 @@ class WPCommentAdapter extends WPAdapter
             case $where instanceof MetaClauseInterface:
                 $this->addMetaQuery(Arr::whereValuesAreSet($where->toArray()), $relation);
                 break;
+            default:
+                $this->resolveParameter($where, $relation);
         }
     }
 }

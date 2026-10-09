@@ -50,6 +50,7 @@ abstract class Query implements QuerierInterface
     public function orWhere($where)
     {
         $this->builder->orWhere($where);
+        return $this;
     }
 
     public function or()
