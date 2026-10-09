@@ -1,3 +1,10 @@
+# [2.0.0-next.5](https://github.com/idetik/coretik/compare/v2.0.0-next.4...v2.0.0-next.5) (2026-10-09)
+
+
+### Features
+
+* coretik() helper and Acorn compatibility ([2742886](https://github.com/idetik/coretik/commit/2742886f0679d42a78ec31f243b6e8dd8e1cc9e9))
+
 # [2.0.0-next.4](https://github.com/idetik/coretik/compare/v2.0.0-next.3...v2.0.0-next.4) (2026-10-09)
 
 
