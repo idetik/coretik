@@ -1,3 +1,10 @@
+# [2.0.0-next.7](https://github.com/idetik/coretik/compare/v2.0.0-next.6...v2.0.0-next.7) (2026-10-09)
+
+
+### Bug Fixes
+
+* **release:** publish 2.0 prereleases as beta versions ([9806178](https://github.com/idetik/coretik/commit/9806178b010e07afee2d66e5d95d63bd590cf705))
+
 # [2.0.0-next.6](https://github.com/idetik/coretik/compare/v2.0.0-next.5...v2.0.0-next.6) (2026-10-09)
 
 
