@@ -1,3 +1,17 @@
+# [2.0.0-next.6](https://github.com/idetik/coretik/compare/v2.0.0-next.5...v2.0.0-next.6) (2026-10-09)
+
+
+### chore
+
+* **deps:** update dependencies to their latest versions ([6fabc2d](https://github.com/idetik/coretik/commit/6fabc2d6783f982c31e641fad619bd9759c327ae))
+
+
+### BREAKING CHANGES
+
+* **deps:** pelago/emogrifier ^8.2 requires sabberworm/php-css-parser ^9 and drops Symfony 4.4 and 6.0 to 6.2 components.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
 # [2.0.0-next.5](https://github.com/idetik/coretik/compare/v2.0.0-next.4...v2.0.0-next.5) (2026-10-09)
 
 

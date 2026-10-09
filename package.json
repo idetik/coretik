@@ -1,6 +1,6 @@
 {
     "name": "@idetik-group/coretik",
-    "version": "2.0.0-next.5",
+    "version": "2.0.0-next.6",
     "description": "Wordpress coretik",
     "scripts": {
         "semantic-release": "semantic-release"
