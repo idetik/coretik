@@ -312,6 +312,18 @@ foreach ($models as $model) {
 #### Others query
 See `src/Core/Query/Adapters` folder. 
 
+#### Where clauses
+
+```php
+$query = app()->schema('my_custom_post_type')->query();
+
+$query->where('post_parent', 100);       // Query parameter, same as set('post_parent', 100)
+$query->whereMeta('price', 50, '>');     // Meta query
+$query->whereTax('my_taxonomy', 12);     // Tax query (posts only)
+```
+
+`where($key, $value)` only accepts the query parameters listed in the adapter `PARAMETERS` constant, with the `=` operator, outside of an `or()`. Anything else throws an `InvalidArgumentException`: use `whereMeta()` to filter on a meta.
+
 
 ### Custom query
 #### Setup

@@ -3,20 +3,15 @@
 namespace Coretik\Core\Builders;
 
 use Coretik\Core\Builders\Traits\Registrable;
-use Coretik\Core\Builders\Interfaces\{
-    BuilderInterface,
-    RegistrableInterface
-};
-use SplObjectStorage;
+use Coretik\Core\Collection;
+use Coretik\Core\Builders\Interfaces\RegistrableInterface;
 
-final class Status implements BuilderInterface, RegistrableInterface
+final class Status extends Builder implements RegistrableInterface
 {
     use Registrable;
 
     protected $status;
     protected $args;
-    protected $registerPriority = 0;
-    protected $handlers;
 
     public function __construct(string $status, array $args = [])
     {
@@ -35,19 +30,14 @@ final class Status implements BuilderInterface, RegistrableInterface
             'date_floating'             => null,
         ];
 
-        $this->setArgs($args);
+        $this->setArgs(\array_merge($default, $args));
 
-        $this->handlers = new SplObjectStorage();
+        parent::__construct();
     }
 
     public function getType(): string
     {
         return 'status';
-    }
-
-    public function priority(): int
-    {
-        return $this->registerPriority;
     }
 
     public function getName(): string
@@ -69,17 +59,5 @@ final class Status implements BuilderInterface, RegistrableInterface
     public function registerAction(): void
     {
         \register_post_status($this->status, $this->args->all());
-    }
-
-    public function handler(callable $handler): void
-    {
-        $this->handlers->attach($handler);
-    }
-
-    public function runHandlers(): void
-    {
-        foreach ($this->handlers as $handler) {
-            $handler($this);
-        }
     }
 }

@@ -18,17 +18,10 @@ abstract class BuilderModelable extends Builder implements ModelableInterface
     abstract public function wpObject(int $id);
     abstract public function concern(int $objectId): bool;
 
-    public function __construct()
-    {
-        if (empty(static::$models[$this->getType()])) {
-            static::$models[$this->getType()] = new ModelsContainer();
-        }
-        parent::__construct();
-    }
-
     public function models(): ContainerInterface
     {
-        return static::$models[$this->getType()] ?? new ModelsContainer();
+        // Keyed by type and name: post types (or taxonomies) sharing the same type must not share their models
+        return static::$models[$this->getType() . ':' . $this->getName()] ??= new ModelsContainer();
     }
 
     public function factory(callable|string $factory)

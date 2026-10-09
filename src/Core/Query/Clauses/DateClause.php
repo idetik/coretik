@@ -39,7 +39,18 @@ class DateClause extends WhereClause implements DateClauseInterface
                 break;
         }
         parent::__construct($column, $date, $compare);
+        $this->column = $column;
         $this->inclusive = $inclusive;
+    }
+
+    public function column(): string
+    {
+        return $this->column;
+    }
+
+    public function inclusive(): bool
+    {
+        return $this->inclusive;
     }
 
     public function year(): int

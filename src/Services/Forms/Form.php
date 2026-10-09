@@ -616,14 +616,12 @@ abstract class Form implements Handlable
         if ($this->isSpam()) {
             $result['error'] = 'Anti-robots spam validation failed';
             $this->submission_result = $result;
-            sleep(10);
             $this->setDisplayErrors(false);
             return $result;
         }
         if (!$this->checkNonce()) {
             $result['error'] = 'Wrong / empty nonce';
             $this->submission_result = $result;
-            sleep(10);
             $this->setDisplayErrors(false);
             return $result;
         }
