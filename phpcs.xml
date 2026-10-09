@@ -23,8 +23,10 @@
   <!-- Custom rule: disallow long `array()` syntax, use short `[]` syntax instead -->
   <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
 
-  <!-- WordPress test case methods (set_up, tear_down) -->
+  <!-- Method names imposed by WordPress classes -->
   <rule ref="PSR1.Methods.CamelCapsMethodName">
     <exclude-pattern>tests/Integration/*</exclude-pattern>
+    <!-- WordPress Walker_Nav_Menu methods (start_lvl, start_el) -->
+    <exclude-pattern>src/Services/Menu/Walkers/*</exclude-pattern>
   </rule>
 </ruleset>

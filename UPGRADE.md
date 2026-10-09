@@ -27,6 +27,10 @@ coretik now requires `illuminate/collections` 11 or 12 (Laravel 10 no longer get
 
 See the [Carbon 3 migration guide](https://carbon.nesbot.com/docs/#api-carbon-3).
 
+**Emogrifier 8** (CSS inlining of emails): the API used by coretik is unchanged. It requires `sabberworm/php-css-parser` 9 and drops Symfony 4.4 and 6.0 to 6.2 components: if your project requires them directly, update them.
+
+**Pimple 3.6**: no breaking change.
+
 **Collections**: `Coretik\Core\Collection` extends `Illuminate\Support\Collection`. See the "Collections" sections of the [Laravel 11](https://laravel.com/docs/11.x/upgrade) and [Laravel 12](https://laravel.com/docs/12.x/upgrade) upgrade guides.
 
 ### Date metas
