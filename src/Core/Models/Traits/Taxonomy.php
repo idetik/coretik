@@ -38,7 +38,7 @@ trait Taxonomy
                 return new Collection([]);
             }
 
-            $this->{$taxonomy . '_terms'} = (new Collection($array))->map(fn ($wp_item) => app()->schema()->modelable($taxonomy, 'taxonomy')->model($wp_item->term_id, $wp_item));
+            $this->{$taxonomy . '_terms'} = (new Collection($array))->map(fn ($wp_item) => coretik()->schema()->modelable($taxonomy, 'taxonomy')->model($wp_item->term_id, $wp_item));
         }
 
         return $this->{$taxonomy . '_terms'};

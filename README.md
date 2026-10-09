@@ -24,6 +24,16 @@ composer phpstan
 
 The database settings can be changed with the `WP_TESTS_DB_HOST`, `WP_TESTS_DB_NAME`, `WP_TESTS_DB_USER` and `WP_TESTS_DB_PASSWORD` environment variables.
 
+## Acorn
+
+coretik can be used with [Acorn](https://roots.io/acorn/) (Laravel components in WordPress, versions 5 and 6). Acorn discovers the coretik service provider, which exposes the coretik application in the Acorn container:
+
+```php
+app('coretik')->schema('product'); // same as coretik()->schema('product')
+```
+
+With Acorn, `app()` is the Laravel helper: use `coretik()` to reach the coretik application.
+
 ## Get started
 
 ### Dependency Injection Container
@@ -146,14 +156,14 @@ class MyPostModel extends PostModel
     }
 }
 
-$postSchema = app()->schema('post');
+$postSchema = coretik()->schema('post');
 $postSchema->factory(MyPostModel::class);
 ```
 
 #### Usage
 
 ```php
-$models = app()->schema('post')->query()->models();
+$models = coretik()->schema('post')->query()->models();
 
 foreach ($models as $model) {
     echo $model->foo(); // 'bar'
@@ -275,13 +285,13 @@ class MyPostModel extends PostModel
     }
 }
 
-$postSchema = app()->schema('my_custom_post_type');
+$postSchema = coretik()->schema('my_custom_post_type');
 $postSchema->factory(MyPostModel::class);
 ```
 
 Create & save a model :
 ```php
-$model = app()->schema('my_custom_post_type')->model();
+$model = coretik()->schema('my_custom_post_type')->model();
 $model->post_title = 'Mr Bar Foo';
 $model->post_status = 'publish';
 $model->ma_meta_a = 'Foo';
@@ -296,7 +306,7 @@ $modelId = $model->id();
 Use a model :
 
 ```php
-$myModel = app()->schema('my_custom_post_type')->model($modelId);
+$myModel = coretik()->schema('my_custom_post_type')->model($modelId);
 
 echo $myModel->foo(); // foo
 echo $myModel->ma_meta_a; // ['Foo']
@@ -327,7 +337,7 @@ add_filter('coretik/query/post/default_status', function ($status, string $post_
 ```
 
 ```php
-$models = app()->schema('my_custom_post_type')->query()->models();
+$models = coretik()->schema('my_custom_post_type')->query()->models();
 
 foreach ($models as $model) {
     echo $model->title();
@@ -336,7 +346,7 @@ foreach ($models as $model) {
 #### Count
 
 ```php
-$query = app()->schema('my_custom_post_type')->query()->limit(10);
+$query = coretik()->schema('my_custom_post_type')->query()->limit(10);
 
 $query->count(); // Results of the current page (10 max)
 $query->total(); // Results of all pages (found_posts)
@@ -348,7 +358,7 @@ See `src/Core/Query/Adapters` folder.
 #### Where clauses
 
 ```php
-$query = app()->schema('my_custom_post_type')->query();
+$query = coretik()->schema('my_custom_post_type')->query();
 
 $query->where('post_parent', 100);       // Query parameter, same as set('post_parent', 100)
 $query->whereMeta('price', 50, '>');     // Meta query
@@ -401,14 +411,14 @@ class MyPostQuery enxtends PostQuery
     }
 }
 
-$postSchema = app()->schema('my_custom_post_type');
+$postSchema = coretik()->schema('my_custom_post_type');
 $postSchema->querier(MyPostQuery::class);
 ```
 
 #### Usage
 
 ```php
-$result = app()
+$result = coretik()
             ->schema('my_custom_post_type')
                 ->query()
                     ->ordered()
@@ -485,7 +495,7 @@ PostType::make('my_custom_post_type')
     ->attach('myMacroA', fn ($input) => 'my_custom_post_type : ' . $input) // Optional, you can attach all callables you want
     ->addToSchema();
 
-echo app()->schema('my_custom_post_type')->myMacroA('foo'); // my_custom_post_type : foo
+echo coretik()->schema('my_custom_post_type')->myMacroA('foo'); // my_custom_post_type : foo
 ```
 
 ### Forms anti-spam

@@ -39,7 +39,7 @@ class Registry extends \SplObjectStorage
         }
 
         if (!\wp_verify_nonce($_GET['_wpnonce'] ?? '', static::QUERY_VAR_FLUSH)) {
-            app()->notices()->warning(\sprintf(
+            coretik()->notices()->warning(\sprintf(
                 'Regenerate roles & capabilities? <a href="%s">Confirm</a>',
                 \esc_url(static::flushUrl())
             ));
@@ -66,7 +66,7 @@ class Registry extends \SplObjectStorage
         \update_option(static::OPTION_KEY, $this->toArray(), false);
         CacheBuster::set($this->hash());
         $this->cleanup($previous);
-        app()->notices()->success('Roles & capabilities updated.');
+        coretik()->notices()->success('Roles & capabilities updated.');
         return $this;
     }
 

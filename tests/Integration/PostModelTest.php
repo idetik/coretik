@@ -8,7 +8,7 @@ class PostModelTest extends IntegrationTestCase
 {
     private function newProduct(array $props): ProductModel
     {
-        $product = app()->schema('product')->model();
+        $product = coretik()->schema('product')->model();
         foreach ($props as $key => $value) {
             $product->$key = $value;
         }
@@ -28,7 +28,7 @@ class PostModelTest extends IntegrationTestCase
     {
         $product = $this->newProduct(['post_title' => 'Tent', 'price' => '0', 'stock' => 0])->save();
 
-        $reloaded = app()->schema('product')->model($product->id(), null, true);
+        $reloaded = coretik()->schema('product')->model($product->id(), null, true);
         $this->assertSame('0', $reloaded->meta('price'));
         $this->assertSame('0', $reloaded->meta('stock'));
     }
@@ -80,7 +80,7 @@ class PostModelTest extends IntegrationTestCase
     {
         $id = $this->newProduct(['post_title' => 'Tent'])->save()->id();
         // Loaded from the schema, as projects do: the handler triggers events on this instance
-        $product = app()->schema('product')->model($id);
+        $product = coretik()->schema('product')->model($id);
         $updated = 0;
         $product->on('updated', function () use (&$updated) {
             $updated++;
@@ -100,8 +100,8 @@ class PostModelTest extends IntegrationTestCase
         $parentId = self::factory()->post->create(['post_type' => 'product']);
         $childId = self::factory()->post->create(['post_type' => 'product', 'post_parent' => $parentId]);
 
-        $this->assertNull(app()->schema('product')->model($parentId)->parent());
-        $parent = app()->schema('product')->model($childId)->parent();
+        $this->assertNull(coretik()->schema('product')->model($parentId)->parent());
+        $parent = coretik()->schema('product')->model($childId)->parent();
         $this->assertInstanceOf(ProductModel::class, $parent);
         $this->assertSame($parentId, $parent->id());
     }

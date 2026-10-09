@@ -5,50 +5,46 @@ use Coretik\Core\Builders\Interfaces\BuilderInterface;
 use Coretik\Core\Models\Interfaces\ModelInterface;
 use Coretik\Core\Query\Interfaces\QuerierInterface;
 
-if (! function_exists('app')) {
+if (! function_exists('coretik')) {
     /**
-     * Create an app instance
-     *
-     * @return \Coretik\App
+     * The coretik application
      */
-    function app()
+    function coretik(): ?App
+    {
+        return App::instance();
+    }
+}
+
+/*
+ * Acorn (Laravel) defines its own app() helper, used by Laravel components: with Acorn, use coretik() or app('coretik').
+ */
+if (! function_exists('app') && ! class_exists(\Roots\Acorn\Application::class)) {
+    /**
+     * @deprecated 2.0 Use coretik(): app() is reserved to Acorn (Laravel) when it is installed
+     */
+    function app(): ?App
     {
         return App::instance();
     }
 }
 
 if (! function_exists('schema')) {
-    /**
-     * Create an app instance
-     *
-     * @return BuilderInterface
-     */
-    function schema(string $name, string $type): BuilderInterface
+    function schema(string $name, string $type): ?BuilderInterface
     {
-        return app()->schema($name, $type);
+        return coretik()->schema($name, $type);
     }
 }
 
 if (! function_exists('model')) {
-    /**
-     * Create an app instance
-     *
-     * @return ModelInterface
-     */
     function model(string $name, ?int $id = null): ModelInterface
     {
-        return app()->schema()->modelable($name)->model($id);
+        return coretik()->schema()->modelable($name)->model($id);
     }
 }
 
 if (! function_exists('query')) {
-    /**
-     * Create an app instance
-     *
-     * @return QuerierInterface
-     */
     function query(string $name): QuerierInterface
     {
-        return app()->schema()->modelable($name)->query();
+        return coretik()->schema()->modelable($name)->query();
     }
 }

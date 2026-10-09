@@ -50,7 +50,7 @@ trait Metable
 
         $meta = new MetaDefinition($local_key, $meta_key);
         $meta->on('set_default_value', function () {
-            $builder = app()->schema()->resolve($this);
+            $builder = coretik()->schema()->resolve($this);
             if (!$builder) {
                 return;
             }
@@ -65,7 +65,7 @@ trait Metable
         });
 
         $meta->on('protect', function () {
-            $builder = app()->schema()->resolve($this);
+            $builder = coretik()->schema()->resolve($this);
             if (!$builder) {
                 return;
             }

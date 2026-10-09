@@ -83,7 +83,7 @@ class PostStatusArchiveHandler extends Handler
     public function schedule(string|DateTime $datetime, string $recurrence = 'daily')
     {
         if (\is_string($datetime)) {
-            $datetime = new DateTime($datetime, app()->get('timezone'));
+            $datetime = new DateTime($datetime, coretik()->get('timezone'));
         }
 
         $hook = 'coretik/handler/post_status_archive/schedule/' . $this->builder->getName() . '/auto_status_archived';

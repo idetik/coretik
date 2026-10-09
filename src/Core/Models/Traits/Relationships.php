@@ -157,16 +157,16 @@ trait Relationships
     {
         if ($builder instanceof ModelInterface) {
             $builder = match (true) {
-                $builder instanceof PostModel => app()->schema($builder->name(), 'post'),
-                $builder instanceof TermModel => app()->schema($builder->name(), 'taxonomy'),
-                $builder instanceof CommentModel => app()->schema($builder->name(), 'comment'),
-                $builder instanceof UserModel => app()->schema($builder->name(), 'user'),
-                default => app()->schema($builder->name())
+                $builder instanceof PostModel => coretik()->schema($builder->name(), 'post'),
+                $builder instanceof TermModel => coretik()->schema($builder->name(), 'taxonomy'),
+                $builder instanceof CommentModel => coretik()->schema($builder->name(), 'comment'),
+                $builder instanceof UserModel => coretik()->schema($builder->name(), 'user'),
+                default => coretik()->schema($builder->name())
             };
         }
 
         if (\is_string($builder)) {
-            $builder = app()->schema()->get($builder);
+            $builder = coretik()->schema()->get($builder);
         }
 
         if (empty($builder)) {

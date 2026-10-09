@@ -40,8 +40,8 @@ class Container implements SplSubject, ArrayAccess, IteratorAggregate
     {
         if (\is_user_logged_in()) {
             $this->setStorage(new UserConnection((int) \get_current_user_id()));
-        } elseif (app()->has('session')) {
-            $this->setStorage(new SessionConnection(app()->get('session')));
+        } elseif (coretik()->has('session')) {
+            $this->setStorage(new SessionConnection(coretik()->get('session')));
         }
         $this->notices = $this->storage->get()->getArrayCopy();
         $this->initialized = true;
