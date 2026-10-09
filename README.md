@@ -462,3 +462,21 @@ PostType::make('my_custom_post_type')
 
 echo app()->schema('my_custom_post_type')->myMacroA('foo'); // my_custom_post_type : foo
 ```
+
+### Forms anti-spam
+
+Forms are protected by a nonce and a honeypot field. Two more protections are available, disabled by default:
+
+```php
+// Rate limit by client IP: true for 5 submissions per 10 minutes, or your own values
+add_filter('coretik/forms/rate_limit', fn () => ['max' => 5, 'window' => 600]);
+
+// Behind a proxy / CDN, return the real client IP (only trust headers set by your own proxy)
+add_filter('coretik/forms/client_ip', fn ($ip) => $_SERVER['HTTP_CF_CONNECTING_IP'] ?? $ip);
+
+// Words blacklist, matched as whole words ("cock" does not match "cocktail")
+add_filter('coretik/forms/blacklist/enabled', '__return_true');
+add_filter('coretik/forms/blacklist', fn (array $words) => array_merge($words, ['crypto']));
+```
+
+A submission flagged as spam is silently ignored: the visitor gets no error message.

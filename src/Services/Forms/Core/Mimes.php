@@ -7,7 +7,7 @@ class Mimes
     private static $mimes = [
         'hqx' => ['application/mac-binhex40', 'application/mac-binhex', 'application/x-binhex40', 'application/x-mac-binhex40'],
         'cpt' => ['application/mac-compactpro'],
-        'csv' => ['application/vnd.ms-excel', 'text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream', 'application/vnd.ms-excel', 'application/x-csv', 'text/x-csv', 'text/csv', 'application/csv', 'application/excel', 'application/vnd.msexcel', 'text/plain'],
+        'csv' => ['application/vnd.ms-excel', 'text/x-comma-separated-values', 'text/comma-separated-values', 'application/x-csv', 'text/x-csv', 'text/csv', 'application/csv', 'application/excel', 'application/vnd.msexcel', 'text/plain'],
         'bin' => ['application/macbinary', 'application/mac-binary', 'application/octet-stream', 'application/x-binary', 'application/x-macbinary'],
         'dms' => ['application/octet-stream'],
         'lha' => ['application/octet-stream'],
@@ -19,7 +19,7 @@ class Mimes
         'sea' => ['application/octet-stream'],
         'dll' => ['application/octet-stream'],
         'oda' => ['application/oda'],
-        'pdf' => ['application/pdf', 'application/force-download', 'application/x-download', 'binary/octet-stream'],
+        'pdf' => ['application/pdf'],
         'ai' => ['application/pdf', 'application/postscript'],
         'eps' => ['application/postscript'],
         'ps' => ['application/postscript'],

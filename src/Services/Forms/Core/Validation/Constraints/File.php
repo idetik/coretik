@@ -23,7 +23,7 @@ class File extends Constraint
         ];
         $args = wp_parse_args($args, $defaults);
         $this->maxSize  = $args['max-size'];
-        $this->types    = $args['types'];
+        $this->types    = \array_map('strtolower', (array)($args['types'] ?: []));
         $this->required = $args['required'];
         $this->form = $form;
         $this->formName = $form?->getFormName() ?: 'coretik-form';
@@ -73,32 +73,52 @@ class File extends Constraint
                     throw new \RuntimeException('Ce champs est requis.');
                 case UPLOAD_ERR_INI_SIZE:
                 case UPLOAD_ERR_FORM_SIZE:
-                    throw new \RuntimeException(sprintf('Le fichier doit être inférieur à %smo', $this->maxSize));
+                    throw new \RuntimeException($this->sizeMessage());
                 default:
                     throw new \RuntimeException('Unknown errors.');
             }
 
             if ($this->maxSize && $_FILES[$this->formName]['size'][$fieldname] > $this->maxSize) {
-                throw new \RuntimeException(sprintf('Le fichier doit être inférieur à %smo', $this->maxSize));
+                throw new \RuntimeException($this->sizeMessage());
             }
 
-            $ext = false;
-            $finfo = new \finfo(FILEINFO_MIME_TYPE);
-            foreach ($this->types as $type) {
-                if (in_array($finfo->file($_FILES[$this->formName]['tmp_name'][$fieldname]), Mimes::getType($type))) {
-                    $ext = $type;
-                    break;
-                }
-            }
-
-            if (false === $ext) {
-                throw new \RuntimeException('Format du fichier invalide.');
-            }
+            $this->checkType(
+                (string)($_FILES[$this->formName]['name'][$fieldname] ?? ''),
+                $_FILES[$this->formName]['tmp_name'][$fieldname]
+            );
         } catch (\RuntimeException $e) {
             $this->message = $e->getMessage();
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * The client file name extension must be an allowed type, and the detected content type must match this extension.
+     */
+    protected function checkType(string $name, string $path): void
+    {
+        // Executable extensions are refused anywhere in the name (e.g. "shell.php.jpg")
+        if (\preg_match('/\\.(php\\d*|phtml|phar|phps|pht)(\\.|$)/i', $name)) {
+            throw new \RuntimeException('Format du fichier invalide.');
+        }
+
+        $ext = \strtolower(\pathinfo($name, PATHINFO_EXTENSION));
+
+        if (empty($ext) || !\in_array($ext, $this->types, true)) {
+            throw new \RuntimeException('Format du fichier invalide.');
+        }
+
+        $mime = (new \finfo(FILEINFO_MIME_TYPE))->file($path);
+
+        if (!\in_array($mime, Mimes::getType($ext) ?? [], true)) {
+            throw new \RuntimeException('Format du fichier invalide.');
+        }
+    }
+
+    protected function sizeMessage(): string
+    {
+        return \sprintf('Le fichier doit être inférieur à %s.', \size_format($this->maxSize));
     }
 }

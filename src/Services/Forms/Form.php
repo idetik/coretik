@@ -381,65 +381,48 @@ abstract class Form implements Handlable
         return true;
     }
 
+    /**
+     * Field value, escaped for an HTML attribute (arrays are escaped recursively).
+     * Nested fields use brackets: getValue('address[city]').
+     */
     public function getValue($field, $default = '')
     {
+        $path = [];
         $bracket = strpos($field, '[');
         if (false !== $bracket) {
             preg_match_all("/\[([^\]]+)\]/", $field, $matches);
+            $path = $matches[1];
             $field = substr($field, 0, $bracket);
         }
 
         if ($this->isValidating()) {
             $data = $this->validation->getData();
-            if (isset($data[$field])) {
-                $data = $data[$field];
-                if (!empty($matches[1])) {
-                    for ($i = 0; $i < count($matches); $i++) {
-                        if (!isset($matches[1][$i])) {
-                            continue;
-                        }
-                        if (!isset($data[$matches[1][$i]])) {
-                            return $default;
-                        }
-                        $data = $data[$matches[1][$i]];
-                    }
-                }
-                return is_array($data) ? $data : esc_attr($data);
-            }
-        } else if ($this->isSubmitting()) {
-            if (isset($_POST[$this->getFormName()][$field])) {
-                $data = $_POST[$this->getFormName()][$field];
-                if (!empty($matches[1])) {
-                    for ($i = 0; $i < count($matches); $i++) {
-                        if (!isset($matches[1][$i])) {
-                            continue;
-                        }
-                        if (!isset($data[$matches[1][$i]])) {
-                            return $default;
-                        }
-                        $data = $data[$matches[1][$i]];
-                    }
-                }
-                return is_array($data) ? $data : esc_attr($data);
-            }
+        } elseif ($this->isSubmitting()) {
+            $data = $_POST[$this->getFormName()];
+        } elseif ($this->hasDefaultValue($field)) {
+            $data = [$field => $this->getDefaultValue($field)];
         } else {
-            if ($this->hasDefaultValue($field)) {
-                $data = $this->getDefaultValue($field);
-                if (!empty($matches[1])) {
-                    for ($i = 0; $i < count($matches); $i++) {
-                        if (!isset($matches[1][$i])) {
-                            continue;
-                        }
-                        if (!isset($data[$matches[1][$i]])) {
-                            return $default;
-                        }
-                        $data = $data[$matches[1][$i]];
-                    }
-                }
-                return is_array($data) ? $data : esc_attr($data);
-            }
+            return $default;
         }
-        return $default;
+
+        if (!isset($data[$field])) {
+            return $default;
+        }
+
+        $data = $data[$field];
+        foreach ($path as $key) {
+            if (!is_array($data) || !isset($data[$key])) {
+                return $default;
+            }
+            $data = $data[$key];
+        }
+
+        return $this->escapeValue($data);
+    }
+
+    protected function escapeValue($value)
+    {
+        return is_array($value) ? array_map([$this, 'escapeValue'], $value) : esc_attr($value);
     }
 
     public function getValues()
@@ -549,7 +532,11 @@ abstract class Form implements Handlable
 
     public function submittedOk()
     {
-        return $this->isSubmitting() && !$this->hasErrors() && !$this->isSpam();
+        // Not based on hasErrors(): it returns false when errors are hidden (spam, wrong nonce)
+        return $this->isSubmitting()
+            && !empty($this->submission_result['ok'])
+            && (!$this->isValidating() || empty($this->validation->getErrors()))
+            && !$this->isSpam();
     }
 
     public function errorClass($fields)
@@ -612,6 +599,12 @@ abstract class Form implements Handlable
         }
 
         $posted_data = $_POST[$form_name];
+
+        if ($this->isRateLimited()) {
+            $result['error'] = 'Too many submissions';
+            $this->submission_result = $result;
+            return $result;
+        }
 
         if ($this->isSpam()) {
             $result['error'] = 'Anti-robots spam validation failed';
@@ -722,12 +715,53 @@ abstract class Form implements Handlable
 
         if (is_user_logged_in()) {
             return false;
-        } else {
-            return isset($_POST['form_coretik_confirm']) && in_array($_POST['form_coretik_confirm'], ['on', true, 'true', 1, '1']);
         }
 
-        return $this->honeyPotChecked()
-            || $this->hasWordsInBlacklist($_POST[$this->getFormName()]);
+        if ($this->honeyPotChecked()) {
+            return true;
+        }
+
+        // Opt-in: words are matched as whole words, but false positives are still possible
+        if (\apply_filters('coretik/forms/blacklist/enabled', false, $this)) {
+            return $this->hasWordsInBlacklist($_POST[$this->getFormName()] ?? []);
+        }
+
+        return false;
+    }
+
+    /**
+     * Opt-in rate limit by client IP, enabled with the "coretik/forms/rate_limit" filter:
+     * true for the defaults (5 submissions per 10 minutes), or ['max' => int, 'window' => seconds].
+     * Behind a proxy / CDN, use the "coretik/forms/client_ip" filter to return the real client IP.
+     */
+    public function isRateLimited(): bool
+    {
+        $config = \apply_filters('coretik/forms/rate_limit', false, $this);
+        if (empty($config)) {
+            return false;
+        }
+
+        $config = \array_merge(['max' => 5, 'window' => 600], \is_array($config) ? $config : []);
+        $ip = (string)\apply_filters('coretik/forms/client_ip', $_SERVER['REMOTE_ADDR'] ?? '', $this);
+        if ('' === $ip) {
+            return false;
+        }
+
+        $key = 'coretik_form_rl_' . \md5($this->getFormName() . '|' . $ip);
+        $now = \time();
+        $hits = \get_transient($key);
+
+        if (!\is_array($hits) || $hits['start'] + $config['window'] <= $now) {
+            $hits = ['count' => 0, 'start' => $now];
+        }
+
+        if ($hits['count'] >= $config['max']) {
+            return true;
+        }
+
+        $hits['count']++;
+        \set_transient($key, $hits, $hits['start'] + $config['window'] - $now);
+        return false;
     }
 
     public function honeyPotChecked()
@@ -741,26 +775,33 @@ abstract class Form implements Handlable
             return false;
         }
 
-        if (is_string($fields)) {
-            $fields = [$fields];
-        }
+        $strings = [];
+        \array_walk_recursive($fields, function ($value) use (&$strings) {
+            if (is_string($value) && '' !== $value) {
+                $strings[] = remove_accents(mb_strtolower($value));
+            }
+        });
 
-        $blacklist = $this->getWordsInBlacklist();
-
-        foreach ($fields as $string) {
-            if (is_string($string) && !empty($string)) {
-                $string = mb_strtolower($string);
-                $string = remove_accents($string);
-
-                foreach ($blacklist as $word) {
-                    if (false !== mb_strripos($string, $word)) {
-                        return true;
-                    }
+        foreach ($this->getWordsInBlacklist() as $word) {
+            $pattern = $this->blacklistPattern(mb_strtolower($word));
+            foreach ($strings as $string) {
+                if (\preg_match($pattern, $string)) {
+                    return true;
                 }
             }
         }
 
         return false;
+    }
+
+    /**
+     * Whole word match: "cock" does not match "cocktail". Boundaries only apply to the word letters and digits ("yandex.ru" matches ".ru").
+     */
+    protected function blacklistPattern(string $word): string
+    {
+        $start = \preg_match('/^[\p{L}\p{N}]/u', $word) ? '(?<![\p{L}\p{N}])' : '';
+        $end = \preg_match('/[\p{L}\p{N}]$/u', $word) ? '(?![\p{L}\p{N}])' : '';
+        return '/' . $start . \preg_quote($word, '/') . $end . '/u';
     }
 
     public function fieldExists($fieldname)
@@ -826,7 +867,7 @@ abstract class Form implements Handlable
 
     public function getWordsInBlacklist()
     {
-        return [
+        return \apply_filters('coretik/forms/blacklist', [
             ".ru",
             "18+",
             "18yo",
@@ -970,6 +1011,6 @@ abstract class Form implements Handlable
             "ж",
             "и",
             "Ч",
-        ];
+        ], $this);
     }
 }

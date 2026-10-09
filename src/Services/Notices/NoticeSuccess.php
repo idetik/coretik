@@ -19,7 +19,7 @@ class NoticeSuccess extends Notice
     {
         ?>
         <div class="notice notice-success is-dismissible">
-            <p><?= $this->message ?></p>
+            <p><?= \wp_kses_post($this->message) ?></p>
         </div>
         <?php
     }
