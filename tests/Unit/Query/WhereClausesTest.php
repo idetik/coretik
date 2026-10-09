@@ -10,7 +10,6 @@ use Coretik\Core\Query\Clauses\DateClause;
 use Coretik\Core\Query\Clauses\MetaClause;
 use Coretik\Core\Query\Clauses\WhereClause;
 use Coretik\Tests\TestCase;
-use PHPUnit\Framework\Attributes\DataProvider;
 
 class WhereClausesTest extends TestCase
 {
@@ -25,7 +24,9 @@ class WhereClausesTest extends TestCase
         ];
     }
 
-    #[DataProvider('adapters')]
+    /**
+     * @dataProvider adapters
+     */
     public function testWhereSetsQueryParameter(string $adapter, string $parameter): void
     {
         $builder = (new $adapter())->where(new WhereClause($parameter, 5));
@@ -33,7 +34,9 @@ class WhereClausesTest extends TestCase
         $this->assertSame(5, $builder->get($parameter));
     }
 
-    #[DataProvider('adapters')]
+    /**
+     * @dataProvider adapters
+     */
     public function testWhereWithUnknownParameterThrows(string $adapter): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -41,14 +44,18 @@ class WhereClausesTest extends TestCase
         (new $adapter())->where(new WhereClause('color', 'blue'));
     }
 
-    #[DataProvider('adapters')]
+    /**
+     * @dataProvider adapters
+     */
     public function testWhereWithOperatorThrows(string $adapter, string $parameter): void
     {
         $this->expectException(\InvalidArgumentException::class);
         (new $adapter())->where(new WhereClause($parameter, 5, '>'));
     }
 
-    #[DataProvider('adapters')]
+    /**
+     * @dataProvider adapters
+     */
     public function testOrWhereWithParameterThrows(string $adapter, string $parameter): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -61,7 +68,9 @@ class WhereClausesTest extends TestCase
         (new WPPostAdapter())->where(new DateClause('post_date', ['year' => 2024]));
     }
 
-    #[DataProvider('adapters')]
+    /**
+     * @dataProvider adapters
+     */
     public function testMetaClauseIsApplied(string $adapter): void
     {
         $builder = (new $adapter())->where(new MetaClause('color', 'blue'));

@@ -38,19 +38,28 @@
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.13.6",
-        "phpunit/phpunit": "^10.5 || ^11.0",
+        "phpunit/phpunit": "^9.6",
         "brain/monkey": "^2.6",
         "phpstan/phpstan": "^2.1",
         "szepeviktor/phpstan-wordpress": "^2.0",
-        "php-stubs/acf-pro-stubs": "^6.8"
+        "php-stubs/acf-pro-stubs": "^6.8",
+        "wp-phpunit/wp-phpunit": "^7.1",
+        "yoast/phpunit-polyfills": "^4.0",
+        "johnpbloch/wordpress-core": "^7.1"
     },
     "scripts": {
         "test": "phpunit",
-        "phpstan": "phpstan analyse --memory-limit=1G"
+        "phpstan": "phpstan analyse --memory-limit=1G",
+        "test:integration": "phpunit -c phpunit-integration.xml.dist"
     },
     "suggest": {
         "idetik/coretik-navigation": "Navigation service, resolve breadcrumb and page title",
         "idetik/coretik-page-builder": "Page builder service",
         "freelancehunt/php-credit-card-validator": "Required by the payment-card-number and payment-card-cvc form constraints"
+    },
+    "config": {
+        "platform": {
+            "php": "8.2.0"
+        }
     }
 }

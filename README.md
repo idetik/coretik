@@ -8,6 +8,22 @@ Manage models, queries, services and more...
 `composer require idetik/coretik`
 
 
+## Tests
+
+```bash
+# Unit tests (no WordPress, no database)
+composer test
+
+# Integration tests: WordPress test suite with a MySQL database
+docker run -d --name coretik-tests-mysql -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=coretik_tests -p 3307:3306 --tmpfs /var/lib/mysql mysql:8.4
+composer test:integration
+
+# Static analysis
+composer phpstan
+```
+
+The database settings can be changed with the `WP_TESTS_DB_HOST`, `WP_TESTS_DB_NAME`, `WP_TESTS_DB_USER` and `WP_TESTS_DB_PASSWORD` environment variables.
+
 ## Get started
 
 ### Dependency Injection Container
@@ -156,7 +172,7 @@ use Coretik\Core\Collection;
 
 class MyPostModel extends PostModel
 {
-    protected function intializeModel(): void
+    protected function initializeModel(): void
     {
         $this->declareMetas([
             'ma_meta_a' => 'bdd_field_name',

@@ -8,7 +8,6 @@ use Coretik\Services\Notices\NoticeInfo;
 use Coretik\Services\Notices\NoticeSuccess;
 use Coretik\Services\Notices\NoticeWarning;
 use Coretik\Tests\TestCase;
-use PHPUnit\Framework\Attributes\DataProvider;
 
 class NoticesTest extends TestCase
 {
@@ -17,7 +16,9 @@ class NoticesTest extends TestCase
         return [[NoticeError::class], [NoticeInfo::class], [NoticeSuccess::class], [NoticeWarning::class]];
     }
 
-    #[DataProvider('notices')]
+    /**
+     * @dataProvider notices
+     */
     public function testMessageIsFilteredWithKses(string $class): void
     {
         Functions\expect('wp_kses_post')->once()->with('Hello <script>x</script>')->andReturn('Hello x');
