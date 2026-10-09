@@ -3,6 +3,7 @@
 namespace Coretik\Core\Models\Handlers;
 
 use Coretik\Core\Builders\Handler;
+use Coretik\Core\Models\Model;
 use WP_Post;
 
 class TriggerModelHooksHandler extends Handler
@@ -26,7 +27,7 @@ class TriggerModelHooksHandler extends Handler
     public function triggerCreated(int $post_id, WP_Post $post, bool $update)
     {
         if (!$update) {
-            if (!$this->builder->concern($post_id)) {
+            if ($this->skip($post_id)) {
                 return;
             }
             $model = $this->builder->model($post_id, $post);
@@ -36,7 +37,7 @@ class TriggerModelHooksHandler extends Handler
 
     public function triggerUpdated(int $post_id, WP_Post $post_after)
     {
-        if (!$this->builder->concern($post_id)) {
+        if ($this->skip($post_id)) {
             return;
         }
         $model = $this->builder->model($post_id, $post_after);
@@ -45,7 +46,7 @@ class TriggerModelHooksHandler extends Handler
 
     public function triggerSaved(int $post_id, WP_Post $post, bool $update)
     {
-        if (!$this->builder->concern($post_id)) {
+        if ($this->skip($post_id)) {
             return;
         }
         $model = $this->builder->model($post_id, $post);
@@ -54,10 +55,18 @@ class TriggerModelHooksHandler extends Handler
 
     public function triggerDelete(int $post_id, WP_Post $post)
     {
-        if (!$this->builder->concern($post_id)) {
+        if ($this->skip($post_id)) {
             return;
         }
         $model = $this->builder->model($post_id, $post);
         $model->trigger('deleted');
+    }
+
+    /**
+     * Writes made through a model trigger their own events: skip the WP hooks they fire, to not trigger them twice.
+     */
+    protected function skip(int $post_id): bool
+    {
+        return Model::isPersisting($this->builder->getName()) || !$this->builder->concern($post_id);
     }
 }

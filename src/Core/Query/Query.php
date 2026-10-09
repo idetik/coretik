@@ -164,9 +164,20 @@ abstract class Query implements QuerierInterface
         return new LazyCollection(fn () => $this->models());
     }
 
+    /**
+     * Number of results of the current page (see posts_per_page / number). Use total() for all pages.
+     */
     public function count(): int
     {
         return count($this->results());
+    }
+
+    /**
+     * Number of results for all pages. Queriers without pagination count their results.
+     */
+    public function total(): int
+    {
+        return $this->count();
     }
 
     public function first($model = true)

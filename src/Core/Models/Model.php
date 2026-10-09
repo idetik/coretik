@@ -27,6 +27,11 @@ abstract class Model implements ModelInterface
     protected $state;
 
     /**
+     * Number of writes in progress, by object name
+     */
+    private static array $persisting = [];
+
+    /**
      * Construct
      */
     public function __construct($initializer = null, $mediator = null)
@@ -99,13 +104,8 @@ abstract class Model implements ModelInterface
         }
 
         $this->trigger('creating');
-
-        try {
-            $this->id = $this->adapter->create($this->changes());
-            $this->trigger('created');
-        } catch (\RuntimeException $e) {
-            throw $e;
-        }
+        $this->id = $this->persist(fn () => $this->adapter->create($this->changes()));
+        $this->trigger('created');
 
         return $this;
     }
@@ -118,12 +118,9 @@ abstract class Model implements ModelInterface
         }
 
         $this->trigger('updating');
-        try {
-            $this->adapter->update($this->changes());
-            $this->trigger('updated');
-        } catch (\RuntimeException $e) {
-            throw $e;
-        }
+        $this->persist(fn () => $this->adapter->update($this->changes()));
+        $this->trigger('updated');
+
         return $this;
     }
 
@@ -142,12 +139,31 @@ abstract class Model implements ModelInterface
     public function delete(): void
     {
         $this->trigger('deleting');
+        $this->persist(fn () => $this->adapter->delete(true));
+        $this->trigger('deleted');
+    }
+
+    /**
+     * Run a write through the adapter. WP hooks fired meanwhile (save_post, post_updated…) belong to this write:
+     * handlers can skip them with isPersisting(), the model triggers its own events.
+     */
+    protected function persist(callable $write)
+    {
+        $name = (string)$this->name();
+        self::$persisting[$name] = (self::$persisting[$name] ?? 0) + 1;
         try {
-            $this->adapter->delete(true);
-            $this->trigger('deleted');
-        } catch (\RuntimeException $e) {
-            throw $e;
+            return $write();
+        } finally {
+            self::$persisting[$name]--;
         }
+    }
+
+    /**
+     * Whether a model of this object name (post type, taxonomy…) is being written through its adapter.
+     */
+    public static function isPersisting(string $name): bool
+    {
+        return !empty(self::$persisting[$name]);
     }
 
     public function get(string $prop)

@@ -317,6 +317,15 @@ foreach ($models as $model) {
     echo $model->title();
 }
 ```
+#### Count
+
+```php
+$query = app()->schema('my_custom_post_type')->query()->limit(10);
+
+$query->count(); // Results of the current page (10 max)
+$query->total(); // Results of all pages (found_posts)
+```
+
 #### Others query
 See `src/Core/Query/Adapters` folder. 
 

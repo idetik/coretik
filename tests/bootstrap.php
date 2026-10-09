@@ -18,3 +18,10 @@ if (!class_exists('WP_Error')) {
         }
     }
 }
+
+if (!class_exists('WP_Post')) {
+    class WP_Post
+    {
+        public $ID = 0;
+    }
+}

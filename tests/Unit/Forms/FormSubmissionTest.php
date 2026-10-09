@@ -164,4 +164,80 @@ class FormSubmissionTest extends TestCase
         $this->assertSame('none', $form->getValue('address[a][x]', 'none'));
         $this->assertSame('none', $form->getValue('missing', 'none'));
     }
+
+    protected function contactForm(): Form
+    {
+        return new class ('contact') extends Form {
+            public function getRules(): array
+            {
+                return [
+                    'subject' => ['name' => 'Subject'],
+                    'email' => ['name' => 'Email', 'constraints' => ['email' => true]],
+                    'phone' => ['name' => 'Phone'],
+                    'contact' => ['name' => 'Contact'],
+                ];
+            }
+
+            protected function isValidContext(): bool
+            {
+                return true;
+            }
+
+            protected function run(): void
+            {
+            }
+        };
+    }
+
+    private function embedded(array $data, ?array $fields = null): string
+    {
+        Functions\when('is_email')->alias(fn ($email) => false !== \filter_var($email, FILTER_VALIDATE_EMAIL) ? $email : false);
+        Functions\when('add_query_arg')->alias(fn (array $args, string $url) => $url . '?' . \implode('&', \array_map(fn ($k, $v) => $k . '=' . $v, \array_keys($args), $args)));
+
+        $form = $this->submit($this->contactForm(), $data);
+        return $form->embedToUrl('https://example.com/merci', $fields);
+    }
+
+    public function testEmbedToUrlExcludesPersonalData(): void
+    {
+        $url = $this->embedded([
+            'subject' => 'Devis camping',
+            'email' => 'john@example.com',
+            'phone' => '+33 6 12 34 56 78',
+            'contact' => 'jane@example.com',
+        ]);
+
+        $this->assertSame('https://example.com/merci?subject=Devis%20camping', $url);
+    }
+
+    public function testEmbedToUrlWithExplicitFields(): void
+    {
+        $url = $this->embedded(['subject' => 'Devis', 'email' => 'john@example.com', 'phone' => '0612345678', 'contact' => 'x'], ['subject', 'contact']);
+
+        $this->assertSame('https://example.com/merci?subject=Devis&contact=x', $url);
+    }
+
+    public function testDisabledBooleanConstraintIsIgnored(): void
+    {
+        $form = new class ('contact') extends Form {
+            public int $runs = 0;
+
+            public function getRules(): array
+            {
+                return ['email' => ['name' => 'Email', 'constraints' => ['email' => false, 'phone' => false]]];
+            }
+
+            protected function isValidContext(): bool
+            {
+                return true;
+            }
+
+            protected function run(): void
+            {
+                $this->runs++;
+            }
+        };
+
+        $this->assertSame(1, $this->submit($form, ['email' => 'not an email'])->runs);
+    }
 }

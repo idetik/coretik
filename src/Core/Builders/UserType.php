@@ -103,7 +103,7 @@ final class UserType extends BuilderModelable implements RegistrableInterface
     protected function map()
     {
         // Allow all caps (should be used for admin only)
-        if (1 === $this->caps->count() && 'allow_all' === $this->caps[0]) {
+        if (['allow_all'] === $this->caps->all()) {
             $default_caps = static::defaultWpCaps();
             $this->addCaps($default_caps, true, true);
 

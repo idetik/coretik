@@ -23,4 +23,10 @@ class User extends Query
     {
         return $this->get()->results;
     }
+
+    public function total(): int
+    {
+        // The total is not computed with count_total = false
+        return \max((int)$this->get()->get_total(), $this->count());
+    }
 }

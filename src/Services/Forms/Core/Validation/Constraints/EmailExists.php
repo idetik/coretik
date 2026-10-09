@@ -4,6 +4,10 @@ namespace Coretik\Services\Forms\Core\Validation\Constraints;
 
 use Coretik\Services\Forms\Core\Utils;
 
+/**
+ * Fails when no account uses this email: it tells visitors which emails have an account.
+ * On a lost password form, prefer a generic message. Enable the forms rate limit (coretik/forms/rate_limit) to slow down enumeration.
+ */
 class EmailExists extends Constraint
 {
     protected string $name    = 'email-exists';
@@ -16,6 +20,6 @@ class EmailExists extends Constraint
             return true;
         }
 
-        return \email_exists($value);
+        return false !== \email_exists($value);
     }
 }

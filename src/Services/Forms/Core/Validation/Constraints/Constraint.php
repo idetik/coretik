@@ -142,5 +142,8 @@ abstract class Constraint
             default:
                 return static::get($key, [$args, $form]);
         }
+
+        // Disabled boolean constraint (e.g. 'email' => false)
+        return false;
     }
 }
