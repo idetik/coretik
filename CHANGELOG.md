@@ -1,3 +1,15 @@
+## [1.13.6](https://github.com/idetik/coretik/compare/v1.13.5...v1.13.6) (2026-10-09)
+
+
+### Bug Fixes
+
+* container defaults no longer override constructor values ([ca366b2](https://github.com/idetik/coretik/commit/ca366b246c6016002582c70ed3e21819b46456b3))
+* key models cache by builder type and name ([4011690](https://github.com/idetik/coretik/commit/4011690e7f36ebfccb609df2ec8c71c9a958e2ce))
+* model adapters meta handling and user / comment updates ([8f1eefc](https://github.com/idetik/coretik/commit/8f1eefcd6e4eb77d05798f2dd4250bfc96bbe9c9))
+* remove sleep() on invalid nonce or spam in forms ([f0fad84](https://github.com/idetik/coretik/commit/f0fad846a9091f64b302e8468e58f1773e9492f8))
+* Status builder could not be loaded ([36b1aca](https://github.com/idetik/coretik/commit/36b1acab008354665435e11a5d569417f54fa621))
+* where() clauses were silently ignored ([c869d6e](https://github.com/idetik/coretik/commit/c869d6ed7b1871c3dd64a9ad809927820ed4f0f6))
+
 ## [1.13.5](https://github.com/idetik/coretik/compare/v1.13.4...v1.13.5) (2026-04-24)
 
 
