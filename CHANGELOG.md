@@ -1,3 +1,15 @@
+# [2.0.0-next.4](https://github.com/idetik/coretik/compare/v2.0.0-next.3...v2.0.0-next.4) (2026-10-09)
+
+
+* feat!: safer defaults for scripts loading and the schema viewer ([03b3532](https://github.com/idetik/coretik/commit/03b35325700ce0bda2ba4fa10cf6540cfe3389c6))
+
+
+### BREAKING CHANGES
+
+* scripts enqueued with the assets loader are no longer async by default; the schema viewer is disabled without WP_DEBUG.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
 # [2.0.0-next.3](https://github.com/idetik/coretik/compare/v2.0.0-next.2...v2.0.0-next.3) (2026-10-09)
 
 
