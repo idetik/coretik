@@ -9,19 +9,12 @@ class WPCommentAdapter extends WPAdapter implements MetableAdapterInterface, CRU
 {
     public function meta(string $key, $default = false, bool $single = true)
     {
-        return \get_comment_meta($this->model->id(), $key, $single) ?: $default;
+        return $this->readMeta('comment', $key, $default, $single);
     }
 
     public function updateMeta(string $key, $value, bool $unique = false)
     {
-        if (false !== $this->meta($key)) {
-            $success = \update_comment_meta($this->model->id(), $key, $value);
-        } else {
-            $success = \add_comment_meta($this->model->id(), $key, $value, $unique);
-        }
-        if (!$success) {
-            throw new \RuntimeException("Update comment meta: failure - {$this->model->id()} / {$key}");
-        }
+        $this->writeMeta('comment', $key, $value, $unique);
     }
 
     public function deleteMeta(string $key, $value = '')
@@ -34,9 +27,7 @@ class WPCommentAdapter extends WPAdapter implements MetableAdapterInterface, CRU
     public function create(array $args = [])
     {
         $comment_id = \wp_insert_comment($args);
-        if (!$comment_id) {
-            throw new \RuntimeException("Insert comment: failure");
-        }
+        $this->assertSuccess($comment_id, "Insert comment: failure");
         return $comment_id;
     }
 
@@ -44,19 +35,20 @@ class WPCommentAdapter extends WPAdapter implements MetableAdapterInterface, CRU
     {
         $wp_result = \get_comment($comment, $output);
         if (empty($wp_result)) {
-            throw new \RuntimeException("Get comment: failure - {$user}");
+            throw new \RuntimeException("Get comment: failure - {$comment}");
         }
         return $wp_result;
     }
 
     public function update(array $args = [])
     {
-        $args['comment_ID'] = $this->id();
-        $comment_id = \wp_update_comment($args);
-        if (!$comment_id) {
-            throw new \RuntimeException("Update comment: failure - {$comment_id}");
+        $args['comment_ID'] = $this->model->id();
+        $result = \wp_update_comment($args);
+        // wp_update_comment returns 0 when nothing changed: only false / WP_Error are failures
+        if (false === $result || \is_wp_error($result)) {
+            $this->assertSuccess($result, "Update comment: failure - {$this->model->id()}");
         }
-        return $comment_id;
+        return $this->model->id();
     }
 
     public function delete(bool $force_delete = false)

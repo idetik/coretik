@@ -9,19 +9,12 @@ class WPUserAdapter extends WPAdapter implements MetableAdapterInterface, CRUDIn
 {
     public function meta(string $key, $default = false, bool $single = true)
     {
-        return \get_user_meta($this->model->id(), $key, $single) ?: $default;
+        return $this->readMeta('user', $key, $default, $single);
     }
 
     public function updateMeta(string $key, $value, bool $unique = false)
     {
-        if (false !== $this->meta($key)) {
-            $success = \update_user_meta($this->model->id(), $key, $value);
-        } else {
-            $success = \add_user_meta($this->model->id(), $key, $value, $unique);
-        }
-        if (!$success) {
-            throw new \RuntimeException("Update user meta: failure - {$this->model->id()} / {$key}");
-        }
+        $this->writeMeta('user', $key, $value, $unique);
     }
 
     public function deleteMeta(string $key, $value = '')
@@ -34,9 +27,7 @@ class WPUserAdapter extends WPAdapter implements MetableAdapterInterface, CRUDIn
     public function create(array $args = [])
     {
         $user_id = \wp_insert_user($args);
-        if (!$user_id) {
-            throw new \RuntimeException("Insert user: failure");
-        }
+        $this->assertSuccess($user_id, "Insert user: failure");
         return $user_id;
     }
 
@@ -51,11 +42,9 @@ class WPUserAdapter extends WPAdapter implements MetableAdapterInterface, CRUDIn
 
     public function update(array $args = [])
     {
-        $args['ID'] = $this->id();
+        $args['ID'] = $this->model->id();
         $user_id = \wp_update_user($args);
-        if (!$user_id) {
-            throw new \RuntimeException("Update user: failure - {$user_id}");
-        }
+        $this->assertSuccess($user_id, "Update user: failure - {$this->model->id()}");
         return $user_id;
     }
 

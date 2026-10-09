@@ -9,19 +9,12 @@ class WPTermAdapter extends WPAdapter implements MetableAdapterInterface, CRUDIn
 {
     public function meta(string $key, $default = false, bool $single = true)
     {
-        return \get_term_meta($this->model->id(), $key, $single) ?: $default;
+        return $this->readMeta('term', $key, $default, $single);
     }
 
     public function updateMeta(string $key, $value, bool $unique = false)
     {
-        if (false !== $this->meta($key)) {
-            $success = \update_term_meta($this->model->id(), $key, $value);
-        } else {
-            $success = \add_term_meta($this->model->id(), $key, $value, $unique);
-        }
-        if (\is_wp_error($success)) {
-            throw new \RuntimeException("Update term meta: failure - {$this->model->id()} / {$key} : " . $success->get_error_message());
-        }
+        $this->writeMeta('term', $key, $value, $unique);
     }
 
     public function deleteMeta(string $key, $value = '')

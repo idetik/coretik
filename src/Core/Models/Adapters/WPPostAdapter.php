@@ -24,14 +24,7 @@ class WPPostAdapter extends WPAdapter implements MetableAdapterInterface, CRUDIn
 
     public function updateMeta(string $key, $value, bool $unique = false)
     {
-        if (false !== $this->meta($key)) {
-            $success = \update_post_meta($this->model->id(), $key, $value);
-        } else {
-            $success = \add_post_meta($this->model->id(), $key, $value, $unique);
-        }
-        if (!$success) {
-            throw new \RuntimeException("Update post meta: failure - {$this->model->id()} / {$key}");
-        }
+        $this->writeMeta('post', $key, $value, $unique);
     }
 
     public function deleteMeta(string $key, $value = '')
