@@ -1,3 +1,18 @@
+# [1.15.0](https://github.com/idetik/coretik/compare/v1.14.1...v1.15.0) (2026-10-09)
+
+
+### Bug Fixes
+
+* allow_all roles missed the caps of new post types ([2c547bf](https://github.com/idetik/coretik/commit/2c547bf3e09c59846aff821eeb22acb985fcb9fc))
+* disabled boolean form constraints crashed the validation ([2d320d5](https://github.com/idetik/coretik/commit/2d320d52ea702939813398995c4fd1ab34cfc124))
+* embedToUrl() put personal data in URLs ([af6b3da](https://github.com/idetik/coretik/commit/af6b3da3f92f0549e1452a471f6caf199cac21b6))
+* model events triggered twice with TriggerModelHooksHandler ([fe24ca0](https://github.com/idetik/coretik/commit/fe24ca001213b5e1bf79dcc3bf30059fcad86cdc))
+
+
+### Features
+
+* Query::total() returns the number of results for all pages ([c3721a5](https://github.com/idetik/coretik/commit/c3721a550fd165c1d20e8b82cf3d65da2b12c070))
+
 ## [1.14.1](https://github.com/idetik/coretik/compare/v1.14.0...v1.14.1) (2026-10-09)
 
 
