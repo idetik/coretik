@@ -1,3 +1,19 @@
+# [2.0.0-next.1](https://github.com/idetik/coretik/compare/v1.15.0...v2.0.0-next.1) (2026-10-09)
+
+
+* fix!: date metas use the WordPress date format ([948e964](https://github.com/idetik/coretik/commit/948e9647a012c9fda524613093846933f0ac14d3))
+* feat!: require PHP 8.2, illuminate/collections 11 or 12 and Carbon 3 ([b0c6b0b](https://github.com/idetik/coretik/commit/b0c6b0bb74d3c0ca110343ad784befd9d3a3ebd0))
+
+
+### BREAKING CHANGES
+
+* date metas are stored as Y-m-d H:i:s instead of Y-m-d H:i:s.u.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+* PHP 8.2 is required; illuminate/collections ^11 || ^12 and nesbot/carbon ^3 replace ^10 and ^2. Carbon 3 diffIn*() methods return signed floats.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
 # [1.15.0](https://github.com/idetik/coretik/compare/v1.14.1...v1.15.0) (2026-10-09)
 
 
