@@ -1,3 +1,10 @@
+## [1.14.1](https://github.com/idetik/coretik/compare/v1.14.0...v1.14.1) (2026-10-09)
+
+
+### Bug Fixes
+
+* bugs found by static analysis ([e544369](https://github.com/idetik/coretik/commit/e5443690081390139382fb80251abb73e205df6e))
+
 # [1.14.0](https://github.com/idetik/coretik/compare/v1.13.7...v1.14.0) (2026-10-09)
 
 
