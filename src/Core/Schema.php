@@ -5,6 +5,7 @@ namespace Coretik\Core;
 use Psr\Container\ContainerInterface;
 use Coretik\Core\Exception\ContainerValueNotFoundException;
 use Coretik\Core\Models\Interfaces\ModelInterface;
+use Coretik\Core\Models\Handlers\Guard;
 use Coretik\Core\Builders\{
     PostType,
     PostTypeBuiltIn,
@@ -102,6 +103,11 @@ class Schema implements ContainerInterface
                     }
                 });
             }
+        }
+
+        // Protected metas are guarded from the start, not only once a model has been instantiated
+        if ($builder instanceof ModelableInterface && !$builder->hasHandlerClassName(Guard::class)) {
+            $builder->handler(Guard::class);
         }
 
         $builder->runHandlers();
