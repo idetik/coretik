@@ -31,8 +31,13 @@ class RegistryTest extends TestCase
         $this->removedRoles = [];
 
         Functions\when('get_option')->alias(fn ($key, $default = false) => $this->options[$key] ?? $default);
+        // Like WordPress: add_option() does nothing when the option already exists, even with an empty value
         Functions\when('add_option')->alias(function ($key, $value) {
+            if (\array_key_exists($key, $this->options)) {
+                return false;
+            }
             $this->options[$key] = $value;
+            return true;
         });
         Functions\when('update_option')->alias(function ($key, $value) {
             $this->options[$key] = $value;
@@ -188,6 +193,16 @@ class RegistryTest extends TestCase
 
         $this->assertSame('', $this->options[CacheBuster::CACHE_KEY]);
         $this->assertSame([], $this->removedRoles);
+    }
+
+    public function testRolesAreSavedOnceAfterFlush(): void
+    {
+        $this->flushRequest(true, 'valid');
+
+        $registry = $this->request(new UserType('manager', 'Manager'));
+
+        $this->assertSame($registry->hash(), $this->options[CacheBuster::CACHE_KEY]);
+        $this->assertFalse($registry->hasDiff());
     }
 
     public function testFlushIsIgnoredForNonAdministrators(): void
