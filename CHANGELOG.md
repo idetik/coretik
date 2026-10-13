@@ -1,3 +1,10 @@
+# [2.0.0-beta.4](https://github.com/idetik/coretik/compare/v2.0.0-beta.3...v2.0.0-beta.4) (2026-10-13)
+
+
+### Features
+
+* **models:** add hasManyThrough, hasOneThrough and belongsToThrough relationships ([9f318c4](https://github.com/idetik/coretik/commit/9f318c48f6d1d66046e64d262b7e0c7af00db2fe))
+
 # [2.0.0-beta.3](https://github.com/idetik/coretik/compare/v2.0.0-beta.2...v2.0.0-beta.3) (2026-10-13)
 
 
