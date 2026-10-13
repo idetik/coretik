@@ -19,7 +19,7 @@ use Coretik\Core\Models\Interfaces\ModelInterface;
  *
  * @phpstan-consistent-constructor
  */
-class ShadowTaxonomyHandler extends Handler
+class ShadowTaxonomyHandler extends Handler implements BelongsToRelationInterface
 {
     /**
      * Taxonomy names, keyed by parent post type then child post type
@@ -83,6 +83,16 @@ class ShadowTaxonomyHandler extends Handler
     /**
      * Set the post type the posts belong to
      */
+    public function belongsToBuilder(): ?BuilderInterface
+    {
+        return $this->belongsToBuilder;
+    }
+
+    public function pivot(): string|callable
+    {
+        return $this->pivot;
+    }
+
     public function setBelongsToBuilder(string|BuilderInterface|ModelInterface $belongsTo): self
     {
         $builder = coretik()->schema()->resolve($belongsTo);

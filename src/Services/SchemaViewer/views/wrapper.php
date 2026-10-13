@@ -54,9 +54,30 @@
         </div>
     </div>
 
-    <?php
+    <div class="schema-box schema-relations">
+        <h3>Relations</h3>
+        <?php
+        try {
+            $relationsMap = new \Coretik\Services\SchemaViewer\Relations\RelationsMap(coretik()->schema());
+            $relationsDiagram = !empty($relationsMap->relations()) ? $relationsMap->mermaid() : '';
+        } catch (\Throwable $e) {
+            $relationsDiagram = '';
+            printf('<p>%s</p>', \esc_html('Relations could not be discovered: ' . $e->getMessage()));
+        }
+        ?>
+        <?php if (!empty($relationsDiagram)) : ?>
+            <pre class="mermaid"><?= \esc_html($relationsDiagram) ?></pre>
+            <details>
+                <summary>Mermaid</summary>
+                <textarea readonly rows="10" class="large-text code"><?= \esc_textarea($relationsDiagram) ?></textarea>
+            </details>
+            <script src="https://cdn.jsdelivr.net/npm/mermaid@11.17.2/dist/mermaid.min.js"></script>
+            <script>mermaid.initialize({startOnLoad: true, securityLevel: 'strict'});</script>
+        <?php else : ?>
+            <p>No relation found.</p>
+        <?php endif; ?>
+    </div>
 
-    ?>
     <!-- <pre> -->
         <?php //var_dump(get_post_types()); ?>
         <?php //var_dump(get_post_stati()); ?>

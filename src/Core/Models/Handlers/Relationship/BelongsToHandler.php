@@ -9,7 +9,7 @@ use Coretik\Core\Models\Interfaces\ModelInterface;
 /**
  * @phpstan-consistent-constructor
  */
-class BelongsToHandler extends Handler
+class BelongsToHandler extends Handler implements BelongsToRelationInterface
 {
     private $belongsToBuilder;
     private $pivot;
@@ -41,6 +41,22 @@ class BelongsToHandler extends Handler
     {
         $this->pivot = $pivot;
         return $this;
+    }
+
+    /**
+     * The builder this one belongs to, null when it is not set
+     */
+    public function belongsToBuilder(): ?BuilderInterface
+    {
+        return $this->belongsToBuilder;
+    }
+
+    /**
+     * The meta key containing the parent id, or the callable returning it
+     */
+    public function pivot(): string|callable
+    {
+        return $this->pivot;
     }
 
     public function actions(): void
