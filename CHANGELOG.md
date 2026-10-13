@@ -1,3 +1,10 @@
+# [2.0.0-beta.3](https://github.com/idetik/coretik/compare/v2.0.0-beta.2...v2.0.0-beta.3) (2026-10-13)
+
+
+### Bug Fixes
+
+* modals did not open with data-modal (schema viewer) ([7d635ba](https://github.com/idetik/coretik/commit/7d635ba3948a6c3cdfe0f519f112b7a05560f5a2))
+
 # [2.0.0-beta.2](https://github.com/idetik/coretik/compare/v2.0.0-beta.1...v2.0.0-beta.2) (2026-10-13)
 
 
