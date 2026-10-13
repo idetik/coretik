@@ -113,6 +113,13 @@
 * date metas are stored as Y-m-d H:i:s instead of Y-m-d H:i:s.u.
 * PHP 8.2 is required; illuminate/collections ^11 || ^12 and nesbot/carbon ^3 replace ^10 and ^2. Carbon 3 diffIn*() methods return signed floats.
 
+## [1.15.2](https://github.com/idetik/coretik/compare/v1.15.1...v1.15.2) (2026-10-13)
+
+
+### Bug Fixes
+
+* modals did not open with data-modal (schema viewer) ([7d635ba](https://github.com/idetik/coretik/commit/7d635ba3948a6c3cdfe0f519f112b7a05560f5a2))
+
 ## [1.15.1](https://github.com/idetik/coretik/compare/v1.15.0...v1.15.1) (2026-10-12)
 
 

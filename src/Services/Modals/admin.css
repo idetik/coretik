@@ -1,0 +1,10 @@
+#modals-container { display: none; }
+#modals-container.has-modal { display: block; position: fixed; inset: 0; z-index: 100000; }
+#modals-backdrop { position: absolute; inset: 0; background: rgba(0, 0, 0, .5); }
+#modals-container .modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); box-sizing: border-box; width: min(720px, calc(100% - 40px)); max-height: calc(100% - 80px); overflow: auto; padding: 32px 24px 24px; background: #fff; border-radius: 4px; box-shadow: 0 5px 30px rgba(0, 0, 0, .3); }
+#modals-container .modal--large { width: min(1200px, calc(100% - 40px)); }
+#modals-container .modal[hidden] { display: none; }
+#modals-container .modal__close { position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; padding: 0; border: 0; background: none; cursor: pointer; font-size: 24px; line-height: 32px; }
+#modals-container .modal-close-icon::before { content: "\00d7"; }
+#modals-container .modal__title { margin: 0 0 16px; font-size: 1.3em; font-weight: 600; }
+#modals-container .visuallyhidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
