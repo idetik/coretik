@@ -13,6 +13,7 @@ use Coretik\Core\Models\Wp\PostModel;
 use Coretik\Core\Models\Wp\TermModel;
 use Coretik\Core\Models\Wp\UserModel;
 use Coretik\Core\Models\Wp\CommentModel;
+use Coretik\Core\Models\Handlers\Relationship\ShadowTaxonomyHandler;
 use Coretik\Core\Query\Interfaces\QuerierInterface;
 
 trait Relationships
@@ -28,7 +29,7 @@ trait Relationships
     }
 
     /**
-     * The $builder object which $child belongs to, read from the child columns (post_parent, post_author, term relationships...)
+     * The $builder object which $child belongs to, read from the child columns (post_parent or shadow taxonomy, post_author, term relationships...)
      */
     protected function parentOf(ModelInterface $child, BuilderInterface&ModelableInterface $builder): ?ModelInterface
     {
@@ -37,7 +38,7 @@ trait Relationships
                 case $child instanceof PostModel:
                     // Support post, taxonomy, user
                     return match ($builder->getType()) {
-                        'post' => !empty($parent_id = $child->parentId()) ? $builder->model($parent_id) : null,
+                        'post' => !empty($parent_id = $this->postParentId($child, $builder)) && $builder->concern($parent_id) ? $builder->model($parent_id) : null,
                         'taxonomy' => $child->term($builder->getName()),
                         'user' => $builder->concern((int)$child->post_author) ? $builder->model((int)$child->post_author) : null,
                         default => throw new UnhandledException(sprintf('Relationship not supported between %s and %s builder type.', 'PostModel', $builder->getType()))
@@ -83,7 +84,7 @@ trait Relationships
             case $this instanceof PostModel:
                 // Support post, taxonomy, comment
                 return match ($builder->getType()) {
-                    'post' => $builder->query()->childOf($this->id())->all()->$getter(),
+                    'post' => $this->postChildrenOf($builder->query(), $builder, $this->name(), [$this->id()])->all()->$getter(),
                     'taxonomy' => $this->terms($builder->getName()),
                     'comment' => $builder->query()->set('post_id', $this->id())->all()->$getter(),
                     default => throw new UnhandledException(sprintf('Relationship not supported between %s and %s builder type.', 'PostModel', $builder->getType()))
@@ -125,7 +126,7 @@ trait Relationships
             case $this instanceof PostModel:
                 // Support PostModel, TermModel, Comment model
                 return match ($builder->getType()) {
-                    'post' => $builder->query()->childOf($this->id())->limit(1)->first(),
+                    'post' => $this->postChildrenOf($builder->query(), $builder, $this->name(), [$this->id()])->limit(1)->first(),
                     'taxonomy' => $this->term($builder->getName()),
                     'comment' => $builder->query()->set('post_id', $this->id())->limit(1)->first(),
                     default => throw new UnhandledException(sprintf('Relationship not supported between %s and %s builder type.', 'PostModel', $builder->getType()))
@@ -249,7 +250,7 @@ trait Relationships
         }
 
         return match ($parent->getType() . '>' . $related->getType()) {
-            'post>post' => $query->childOf($parentIds),
+            'post>post' => $this->postChildrenOf($query, $related, $parent->getName(), $parentIds),
             'post>comment' => $query->set('post__in', $parentIds),
             'post>taxonomy' => $query->set('object_ids', $parentIds),
             'user>post' => $query->set('author__in', $parentIds),
@@ -258,6 +259,31 @@ trait Relationships
             'comment>comment' => $query->childOf($parentIds),
             default => throw new UnhandledException(sprintf('Relationship not supported between %s and %s builder type.', $parent->getType(), $related->getType()))
         };
+    }
+
+    /**
+     * The parent id of a child post: its post_parent, or its term of a shadow taxonomy (see ShadowTaxonomyHandler)
+     */
+    protected function postParentId(PostModel $child, BuilderInterface $parent): int
+    {
+        $taxonomy = ShadowTaxonomyHandler::taxonomyBetween($parent->getName(), $child->name());
+        return $taxonomy ? ShadowTaxonomyHandler::parentIdOf($child->id(), $taxonomy) : $child->parentId();
+    }
+
+    /**
+     * Filter a post query on the given parents: post_parent, or the terms of a shadow taxonomy (see ShadowTaxonomyHandler)
+     *
+     * @param int[] $parentIds
+     */
+    protected function postChildrenOf(QuerierInterface $query, BuilderInterface $related, string $parentPostType, array $parentIds): QuerierInterface
+    {
+        $taxonomy = ShadowTaxonomyHandler::taxonomyBetween($parentPostType, $related->getName());
+        if (empty($taxonomy)) {
+            return $query->childOf(1 === \count($parentIds) ? \current($parentIds) : $parentIds);
+        }
+
+        // One term per parent, its slug is the parent id
+        return $query->whereTax($taxonomy, \array_map('strval', $parentIds), 'IN', 'slug', false);
     }
 
     protected function resolveBuilder(string|BuilderInterface|ModelInterface $builder): BuilderInterface&ModelableInterface

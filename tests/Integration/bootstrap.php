@@ -22,7 +22,14 @@ tests_add_filter('after_setup_theme', function () {
         ->addToSchema();
 
     // Relationships: tutor (user) 1-n player (post_author) 1-n registration (post_parent)
+    // camp 1-n registration (shadow taxonomy)
     coretik()->schema('users', 'user')->factory(\Coretik\Tests\Integration\Fixtures\TutorModel::class);
+
+    \Coretik\Core\Builders\PostType::make('camp')
+        ->setSingularName('Camp')
+        ->setPluralName('Camps')
+        ->factory(\Coretik\Tests\Integration\Fixtures\CampModel::class)
+        ->addToSchema();
 
     \Coretik\Core\Builders\PostType::make('player')
         ->setSingularName('Player')
@@ -41,6 +48,10 @@ tests_add_filter('after_setup_theme', function () {
         ->handler(
             \Coretik\Core\Models\Handlers\Relationship\BelongsToHandler::withPivot('player_id')
                 ->setBelongsToBuilder('player')
+        )
+        ->handler(
+            \Coretik\Core\Models\Handlers\Relationship\ShadowTaxonomyHandler::withPivot('camp_id')
+                ->setBelongsToBuilder('camp')
         )
         ->addToSchema();
 });

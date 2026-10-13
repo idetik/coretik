@@ -119,14 +119,17 @@ class RelationshipsTest extends IntegrationTestCase
 
         $queries = $this->recordQueries(fn () => $tutor->registrations(false)->ids());
 
-        // Intermediate ids, related posts, then the metas cache priming of the related posts (post_id IN)
-        $this->assertCount(3, $queries);
-        $this->assertMatchesRegularExpression('/SELECT\s+\S+posts\.ID\s+FROM/', $queries[0]);
-        $this->assertStringContainsString('post_author IN', $queries[0]);
-        $this->assertStringContainsString('post_parent IN', $queries[1]);
-        $this->assertMatchesRegularExpression('/FROM \S+postmeta WHERE post_id IN/', $queries[2]);
-        foreach (\array_slice($queries, 0, 2) as $sql) {
+        // Intermediate ids, then related posts. The other queries are the metas / terms caches priming (post_id IN)
+        $posts = \array_values(\array_filter($queries, fn ($sql) => \preg_match('/FROM \S+posts\s/', $sql)));
+        $this->assertCount(2, $posts);
+        $this->assertMatchesRegularExpression('/SELECT\s+\S+posts\.ID\s+FROM/', $posts[0]);
+        $this->assertStringContainsString('post_author IN', $posts[0]);
+        $this->assertMatchesRegularExpression('/post_parent (IN|=)/', $posts[1]);
+        foreach ($posts as $sql) {
             $this->assertStringNotContainsString('postmeta', $sql);
+        }
+        foreach ($queries as $sql) {
+            $this->assertDoesNotMatchRegularExpression('/postmeta\.meta_(key|value)/', $sql);
         }
     }
 
