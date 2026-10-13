@@ -1,3 +1,10 @@
+# [2.0.0-beta.5](https://github.com/idetik/coretik/compare/v2.0.0-beta.4...v2.0.0-beta.5) (2026-10-13)
+
+
+### Features
+
+* **models:** add ShadowTaxonomyHandler for a second post to post relationship ([d505633](https://github.com/idetik/coretik/commit/d5056331cc03aa703d53576614415e09bda09d90))
+
 # [2.0.0-beta.4](https://github.com/idetik/coretik/compare/v2.0.0-beta.3...v2.0.0-beta.4) (2026-10-13)
 
 
