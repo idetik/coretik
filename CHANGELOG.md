@@ -1,3 +1,10 @@
+# [2.0.0-beta.2](https://github.com/idetik/coretik/compare/v2.0.0-beta.1...v2.0.0-beta.2) (2026-10-13)
+
+
+### Bug Fixes
+
+* empty option values were never updated by Option::set() ([c106935](https://github.com/idetik/coretik/commit/c106935bf4fcdeb41a22ff98f16bd04794c2f68c))
+
 # [2.0.0-beta.1](https://github.com/idetik/coretik/compare/v1.15.0...v2.0.0-beta.1) (2026-10-09)
 
 
