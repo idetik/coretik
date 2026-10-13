@@ -1,3 +1,10 @@
+# [2.0.0-beta.6](https://github.com/idetik/coretik/compare/v2.0.0-beta.5...v2.0.0-beta.6) (2026-10-13)
+
+
+### Features
+
+* **models:** add belongsToMany relationship through a pivot post type ([da86505](https://github.com/idetik/coretik/commit/da865055e1ab96a7f1530c0fc94e6bc1bd1bc639))
+
 # [2.0.0-beta.5](https://github.com/idetik/coretik/compare/v2.0.0-beta.4...v2.0.0-beta.5) (2026-10-13)
 
 
