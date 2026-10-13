@@ -18,7 +18,10 @@ class Container
 
         if (\apply_filters('coretik/modals/load_scripts', $load_scripts)) {
             \add_action('admin_footer', [$this, 'scripts'], 99);
-            \add_action('wp_footer', [$this, 'scripts'], 99);
+            // Themes have their own modals script (data-modal-trigger…): the coretik one would conflict
+            if (\apply_filters('coretik/modals/load_front_scripts', false)) {
+                \add_action('wp_footer', [$this, 'scripts'], 99);
+            }
         }
 
         if (\apply_filters('coretik/modals/print_modals', $load_scripts)) {
@@ -87,16 +90,20 @@ class Container
         include $this->tpl_container;
     }
 
+    /**
+     * Opens modals with [data-modal="{id}"] buttons, closes them with [data-modal-close], the backdrop or Escape.
+     * In admin, also prints the modals styles.
+     */
     public function scripts(): void
     {
-        if (!static::$scriptsLoaded) {
-            ?>
-            <script>
-                <?php
-                include 'scripts.js';
-                ?>
-            </script>
-            <?php
+        if (static::$scriptsLoaded) {
+            return;
         }
+        static::$scriptsLoaded = true;
+
+        if (\is_admin()) {
+            echo '<style>' . \file_get_contents(__DIR__ . '/admin.css') . '</style>';
+        }
+        echo '<script>' . \file_get_contents(__DIR__ . '/scripts.js') . '</script>';
     }
 }
