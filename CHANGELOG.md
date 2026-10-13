@@ -130,6 +130,13 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 
+## [1.15.1](https://github.com/idetik/coretik/compare/v1.15.0...v1.15.1) (2026-10-12)
+
+
+### Bug Fixes
+
+* empty option values were never updated by Option::set() ([c106935](https://github.com/idetik/coretik/commit/c106935bf4fcdeb41a22ff98f16bd04794c2f68c))
+
 # [1.15.0](https://github.com/idetik/coretik/compare/v1.14.1...v1.15.0) (2026-10-09)
 
 
