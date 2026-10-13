@@ -209,6 +209,75 @@ trait Relationships
     }
 
     /**
+     * Many to many through a pivot post type: $this -> hasMany($pivot) -> parents of the pivots in $related.
+     * The pivot belongs to $this and to $related, with post_parent or a shadow taxonomy (see ShadowTaxonomyHandler).
+     * Two indexed queries: the pivots with their parent ids only (no post loaded), then the related posts by primary key.
+     * The related posts are ordered as their pivots, each one once.
+     *
+     * e.g. camp -> registrations (shadow taxonomy) -> players (registration post_parent):
+     * $camp->belongsToMany(Player::class, Registration::class)
+     * player -> registrations (post_parent) -> camps (registration shadow taxonomy):
+     * $player->belongsToMany(Camp::class, Registration::class)
+     *
+     * @param callable|null $constraint Called with the pivots query, e.g. fn ($query) => $query->set('post_status', 'publish')
+     */
+    protected function belongsToMany(
+        string|BuilderInterface|ModelInterface $related,
+        string|BuilderInterface|ModelInterface $pivot,
+        ?callable $constraint = null,
+        bool $collect = true
+    ): Collection|QuerierInterface {
+        $related = $this->resolveBuilder($related);
+        $pivot = $this->resolveBuilder($pivot);
+
+        if ('post' !== $pivot->getType() || 'post' !== $related->getType()) {
+            throw new UnhandledException(sprintf('Relationship belongsToMany not supported with %s pivot and %s builder type.', $pivot->getType(), $related->getType()));
+        }
+
+        $pivots = $this->hasMany($pivot, false);
+        if (!empty($constraint)) {
+            $constraint($pivots);
+        }
+
+        $ids = $this->pivotsParentIds($pivots, $pivot, $related);
+
+        // An empty "__in" parameter is ignored by WordPress: in([]) returns no object
+        $query = $related->query()->all()->in($ids);
+        if (!empty($ids)) {
+            $query->set('orderby', 'post__in');
+        }
+
+        return $collect ? $query->collection() : $query;
+    }
+
+    /**
+     * The $related parent ids of the queried pivots, in the pivots order, each one once
+     *
+     * @return int[]
+     */
+    protected function pivotsParentIds(QuerierInterface $pivots, BuilderInterface $pivot, BuilderInterface $related): array
+    {
+        $taxonomy = ShadowTaxonomyHandler::taxonomyBetween($related->getName(), $pivot->getName());
+
+        if (empty($taxonomy)) {
+            // ID and post_parent columns only
+            $rows = $pivots->set('fields', 'id=>parent')->set('no_found_rows', true)->results();
+            $ids = \array_map(fn ($row) => (int)$row->post_parent, $rows);
+        } else {
+            $pivotIds = \array_map('intval', $pivots->set('fields', 'ids')->set('no_found_rows', true)->results());
+            if (empty($pivotIds)) {
+                return [];
+            }
+
+            // One query on term relationships for every pivot, then the term slug (parent id) is read from the cache
+            \update_object_term_cache($pivotIds, $pivot->getName());
+            $ids = \array_map(fn ($pivotId) => ShadowTaxonomyHandler::parentIdOf($pivotId, $taxonomy), $pivotIds);
+        }
+
+        return \array_values(\array_unique(\array_filter($ids)));
+    }
+
+    /**
      * Ids of the $builder objects which are children of $this (see hasMany()), without loading the models
      *
      * @return int[]

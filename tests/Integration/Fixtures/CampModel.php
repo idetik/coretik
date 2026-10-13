@@ -21,4 +21,9 @@ class CampModel extends PostModel
     {
         return $this->hasOne(RegistrationModel::class);
     }
+
+    public function players(?callable $constraint = null, bool $collect = true): Collection|QuerierInterface
+    {
+        return $this->belongsToMany(PlayerModel::class, RegistrationModel::class, $constraint, $collect);
+    }
 }

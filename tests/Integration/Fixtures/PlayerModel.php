@@ -26,4 +26,9 @@ class PlayerModel extends PostModel
     {
         return $this->hasMany(RegistrationModel::class);
     }
+
+    public function camps(): Collection|QuerierInterface
+    {
+        return $this->belongsToMany(CampModel::class, RegistrationModel::class);
+    }
 }
