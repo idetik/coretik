@@ -1,3 +1,10 @@
+# [2.0.0-beta.8](https://github.com/idetik/coretik/compare/v2.0.0-beta.7...v2.0.0-beta.8) (2026-10-13)
+
+
+### Features
+
+* show shadow taxonomies in the schema viewer ([44572a9](https://github.com/idetik/coretik/commit/44572a963a17929ce4217ffc4d8af978fd078f2c))
+
 # [2.0.0-beta.7](https://github.com/idetik/coretik/compare/v2.0.0-beta.6...v2.0.0-beta.7) (2026-10-13)
 
 
