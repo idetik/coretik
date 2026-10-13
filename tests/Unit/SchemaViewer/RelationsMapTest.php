@@ -97,12 +97,15 @@ class RelationsMapTest extends TestCase
 
     public function testShadowTaxonomyHandlerPivot(): void
     {
+        \Brain\Monkey\Functions\when('sanitize_key')->alias(fn ($key) => \strtolower($key));
+        \Brain\Monkey\Functions\when('did_action')->justReturn(false);
         $camp = new Fixtures\FakeBuilder('camp', 'post', [], Fixtures\Camp::class);
         $handler = (new \ReflectionClass(ShadowTaxonomyHandler::class))->newInstanceWithoutConstructor();
-        (new \ReflectionProperty(ShadowTaxonomyHandler::class, 'pivot'))->setValue($handler, 'camp_id');
+        $handler->setPivot('camp_id');
         (new \ReflectionProperty(ShadowTaxonomyHandler::class, 'belongsToBuilder'))->setValue($handler, $camp);
         $registration = (new Fixtures\FakeBuilder('registration', 'post', [], Fixtures\Registration::class))->handler($handler);
+        $handler->handle($registration);
 
-        $this->assertContains('post:camp hasMany (camp_id) post:registration', $this->labels(new RelationsMap($this->schema([$camp, $registration]))));
+        $this->assertContains('post:camp hasMany (camp_id via camp_registration) post:registration', $this->labels(new RelationsMap($this->schema([$camp, $registration]))));
     }
 }

@@ -5,6 +5,7 @@ namespace Coretik\Services\SchemaViewer\Relations;
 use Coretik\Core\Builders\Interfaces\BuilderInterface;
 use Coretik\Core\Builders\Interfaces\ModelableInterface;
 use Coretik\Core\Models\Handlers\Relationship\BelongsToRelationInterface;
+use Coretik\Core\Models\Handlers\Relationship\ShadowTaxonomyHandler;
 use Coretik\Core\Schema;
 
 /**
@@ -233,7 +234,15 @@ class RelationsMap
 
     protected function pivot(BelongsToRelationInterface $handler): string
     {
-        return \is_string($handler->pivot()) ? $handler->pivot() : '';
+        $pivot = \is_string($handler->pivot()) ? $handler->pivot() : '';
+        if ($handler instanceof ShadowTaxonomyHandler) {
+            try {
+                $pivot = \trim($pivot . ' via ' . $handler->taxonomy());
+            } catch (\Throwable $e) {
+                // Handler not attached to a builder yet
+            }
+        }
+        return $pivot;
     }
 
     /**

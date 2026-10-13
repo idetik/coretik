@@ -28,6 +28,13 @@ class ShadowTaxonomyHandler extends Handler implements BelongsToRelationInterfac
      */
     protected static array $taxonomies = [];
 
+    /**
+     * Registered shadow taxonomies, keyed by taxonomy name
+     *
+     * @var array<string, array{parent: string, child: string, pivot: string}>
+     */
+    protected static array $shadows = [];
+
     private (BuilderInterface&ModelableInterface)|null $belongsToBuilder = null;
     private $pivot;
     private ?string $taxonomy = null;
@@ -51,6 +58,16 @@ class ShadowTaxonomyHandler extends Handler implements BelongsToRelationInterfac
     public static function taxonomyBetween(string $parentPostType, string $childPostType): ?string
     {
         return static::$taxonomies[$parentPostType][$childPostType] ?? null;
+    }
+
+    /**
+     * Registered shadow taxonomies, keyed by taxonomy name: parent and child post types, pivot meta key ('' for a callable)
+     *
+     * @return array<string, array{parent: string, child: string, pivot: string}>
+     */
+    public static function shadowTaxonomies(): array
+    {
+        return static::$shadows;
     }
 
     /**
@@ -133,6 +150,11 @@ class ShadowTaxonomyHandler extends Handler implements BelongsToRelationInterfac
         }
 
         static::$taxonomies[$this->belongsToBuilder->getName()][$this->builder->getName()] = $this->taxonomy();
+        static::$shadows[$this->taxonomy()] = [
+            'parent' => $this->belongsToBuilder->getName(),
+            'child' => $this->builder->getName(),
+            'pivot' => \is_string($this->pivot) ? $this->pivot : '',
+        ];
 
         if (\did_action('init')) {
             $this->registerTaxonomy();

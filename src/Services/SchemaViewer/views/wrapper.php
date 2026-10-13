@@ -21,6 +21,9 @@
                         include 'taxonomy-single.php';
                     }
                 }
+                foreach (\Coretik\Core\Models\Handlers\Relationship\ShadowTaxonomyHandler::shadowTaxonomies() as $taxonomy => $shadow) {
+                    include 'shadow-taxonomy-single.php';
+                }
                 ?>
             </div>
         </div>
