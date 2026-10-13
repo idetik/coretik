@@ -40,7 +40,8 @@ class Option implements CRUDInterface
 
     public function exists()
     {
-        return !empty($this->get(null));
+        // An option stored with an empty value ('', 0, []) exists: add_option() would ignore it
+        return null !== $this->get(null);
     }
 
     public function delete()
