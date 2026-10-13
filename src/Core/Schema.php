@@ -158,7 +158,7 @@ class Schema implements ContainerInterface
     public function get(string $offset, $type = null): ?BuilderInterface
     {
         if (!empty($type)) {
-            return isset($this->objects[$type]) ? $this->objects[$type]->get($offset) : null;
+            return isset($this->objects[$type]) ? ($this->objects[$type]->get($offset) ?? $this->getByModelClass($offset, $type)) : null;
         }
 
         foreach ($this->objects as $type => $data) {
@@ -166,7 +166,33 @@ class Schema implements ContainerInterface
                 return $data->get($offset);
             }
         }
-        return null;
+        return $this->getByModelClass($offset);
+    }
+
+    /**
+     * The builder whose factory is the given model class (e.g. Registration::class), null when none or several match
+     */
+    protected function getByModelClass(string $class, ?string $type = null): ?BuilderInterface
+    {
+        if (!\str_contains($class, '\\')) {
+            return null;
+        }
+
+        $class = \ltrim($class, '\\');
+        $found = [];
+        foreach ($this->objects as $objectType => $data) {
+            if (!empty($type) && $type !== $objectType) {
+                continue;
+            }
+            foreach ($data as $builder) {
+                if ($builder instanceof BuilderInterface && $builder instanceof ModelableInterface && \method_exists($builder, 'modelClass') && $class === $builder->modelClass()) {
+                    $found[] = $builder;
+                }
+            }
+        }
+
+        // Ambiguous when the same model class is the factory of several builders
+        return 1 === \count($found) ? $found[0] : null;
     }
 
     /**

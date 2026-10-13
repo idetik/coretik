@@ -102,9 +102,18 @@ class BelongsToHandler extends Handler
             }
         }
 
-        $model->setParentId(
-            $belongsToId
-        );
+        // A user is the post author, other objects are the post parent: both are indexed columns
+        if (!empty($this->belongsToBuilder) && 'user' === $this->belongsToBuilder->getType()) {
+            if ((int)$model->post_author === $belongsToId) {
+                return;
+            }
+            $model->post_author = $belongsToId;
+        } else {
+            if ($model->parentId() === $belongsToId) {
+                return;
+            }
+            $model->setParentId($belongsToId);
+        }
 
         $this->pause(fn () => $model->save());
     }

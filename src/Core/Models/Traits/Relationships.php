@@ -24,42 +24,49 @@ trait Relationships
      */
     protected function belongsTo(string|BuilderInterface|ModelInterface $builder): ?ModelInterface
     {
-        $builder = $this->resolveBuilder($builder);
+        return $this->parentOf($this, $this->resolveBuilder($builder));
+    }
+
+    /**
+     * The $builder object which $child belongs to, read from the child columns (post_parent, post_author, term relationships...)
+     */
+    protected function parentOf(ModelInterface $child, BuilderInterface&ModelableInterface $builder): ?ModelInterface
+    {
         try {
             switch (true) {
-                case $this instanceof PostModel:
+                case $child instanceof PostModel:
                     // Support post, taxonomy, user
                     return match ($builder->getType()) {
-                        'post' => !empty($parent_id = $this->parentId()) ? $builder->model($parent_id) : null,
-                        'taxonomy' => $this->term($builder->getName()),
-                        'user' => $builder->concern((int)$this->post_author) ? $builder->model((int)$this->post_author) : null,
+                        'post' => !empty($parent_id = $child->parentId()) ? $builder->model($parent_id) : null,
+                        'taxonomy' => $child->term($builder->getName()),
+                        'user' => $builder->concern((int)$child->post_author) ? $builder->model((int)$child->post_author) : null,
                         default => throw new UnhandledException(sprintf('Relationship not supported between %s and %s builder type.', 'PostModel', $builder->getType()))
                     };
 
-                case $this instanceof TermModel:
+                case $child instanceof TermModel:
                     // Support taxonomy
                     return match ($builder->getType()) {
-                        'taxonomy' => !empty($parent_id = $this->parentId()) ? $builder->model($parent_id) : null,
+                        'taxonomy' => !empty($parent_id = $child->parentId()) ? $builder->model($parent_id) : null,
                         default => throw new UnhandledException(sprintf('Relationship not supported between %s and %s builder type.', 'PostModel', $builder->getType()))
                     };
 
-                case $this instanceof UserModel:
+                case $child instanceof UserModel:
                     // Support none
                     return match ($builder->getType()) {
                         default => throw new UnhandledException(sprintf('Relationship not supported between %s and %s builder type.', 'UserModel', $builder->getType()))
                     };
 
-                case $this instanceof CommentModel:
+                case $child instanceof CommentModel:
                     // Support comment, user, post
                     return match ($builder->getType()) {
-                        'comment' => !empty($parent_id = $this->parentId()) ? $builder->model($parent_id) : null,
-                        'post' => $builder->concern($this->comment_post_ID) ? $builder->model($this->comment_post_ID) : null,
-                        'user' => !empty($this->user_id) && $builder->concern((int)$this->user_id) ? $builder->model($this->user_id) : null,
+                        'comment' => !empty($parent_id = $child->parentId()) ? $builder->model($parent_id) : null,
+                        'post' => $builder->concern($child->comment_post_ID) ? $builder->model($child->comment_post_ID) : null,
+                        'user' => !empty($child->user_id) && $builder->concern((int)$child->user_id) ? $builder->model($child->user_id) : null,
                         default => throw new UnhandledException(sprintf('Relationship not supported between %s and %s builder type.', 'CommentModel', $builder->getType()))
                     };
 
                 default:
-                    throw new UnhandledException(\sprintf('Relationship not supported for %s.', static::class));
+                    throw new UnhandledException(\sprintf('Relationship not supported for %s.', $child::class));
             }
         } catch (CannotResolveException $e) {
             return null;
@@ -151,6 +158,106 @@ trait Relationships
             default:
                 return $builder->query()->childOf($this->id())->limit(1)->first();
         }
+    }
+
+    /**
+     * Distant children through an intermediate builder: $this -> hasMany($through) -> hasMany($related).
+     * Each hop uses an indexed column (post_parent, post_author, term relationships, comment_post_ID...), never a meta query:
+     * the intermediate ids are queried first (ids only), then the related objects with a "__in" parameter.
+     *
+     * e.g. user -> posts by post_author -> children posts by post_parent:
+     * $tutor->hasManyThrough(Registration::class, Player::class)
+     */
+    protected function hasManyThrough(
+        string|BuilderInterface|ModelInterface $related,
+        string|BuilderInterface|ModelInterface $through,
+        bool $collect = true
+    ): Collection|QuerierInterface {
+        $related = $this->resolveBuilder($related);
+        $through = $this->resolveBuilder($through);
+
+        $query = $this->queryChildrenOf($related, $through, $this->childrenIds($through));
+
+        return $collect ? $query->collection() : $query;
+    }
+
+    protected function hasOneThrough(
+        string|BuilderInterface|ModelInterface $related,
+        string|BuilderInterface|ModelInterface $through
+    ): ?ModelInterface {
+        return $this->hasManyThrough($related, $through, false)->limit(1)->first();
+    }
+
+    /**
+     * Distant parent through an intermediate builder: $this -> belongsTo($through) -> belongsTo($related).
+     * Reads the parent columns of already loaded objects, no query except the models loading.
+     *
+     * e.g. registration -> player (post_parent) -> tutor (post_author):
+     * $registration->belongsToThrough(Tutor::class, Player::class)
+     */
+    protected function belongsToThrough(
+        string|BuilderInterface|ModelInterface $related,
+        string|BuilderInterface|ModelInterface $through
+    ): ?ModelInterface {
+        $intermediate = $this->belongsTo($through);
+        if (empty($intermediate)) {
+            return null;
+        }
+
+        return $this->parentOf($intermediate, $this->resolveBuilder($related));
+    }
+
+    /**
+     * Ids of the $builder objects which are children of $this (see hasMany()), without loading the models
+     *
+     * @return int[]
+     */
+    protected function childrenIds(BuilderInterface&ModelableInterface $builder): array
+    {
+        $children = $this->hasMany($builder, false);
+
+        // Terms of a post are read from the object terms cache
+        if ($children instanceof Collection) {
+            return $children->map(fn (ModelInterface $model) => $model->id())->values()->all();
+        }
+
+        match ($builder->getType()) {
+            'post' => $children->set('fields', 'ids')->set('no_found_rows', true),
+            'user' => $children->set('fields', 'ID')->set('count_total', false),
+            'comment' => $children->set('fields', 'ids')->set('hierarchical', false)->set('no_found_rows', true),
+            default => $children->set('fields', 'ids'),
+        };
+
+        return \array_map('intval', $children->results());
+    }
+
+    /**
+     * Query the $related objects which are children of the given $parent objects, with an indexed "__in" parameter
+     *
+     * @param int[] $parentIds
+     */
+    protected function queryChildrenOf(
+        BuilderInterface&ModelableInterface $related,
+        BuilderInterface&ModelableInterface $parent,
+        array $parentIds
+    ): QuerierInterface {
+        $query = $related->query()->all();
+
+        // An empty "__in" parameter is ignored by WordPress: it would return every object
+        if (empty($parentIds)) {
+            return $query->in([]);
+        }
+
+        return match ($parent->getType() . '>' . $related->getType()) {
+            'post>post' => $query->childOf($parentIds),
+            'post>comment' => $query->set('post__in', $parentIds),
+            'post>taxonomy' => $query->set('object_ids', $parentIds),
+            'user>post' => $query->set('author__in', $parentIds),
+            'user>comment' => $query->set('author__in', $parentIds),
+            'taxonomy>post' => $query->whereTax($parent->getName(), $parentIds, 'IN', 'term_id', false),
+            'comment>comment' => $query->childOf($parentIds),
+            default => throw new UnhandledException(sprintf('Relationship not supported between %s and %s builder type.', $parent->getType(), $related->getType()))
+        };
     }
 
     protected function resolveBuilder(string|BuilderInterface|ModelInterface $builder): BuilderInterface&ModelableInterface

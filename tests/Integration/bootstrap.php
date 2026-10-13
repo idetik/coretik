@@ -20,5 +20,28 @@ tests_add_filter('after_setup_theme', function () {
         ->factory(\Coretik\Tests\Integration\Fixtures\ProductModel::class)
         ->handler(\Coretik\Core\Models\Handlers\TriggerModelHooksHandler::class)
         ->addToSchema();
+
+    // Relationships: tutor (user) 1-n player (post_author) 1-n registration (post_parent)
+    coretik()->schema('users', 'user')->factory(\Coretik\Tests\Integration\Fixtures\TutorModel::class);
+
+    \Coretik\Core\Builders\PostType::make('player')
+        ->setSingularName('Player')
+        ->setPluralName('Players')
+        ->factory(\Coretik\Tests\Integration\Fixtures\PlayerModel::class)
+        ->handler(
+            \Coretik\Core\Models\Handlers\Relationship\BelongsToHandler::withPivot('tutor_id')
+                ->setBelongsToBuilder(\Coretik\Tests\Integration\Fixtures\TutorModel::class)
+        )
+        ->addToSchema();
+
+    \Coretik\Core\Builders\PostType::make('registration')
+        ->setSingularName('Registration')
+        ->setPluralName('Registrations')
+        ->factory(\Coretik\Tests\Integration\Fixtures\RegistrationModel::class)
+        ->handler(
+            \Coretik\Core\Models\Handlers\Relationship\BelongsToHandler::withPivot('player_id')
+                ->setBelongsToBuilder('player')
+        )
+        ->addToSchema();
 });
 require_once $wpTests . '/includes/bootstrap.php';
