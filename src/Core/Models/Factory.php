@@ -11,6 +11,7 @@ class Factory
     protected $mediator;
     protected $models;
     protected $model;
+    protected ?string $modelClass = null;
 
     public function __construct(callable|string $model, ModelableInterface $mediator, ?ContainerInterface $models = null)
     {
@@ -19,12 +20,21 @@ class Factory
         }
 
         if (\is_string($model)) {
+            $this->modelClass = \ltrim($model, '\\');
             $model = fn ($initializer, $mediator, $args) => new $model($initializer, $mediator, $args);
         }
 
         $this->model = $model;
         $this->models = $models;
         $this->mediator = $mediator;
+    }
+
+    /**
+     * The model class name, null when the factory is a callable
+     */
+    public function modelClass(): ?string
+    {
+        return $this->modelClass;
     }
 
     public function create()
