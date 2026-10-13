@@ -1,3 +1,10 @@
+# [2.0.0-beta.7](https://github.com/idetik/coretik/compare/v2.0.0-beta.6...v2.0.0-beta.7) (2026-10-13)
+
+
+### Features
+
+* relations diagram in the schema viewer ([586e8a1](https://github.com/idetik/coretik/commit/586e8a1a61d1f4130d73a0dc7d01edaed41ec538))
+
 # [2.0.0-beta.6](https://github.com/idetik/coretik/compare/v2.0.0-beta.5...v2.0.0-beta.6) (2026-10-13)
 
 
