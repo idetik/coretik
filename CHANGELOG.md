@@ -1,3 +1,10 @@
+# [2.0.0-beta.9](https://github.com/idetik/coretik/compare/v2.0.0-beta.8...v2.0.0-beta.9) (2026-10-14)
+
+
+### Performance Improvements
+
+* skip queries that cannot return any post ([7b97605](https://github.com/idetik/coretik/commit/7b9760527b9762f0160fd34c3c32d6a69011b6f7))
+
 # [2.0.0-beta.8](https://github.com/idetik/coretik/compare/v2.0.0-beta.7...v2.0.0-beta.8) (2026-10-13)
 
 
