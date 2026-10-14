@@ -91,7 +91,32 @@ class WPPostAdapter extends WPAdapter
 
     public function query()
     {
+        if ($this->matchesNothing()) {
+            return $this->emptyQuery();
+        }
+
         return new \WP_Query($this->getParameters());
+    }
+
+    /**
+     * in([]) sets post__in to [0]: no post can match, but WordPress would still run the SQL query.
+     * An empty post__in is ignored by WordPress (every post matches): it is not concerned.
+     */
+    protected function matchesNothing(): bool
+    {
+        return !empty($this->post__in) && empty(\array_filter(\array_map('intval', (array)$this->post__in)));
+    }
+
+    /**
+     * A WP_Query without results, as WordPress returns it, without SQL query
+     */
+    protected function emptyQuery(): \WP_Query
+    {
+        $query = new \WP_Query();
+        $query->init();
+        $query->query = $query->query_vars = $query->fill_query_vars($this->getParameters());
+        $query->posts = [];
+        return $query;
     }
 
     public function limit(int $number): self

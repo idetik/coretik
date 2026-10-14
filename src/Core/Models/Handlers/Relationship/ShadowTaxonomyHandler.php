@@ -80,6 +80,29 @@ class ShadowTaxonomyHandler extends Handler implements BelongsToRelationInterfac
     }
 
     /**
+     * The term_taxonomy_ids of the parent posts terms, in one query. Parents without child have no term.
+     *
+     * @param int[] $parentIds
+     * @return int[]
+     */
+    public static function termTaxonomyIdsOf(array $parentIds, string $taxonomy): array
+    {
+        if (empty($parentIds)) {
+            return [];
+        }
+
+        $ids = \get_terms([
+            'taxonomy' => $taxonomy,
+            'slug' => \array_map('strval', $parentIds),
+            'fields' => 'tt_ids',
+            'hide_empty' => false,
+            'update_term_meta_cache' => false,
+        ]);
+
+        return \is_array($ids) ? \array_map('intval', $ids) : [];
+    }
+
+    /**
      * The term of a parent post, created on demand
      */
     public static function termIdOf(int $parentId, string $taxonomy, bool $create = false): int

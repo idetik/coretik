@@ -69,6 +69,35 @@ class QueryTest extends IntegrationTestCase
         coretik()->schema('product')->query()->where('price', '99');
     }
 
+    public function testInWithoutIdsRunsNoQuery(): void
+    {
+        global $wpdb;
+        $query = coretik()->schema('product')->query()->all()->in([]);
+
+        $before = $wpdb->num_queries;
+        $this->assertSame([], $query->results());
+        $this->assertSame(0, $query->count());
+        $this->assertSame(0, $query->total());
+        $this->assertSame([], $query->ids());
+        $this->assertNull($query->first());
+        $this->assertSame($before, $wpdb->num_queries);
+    }
+
+    public function testInWithoutIdsKeepsTheQueryVars(): void
+    {
+        $wpQuery = coretik()->schema('product')->query()->in([])->set('fields', 'ids')->get();
+
+        $this->assertInstanceOf(\WP_Query::class, $wpQuery);
+        $this->assertSame('ids', $wpQuery->get('fields'));
+        $this->assertSame('product', $wpQuery->get('post_type'));
+        $this->assertSame(0, $wpQuery->found_posts);
+    }
+
+    public function testEmptyPostInIsIgnoredAsWordPressDoes(): void
+    {
+        $this->assertSame(3, coretik()->schema('product')->query()->all()->set('post__in', [])->count());
+    }
+
     public function testTotalCountsAllPages(): void
     {
         $query = coretik()->schema('product')->query()->limit(2);
