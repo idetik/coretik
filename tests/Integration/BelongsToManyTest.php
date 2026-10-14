@@ -102,6 +102,26 @@ class BelongsToManyTest extends IntegrationTestCase
         $this->assertCount(0, $this->player()->camps());
     }
 
+    public function testWithoutPivotRunsNoPostQuery(): void
+    {
+        $this->register($this->camp(), $this->player());
+        $camp = $this->camp();
+
+        $queries = [];
+        $recorder = function ($sql) use (&$queries) {
+            $queries[] = $sql;
+            return $sql;
+        };
+        add_filter('query', $recorder);
+        $this->assertCount(0, $camp->players());
+        $this->assertCount(0, $camp->registrations());
+        remove_filter('query', $recorder);
+
+        // The camp has no term in the shadow taxonomy: its term is looked up, no post is queried
+        $this->assertSame([], \array_values(\array_filter($queries, fn ($sql) => \preg_match('/FROM \S+posts\s/', $sql))));
+        $this->assertNotEmpty($queries);
+    }
+
     public function testQueriesAreIndexedAndDoNotLoadPivots(): void
     {
         $camp = $this->camp();

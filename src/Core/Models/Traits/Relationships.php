@@ -351,8 +351,14 @@ trait Relationships
             return $query->childOf(1 === \count($parentIds) ? \current($parentIds) : $parentIds);
         }
 
-        // One term per parent, its slug is the parent id
-        return $query->whereTax($taxonomy, \array_map('strval', $parentIds), 'IN', 'slug', false);
+        // One term per parent, its slug is the parent id. Resolved first: parents without term have no child, no need to query them.
+        // term_taxonomy_id is the column of the term relationships table: WordPress does not resolve the terms again.
+        $termTaxonomyIds = ShadowTaxonomyHandler::termTaxonomyIdsOf($parentIds, $taxonomy);
+        if (empty($termTaxonomyIds)) {
+            return $query->in([]);
+        }
+
+        return $query->whereTax($taxonomy, $termTaxonomyIds, 'IN', 'term_taxonomy_id', false);
     }
 
     protected function resolveBuilder(string|BuilderInterface|ModelInterface $builder): BuilderInterface&ModelableInterface
