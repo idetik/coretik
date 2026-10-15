@@ -1,3 +1,10 @@
+# [2.0.0-beta.10](https://github.com/idetik/coretik/compare/v2.0.0-beta.9...v2.0.0-beta.10) (2026-10-15)
+
+
+### Features
+
+* **models:** add ScheduledEventsHandler to trigger model events at a date ([f5acda5](https://github.com/idetik/coretik/commit/f5acda5b8f6201f576838764b465885bc6f0fd25))
+
 # [2.0.0-beta.9](https://github.com/idetik/coretik/compare/v2.0.0-beta.8...v2.0.0-beta.9) (2026-10-14)
 
 
