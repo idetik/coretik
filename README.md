@@ -483,6 +483,35 @@ class FormationCategoryOnChangeHandler implements HandlerInterface
 
 ```
 
+#### Scheduled events
+
+`ScheduledEventsHandler` triggers a model event at a date read on the model (a meta, an ACF field…), with WP-Cron. One event per post and model event, rescheduled when the post, its metas or its status change; past or empty dates and inactive posts (trash, auto-draft, archive) have no event.
+
+```php
+use Coretik\Core\Models\Handlers\ScheduledEventsHandler;
+
+PostType::make('camp')
+    ->factory(Camp::class)
+    ->handler(
+        ScheduledEventsHandler::make()
+            ->at('registrationsOpened', fn (Camp $camp) => $camp->opens_at) // DateTimeInterface, timestamp, date string (site timezone) or null
+            ->at('registrationsClosed', fn (Camp $camp) => $camp->closes_at)
+            ->when(fn (Camp $camp, string $event, \DateTimeInterface $date) => $camp->isEffective($event)) // Optional last check when it runs
+    )
+    ->addToSchema();
+
+// Listen like any model event (the date is given in $args['date']): in the model initializeModel()…
+$this->on('registrationsOpened', fn (Camp $camp) => $camp->notifyFamilies());
+// … or for every camp
+\add_action('coretik/model/camp/registrationsOpened', fn (Camp $camp, array $args) => /* … */ null, 10, 2);
+```
+
+When it runs, the date is read again: the model event is only triggered if it is still due.
+
+Existing posts are synced once when the declared events change (first deploy, new event), by batches of `syncBatchSize()` posts (200), without meta query. Call `syncAll()` after an import or a database restore. `syncEvery('daily')` makes the sync recurring: opt-in, as it reads every post of the type.
+
+WP-Cron runs on page visits: use a system cron to run the events on time.
+
 
 ### Macros
 

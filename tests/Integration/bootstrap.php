@@ -54,5 +54,17 @@ tests_add_filter('after_setup_theme', function () {
                 ->setBelongsToBuilder('camp')
         )
         ->addToSchema();
+
+    // Scheduled events: "starts" / "ends" model events at the dates of the metas starts_at / ends_at
+    \Coretik\Core\Builders\PostType::make('session')
+        ->setSingularName('Session')
+        ->setPluralName('Sessions')
+        ->handler(
+            \Coretik\Core\Models\Handlers\ScheduledEventsHandler::make()
+                ->at('starts', fn ($model) => get_post_meta($model->id(), 'starts_at', true))
+                ->at('ends', fn ($model) => (int)get_post_meta($model->id(), 'ends_at', true))
+                ->when(fn ($model, $event) => !get_post_meta($model->id(), 'cancelled', true))
+        )
+        ->addToSchema();
 });
 require_once $wpTests . '/includes/bootstrap.php';
