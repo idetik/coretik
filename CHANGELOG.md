@@ -1,3 +1,10 @@
+# [2.0.0-beta.11](https://github.com/idetik/coretik/compare/v2.0.0-beta.10...v2.0.0-beta.11) (2026-10-20)
+
+
+### Features
+
+* **models:** add quiet meta updates ([85628af](https://github.com/idetik/coretik/commit/85628af4515937ffa6b658f82300469592d23041))
+
 # [2.0.0-beta.10](https://github.com/idetik/coretik/compare/v2.0.0-beta.9...v2.0.0-beta.10) (2026-10-15)
 
 
