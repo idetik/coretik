@@ -316,6 +316,16 @@ echo $myModel->group()->title(); // Groupe 1
 $myModel->attributes()->each(fn ($attributeModel) => echo $attributeModel->title() . ', '); // smart, tall, 
 ```
 
+Update metas quietly, without saving the model (no `saving` / `updating` / `saved` events, no `wp_update_post()` nor `save_post` hooks), for data the model updates on its own (sync state, counters, logs…):
+
+```php
+$myModel->updateMetaQuietly('ma_meta_a', ['Foo', 'Baz']); // local or database key
+$myModel->updateMetasQuietly(['ma_meta_a' => ['Foo'], 'other_bdd_field_name' => 'qux']); // all keys checked first
+$myModel->deleteMetaQuietly('ma_meta_a');
+```
+
+Values are stored as given (a collection as an array). A value assigned before (`$myModel->ma_meta_a = …`) is dropped: reads go back to the database and a later `save()` won't write it again. Protected metas and unsaved models are rejected (`LogicException`).
+
 
 ### Queries
 
