@@ -554,3 +554,46 @@ add_filter('coretik/forms/blacklist', fn (array $words) => array_merge($words, [
 ```
 
 A submission flagged as spam is silently ignored: the visitor gets no error message.
+
+### Emails viewer
+
+Back-office page listing the emails of the application with their preview (envelope, HTML in desktop / mobile width) and a test sending to the current user. The theme describes its emails by implementing `Coretik\Services\Email\Viewer\Catalog`:
+
+```php
+use Coretik\Services\Email\Viewer\{Catalog, Entry, Preview, Viewer};
+
+class MyEmails implements Catalog
+{
+    public function entries(): array
+    {
+        return [new Entry('order.confirmation', 'Confirmation de commande', 'Commandes', 'Envoyé après le paiement', 'Automatique')];
+    }
+
+    // Sample data, from the query string (fields of contextFields())
+    public function context(array $query): array
+    {
+        return ['order' => (int)($query['order'] ?? 0) ?: latest_order_id()];
+    }
+
+    public function contextFields(array $context): string
+    {
+        return sprintf('<label>Commande <input name="order" value="%d"></label>', $context['order']);
+    }
+
+    public function preview(string $key, array $context): ?Preview
+    {
+        $email = coretik()->email()->setSubject('Votre commande')->useTemplate('order/confirmation', $context);
+        return Preview::fromEmail($email); // CSS inlined (Email::render())
+    }
+
+    // Test only: no side effects (history, tokens…)
+    public function sendTest(string $key, array $context, string $to): bool
+    {
+        return (bool)coretik()->email()->setTo($to)->setSubject('[Test] Votre commande')->useTemplate('order/confirmation', $context)->send();
+    }
+}
+
+(new Viewer(new MyEmails(), ['slug' => 'app-emails', 'capability' => 'manage_options']))->hooks();
+```
+
+Options: `slug`, `title`, `capability`, `icon`, `position`, `parent` (submenu). The accent color is the CSS variable `--coretik-email-viewer-accent` on `.coretik-email-viewer`.
