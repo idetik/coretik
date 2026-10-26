@@ -23,12 +23,18 @@ class RegistryTest extends TestCase
 
     private array $postTypes = ['post' => 'post', 'page' => 'page'];
 
+    private array $taxonomies = ['category' => 'category'];
+
+    /** Calls to add_role() through Registry::sync() */
+    private int $rolesSaved = 0;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->options = [];
         $this->removedRoles = [];
+        $this->rolesSaved = 0;
 
         Functions\when('get_option')->alias(fn ($key, $default = false) => $this->options[$key] ?? $default);
         // Like WordPress: add_option() does nothing when the option already exists, even with an empty value
@@ -43,7 +49,7 @@ class RegistryTest extends TestCase
             $this->options[$key] = $value;
         });
         Functions\when('get_post_types')->alias(fn () => $this->postTypes);
-        Functions\when('get_taxonomies')->justReturn(['category' => 'category']);
+        Functions\when('get_taxonomies')->alias(fn () => $this->taxonomies);
         Functions\when('get_role')->alias(fn ($name) => (object)['name' => $name, 'capabilities' => []]);
         Functions\when('remove_role')->alias(function ($name) {
             $this->removedRoles[] = $name;
@@ -222,6 +228,58 @@ class RegistryTest extends TestCase
         // allow_all roles must be granted the caps of a new post type
         $this->postTypes['product'] = 'product';
         $this->assertTrue($registry->hasDiff());
+    }
+
+    /**
+     * Simulate an admin request going through Registry::sync(), with $registerLate registered
+     * between the user types registration and the sync (like ShadowTaxonomyHandler on init priority 1).
+     */
+    private function syncRequest(?callable $registerLate = null, UserType ...$types): Registry
+    {
+        Functions\when('post_type_exists')->justReturn(false);
+        Functions\when('taxonomy_exists')->justReturn(false);
+        Functions\when('get_role')->justReturn(null);
+        Functions\when('add_role')->alias(function () {
+            $this->rolesSaved++;
+        });
+
+        $this->resetRegistry();
+        $registry = Registry::instance();
+        foreach ($types as $type) {
+            $registry->attach($type);
+        }
+        if ($registerLate) {
+            $registerLate();
+        }
+        $registry->sync();
+        return $registry;
+    }
+
+    public function testSyncSavesRolesOnlyOnceWhenTaxonomyIsRegisteredLate(): void
+    {
+        $late = function () {
+            $this->taxonomies = ['category' => 'category', 'camp_registration' => 'camp_registration'];
+        };
+
+        $this->taxonomies = ['category' => 'category'];
+        $this->syncRequest($late, new UserType('manager', 'Manager', ['custom' => ['read']]));
+
+        // Next request: the taxonomy is registered again after the user types
+        $this->taxonomies = ['category' => 'category'];
+        $registry = $this->syncRequest($late, new UserType('manager', 'Manager', ['custom' => ['read']]));
+
+        $this->assertSame(1, $this->rolesSaved);
+        $this->assertFalse($registry->hasDiff());
+    }
+
+    public function testSyncSavesRolesWhenDefinitionsChange(): void
+    {
+
+        $this->syncRequest(null, new UserType('manager', 'Manager', ['custom' => ['read']]));
+        $this->syncRequest(null, new UserType('manager', 'Manager', ['custom' => ['read']]));
+        $this->syncRequest(null, new UserType('manager', 'Manager', ['custom' => ['read', 'edit_posts']]));
+
+        $this->assertSame(2, $this->rolesSaved);
     }
 
     public function testSingleAssociativeCapDoesNotTriggerWarning(): void

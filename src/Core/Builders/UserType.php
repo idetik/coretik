@@ -80,19 +80,28 @@ final class UserType extends BuilderModelable implements RegistrableInterface
         if (!\is_admin()) {
             return false;
         }
-        if (!Registry::instance()->hasDiff()) {
-            return false;
-        }
         return $this->registrableInherited();
     }
 
+    /**
+     * Roles are compared then saved by Registry::sync(), at the same moment of the request:
+     * post types and taxonomies registered on this init priority (e.g. ShadowTaxonomyHandler) would otherwise
+     * be missing from the compared hash but present in the stored one, and roles would be saved on every request.
+     */
     public function registerAction(): void
+    {
+        if (!\has_action('init', [Registry::instance(), 'sync'])) {
+            \add_action('init', [Registry::instance(), 'sync'], $this->registerPriority + 1);
+        }
+    }
+
+    /**
+     * Save the WP role with its mapped caps
+     */
+    public function persist(): void
     {
         $this->map();
         $this->save();
-        if (!\has_action('init', [Registry::instance(), 'save'])) {
-            \add_action('init', [Registry::instance(), 'save'], $this->registerPriority + 1);
-        }
     }
 
     public function wpObject(int $id)
