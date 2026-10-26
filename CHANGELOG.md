@@ -1,3 +1,10 @@
+# [2.0.0-beta.12](https://github.com/idetik/coretik/compare/v2.0.0-beta.11...v2.0.0-beta.12) (2026-10-26)
+
+
+### Bug Fixes
+
+* **users:** roles were saved on every admin request ([1ad1679](https://github.com/idetik/coretik/commit/1ad1679ebed8c8cf8cf4e6f0cdff26fa369e53a3))
+
 # [2.0.0-beta.11](https://github.com/idetik/coretik/compare/v2.0.0-beta.10...v2.0.0-beta.11) (2026-10-20)
 
 
