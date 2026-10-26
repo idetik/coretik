@@ -91,6 +91,15 @@ New interfaces, implemented by the WordPress models: `MetableInterface` (models 
 - `Model::create()` returns `static`.
 - `belongsTo()` throws an `UnhandledException` for models other than posts, terms and comments (1.x failed on an undefined variable).
 
+### Endpoints
+
+`EndpointHandler` (1.x handlers copied in themes keep working, they are independent):
+
+- The admin bar is no longer hidden on the endpoint: call `hideAdminBar()` to keep the 1.x behavior.
+- A value (`/{endpoint}/foo/`) or the endpoint requested on another post type (posts share the `EP_PERMALINK` mask) is a 404: 1.x showed the post. Call `acceptsValue()` to accept a value, given to the callable as its second argument.
+- The callable is optional, and the endpoint is registered even when the schema is declared on `init`.
+- New: `template()`, `noIndex()`, `url($model)`, `isRequested()`, `value()`, and a rewrite rules flush when the endpoint is missing from them.
+
 ### Model events
 
 Model events (`$model->on()` / `$model->trigger()`) no longer register WordPress hooks: 1.x added a hook with a unique name for each instance and event, never removed, which made memory grow with the number of loaded models. `on()` and `trigger()` keep the same signature and behavior (priority, number of arguments).

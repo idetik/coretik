@@ -66,5 +66,24 @@ tests_add_filter('after_setup_theme', function () {
                 ->when(fn ($model, $event) => !get_post_meta($model->id(), 'cancelled', true))
         )
         ->addToSchema();
+
+    // Endpoints: /event/{post}/inscription/ (also declared by "course"), /event/{post}/billet/{value}/
+    \Coretik\Core\Builders\PostType::make('event')
+        ->setSingularName('Event')
+        ->setPluralName('Events')
+        ->handler(
+            \Coretik\Core\Models\Handlers\EndpointHandler::make('inscription')
+                ->template('event-registration.php')
+                ->noIndex()
+                ->hideAdminBar()
+        )
+        ->handler(\Coretik\Core\Models\Handlers\EndpointHandler::make('billet')->acceptsValue())
+        ->addToSchema();
+
+    \Coretik\Core\Builders\PostType::make('course')
+        ->setSingularName('Course')
+        ->setPluralName('Courses')
+        ->handler(\Coretik\Core\Models\Handlers\EndpointHandler::make('inscription'))
+        ->addToSchema();
 });
 require_once $wpTests . '/includes/bootstrap.php';
