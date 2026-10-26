@@ -1,3 +1,10 @@
+# [2.0.0-beta.14](https://github.com/idetik/coretik/compare/v2.0.0-beta.13...v2.0.0-beta.14) (2026-10-26)
+
+
+### Features
+
+* **models:** endpoint handler with template, 404s and rules flush ([96a1c4f](https://github.com/idetik/coretik/commit/96a1c4f4dfa79f17843aee8774f283d4c4198c73))
+
 # [2.0.0-beta.13](https://github.com/idetik/coretik/compare/v2.0.0-beta.12...v2.0.0-beta.13) (2026-10-26)
 
 
