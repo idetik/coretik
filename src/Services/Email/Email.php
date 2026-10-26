@@ -131,6 +131,14 @@ class Email
             ->render();
     }
 
+    /**
+     * Full HTML with the CSS inlined, as send() mails it (previews, filters of the WordPress core emails)
+     */
+    public function render(): string
+    {
+        return $this->inline();
+    }
+
     public function send()
     {
         if (empty($this->to)) {

@@ -1,0 +1,174 @@
+/* Email viewer (Coretik\Services\Email\Viewer\Viewer). Accent overridable by the theme:
+   .coretik-email-viewer { --coretik-email-viewer-accent: #0066B3; } */
+.coretik-email-viewer {
+    --coretik-email-viewer-accent: #2271b1;
+    --coretik-email-viewer-border: #dcdcde;
+    --coretik-email-viewer-muted: #646970;
+    --coretik-email-viewer-stage: #f0f0f1;
+}
+
+.coretik-email-viewer__layout {
+    display: grid;
+    grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+    margin-top: 16px;
+}
+
+.coretik-email-viewer__list {
+    position: sticky;
+    top: 48px;
+    padding: 8px 0;
+    background: #fff;
+    border: 1px solid var(--coretik-email-viewer-border);
+    border-radius: 8px;
+}
+
+.coretik-email-viewer__list ul {
+    margin: 0 0 8px;
+}
+
+.coretik-email-viewer__list li {
+    margin: 0;
+}
+
+.coretik-email-viewer__group {
+    margin: 12px 16px 4px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--coretik-email-viewer-muted);
+}
+
+.coretik-email-viewer__item {
+    display: block;
+    padding: 8px 16px;
+    border-left: 3px solid transparent;
+    color: inherit;
+    text-decoration: none;
+}
+
+.coretik-email-viewer__item:hover,
+.coretik-email-viewer__item:focus {
+    background: var(--coretik-email-viewer-stage);
+    color: inherit;
+}
+
+.coretik-email-viewer__item.is-current {
+    border-left-color: var(--coretik-email-viewer-accent);
+    background: var(--coretik-email-viewer-stage);
+}
+
+.coretik-email-viewer__item.is-current strong {
+    color: var(--coretik-email-viewer-accent);
+}
+
+.coretik-email-viewer__item span {
+    display: block;
+    font-size: 12px;
+    color: var(--coretik-email-viewer-muted);
+}
+
+.coretik-email-viewer__main {
+    min-width: 0;
+    padding: 16px 20px 20px;
+    background: #fff;
+    border: 1px solid var(--coretik-email-viewer-border);
+    border-radius: 8px;
+}
+
+.coretik-email-viewer__header {
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.coretik-email-viewer__header h2 {
+    margin: 0 0 4px;
+    font-size: 18px;
+}
+
+.coretik-email-viewer__header .description {
+    margin: 0;
+}
+
+.coretik-email-viewer__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+    margin: 16px 0 12px;
+    padding: 12px 0;
+    border-top: 1px solid var(--coretik-email-viewer-border);
+    border-bottom: 1px solid var(--coretik-email-viewer-border);
+}
+
+.coretik-email-viewer__context,
+.coretik-email-viewer__actions,
+.coretik-email-viewer__devices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.coretik-email-viewer__context select {
+    max-width: 320px;
+}
+
+.coretik-email-viewer__devices .button.is-active {
+    border-color: var(--coretik-email-viewer-accent);
+    color: var(--coretik-email-viewer-accent);
+    box-shadow: inset 0 0 0 1px var(--coretik-email-viewer-accent);
+}
+
+.coretik-email-viewer__envelope {
+    margin: 0 0 12px;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.coretik-email-viewer__envelope div {
+    display: flex;
+    gap: 6px;
+}
+
+.coretik-email-viewer__envelope dt {
+    font-weight: 600;
+}
+
+.coretik-email-viewer__envelope dd {
+    margin: 0;
+    color: var(--coretik-email-viewer-muted);
+    overflow-wrap: anywhere;
+}
+
+.coretik-email-viewer__stage {
+    padding: 16px;
+    overflow-x: auto;
+    background: var(--coretik-email-viewer-stage);
+    border-radius: 6px;
+}
+
+.coretik-email-viewer__frame {
+    display: block;
+    width: 100%;
+    min-height: 480px;
+    margin: 0 auto;
+    background: #fff;
+    border: 0;
+    transition: width .2s ease;
+}
+
+@media (max-width: 960px) {
+    .coretik-email-viewer__layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .coretik-email-viewer__list {
+        position: static;
+    }
+}
