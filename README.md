@@ -523,6 +523,39 @@ Existing posts are synced once when the declared events change (first deploy, ne
 WP-Cron runs on page visits: use a system cron to run the events on time.
 
 
+#### Endpoints
+
+`EndpointHandler` adds an endpoint to the single pages of a post type: `/{slug}/{post}/{endpoint}/` (`?{endpoint}=1` without pretty permalinks).
+
+```php
+use Coretik\Core\Models\Handlers\EndpointHandler;
+
+$registration = EndpointHandler::make('inscription', function (Camp $camp, string $value) {
+    // template_redirect, priority 0 (before redirect_canonical()): guard, redirection, data loading…
+    if (!$camp->isOpen()) {
+        wp_safe_redirect(get_permalink($camp->id()));
+        exit;
+    }
+})
+    ->template('camp-registration.php') // Optional, locate_template(): the single template otherwise
+    ->noIndex()                         // Optional, noindex robots meta
+    ->hideAdminBar()                    // Optional
+    ->acceptsValue();                   // Optional, /inscription/{value}/ (404 otherwise)
+
+PostType::make('camp')
+    ->handler($registration)
+    ->addToSchema();
+
+$registration->url($camp);        // https://example.org/camps/ete-2027/inscription/
+$registration->isRequested();     // templates, hooks…
+$registration->value();           // null when not requested, "" without value
+```
+
+The endpoint requested anywhere else (posts and most post types share the `EP_PERMALINK` mask, archives…) is a 404: it never duplicates a page. To only add the rules to one post type, give it its own mask (`rewrite.ep_mask`) and pass it to `setMask()`. Several post types can declare the same endpoint.
+
+The rewrite rules are flushed once when an endpoint is missing from them (first deploy, new endpoint).
+
+
 ### Macros
 
 Use to extend a builder.
