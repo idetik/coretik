@@ -60,6 +60,22 @@ class Registry extends \SplObjectStorage
         return md5(serialize($o));
     }
 
+    /**
+     * Save the roles if their definitions, or the post types and taxonomies they depend on, changed.
+     */
+    public function sync()
+    {
+        if (!$this->hasDiff()) {
+            return $this;
+        }
+
+        foreach ($this as $userType) {
+            $userType->persist();
+        }
+
+        return $this->save();
+    }
+
     public function save()
     {
         $previous = $this->storedRoleNames();
