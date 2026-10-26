@@ -1,3 +1,10 @@
+# [2.0.0-beta.13](https://github.com/idetik/coretik/compare/v2.0.0-beta.12...v2.0.0-beta.13) (2026-10-26)
+
+
+### Features
+
+* **email:** add a back-office viewer of the application emails ([973306e](https://github.com/idetik/coretik/commit/973306e9fcbfd88e5dfc65c24ed81c052173bcf8))
+
 # [2.0.0-beta.12](https://github.com/idetik/coretik/compare/v2.0.0-beta.11...v2.0.0-beta.12) (2026-10-26)
 
 
