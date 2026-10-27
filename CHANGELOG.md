@@ -1,3 +1,10 @@
+# [2.0.0-beta.16](https://github.com/idetik/coretik/compare/v2.0.0-beta.15...v2.0.0-beta.16) (2026-10-27)
+
+
+### Features
+
+* **schema:** typed builders accessors ([ee58995](https://github.com/idetik/coretik/commit/ee58995ede1ecc18af95693c7cd9276b979733e6))
+
 # [2.0.0-beta.15](https://github.com/idetik/coretik/compare/v2.0.0-beta.14...v2.0.0-beta.15) (2026-10-27)
 
 
