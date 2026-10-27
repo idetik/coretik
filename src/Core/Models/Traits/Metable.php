@@ -51,9 +51,6 @@ trait Metable
         $meta = new MetaDefinition($local_key, $meta_key);
         $meta->on('set_default_value', function () {
             $builder = coretik()->schema()->resolve($this);
-            if (!$builder) {
-                return;
-            }
 
             if ($builder->hasHandlerClassName(DefaultMetaDataHandler::class)) {
                 return;
@@ -66,9 +63,6 @@ trait Metable
 
         $meta->on('protect', function () {
             $builder = coretik()->schema()->resolve($this);
-            if (!$builder) {
-                return;
-            }
 
             if ($builder->hasHandlerClassName(Guard::class)) {
                 return;

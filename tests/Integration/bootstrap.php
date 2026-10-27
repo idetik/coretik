@@ -85,5 +85,13 @@ tests_add_filter('after_setup_theme', function () {
         ->setPluralName('Courses')
         ->handler(\Coretik\Core\Models\Handlers\EndpointHandler::make('inscription'))
         ->addToSchema();
+
+    // Typed accessors of the schema (SchemaAccessorsTest)
+    \Coretik\Core\Builders\Taxonomy::make('genre', 'event')
+        ->setSingularName('Genre')
+        ->setPluralName('Genres')
+        ->addToSchema();
+
+    \Coretik\Core\Builders\UserType::make('coach', 'Coach', ['read' => true])->addToSchema();
 });
 require_once $wpTests . '/includes/bootstrap.php';

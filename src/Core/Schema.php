@@ -9,8 +9,10 @@ use Coretik\Core\Models\Handlers\Guard;
 use Coretik\Core\Builders\{
     PostType,
     PostTypeBuiltIn,
+    Taxonomy,
     TaxonomyBuiltIn,
     User,
+    UserType,
     Comment,
 };
 use Coretik\Core\Builders\Interfaces\{
@@ -205,6 +207,51 @@ class Schema implements ContainerInterface
         $builder = $this->get($name, $type);
         if (!$builder instanceof ModelableInterface) {
             throw new ContainerValueNotFoundException(\sprintf('No modelable builder "%s" in the schema.', $name));
+        }
+        return $builder;
+    }
+
+    /**
+     * A post type declared by the application (PostType::make()), by name or model class. Built-in ones: get('post').
+     *
+     * @throws ContainerValueNotFoundException
+     */
+    public function postType(string $name): PostType
+    {
+        return $this->expect($name, 'post', PostType::class, 'post type');
+    }
+
+    /**
+     * A taxonomy declared by the application (Taxonomy::make()), by name or model class. Built-in ones: get('category').
+     *
+     * @throws ContainerValueNotFoundException
+     */
+    public function taxonomy(string $name): Taxonomy
+    {
+        return $this->expect($name, 'taxonomy', Taxonomy::class, 'taxonomy');
+    }
+
+    /**
+     * A user type declared by the application (UserType::make()), by name or model class
+     *
+     * @throws ContainerValueNotFoundException
+     */
+    public function userType(string $name): UserType
+    {
+        return $this->expect($name, 'user', UserType::class, 'user type');
+    }
+
+    /**
+     * @template T of BuilderInterface
+     * @param class-string<T> $class
+     * @return T
+     * @throws ContainerValueNotFoundException
+     */
+    protected function expect(string $name, string $type, string $class, string $label): BuilderInterface
+    {
+        $builder = $this->get($name, $type);
+        if (!$builder instanceof $class) {
+            throw new ContainerValueNotFoundException(\sprintf('No %s "%s" declared in the schema.', $label, $name));
         }
         return $builder;
     }

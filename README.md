@@ -289,6 +289,15 @@ $postSchema = coretik()->schema('my_custom_post_type');
 $postSchema->factory(MyPostModel::class);
 ```
 
+`coretik()->schema($name)` returns a `BuilderInterface` (or `null`): typed builders of the application, by name or model class, throw a `ContainerValueNotFoundException` when missing (built-in ones such as `post` or `category`: `schema($name)`):
+
+```php
+coretik()->postType('my_custom_post_type'); // PostType: endpoint(), handlers…
+coretik()->taxonomy('my_taxonomy');         // Taxonomy
+coretik()->userType('customer');            // UserType
+coretik()->schema()->postType(MyPostModel::class); // same accessors on the schema
+```
+
 Create & save a model :
 ```php
 $model = coretik()->schema('my_custom_post_type')->model();

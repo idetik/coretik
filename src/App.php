@@ -2,12 +2,16 @@
 
 namespace Coretik;
 
+use Coretik\Core\Builders\Interfaces\BuilderInterface;
+use Coretik\Core\Builders\PostType;
+use Coretik\Core\Builders\Taxonomy;
+use Coretik\Core\Builders\UserType;
 use Coretik\Core\Container;
+use Coretik\Core\Schema;
 
 /**
  * Container services are reachable as methods (invokable services are called with the arguments).
  *
- * @method \Coretik\Core\Schema|\Coretik\Core\Builders\Interfaces\BuilderInterface|null schema(?string $name = null, ?string $type = null)
  * @method \Coretik\Services\Modals\Container modals()
  * @method \Coretik\Services\Notices\Factory notices()
  * @method mixed forms()
@@ -87,6 +91,45 @@ class App
     public static function __callStatic($method, $args)
     {
         return \call_user_func_array([static::instance(), $method], $args);
+    }
+
+    /**
+     * The schema, or one of its builders by name (and type): null when it does not exist.
+     * Typed builders: schema()->postType('product'), schema()->taxonomy(…), schema()->userType(…)
+     *
+     * @return ($name is null ? Schema : BuilderInterface|null)
+     */
+    public function schema(?string $name = null, ?string $type = null): Schema|BuilderInterface|null
+    {
+        /** @var Schema $schema */
+        $schema = $this->get('schema');
+        return empty($name) ? $schema : $schema->get($name, $type);
+    }
+
+    /**
+     * A post type declared by the application (Schema::postType()): typed, for IDEs which do not narrow schema()
+     *
+     * @throws \Coretik\Core\Exception\ContainerValueNotFoundException
+     */
+    public function postType(string $name): PostType
+    {
+        return $this->schema()->postType($name);
+    }
+
+    /**
+     * @throws \Coretik\Core\Exception\ContainerValueNotFoundException
+     */
+    public function taxonomy(string $name): Taxonomy
+    {
+        return $this->schema()->taxonomy($name);
+    }
+
+    /**
+     * @throws \Coretik\Core\Exception\ContainerValueNotFoundException
+     */
+    public function userType(string $name): UserType
+    {
+        return $this->schema()->userType($name);
     }
 
     public function __call($method, $args)
