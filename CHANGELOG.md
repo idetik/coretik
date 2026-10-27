@@ -1,3 +1,10 @@
+# [2.0.0-beta.15](https://github.com/idetik/coretik/compare/v2.0.0-beta.14...v2.0.0-beta.15) (2026-10-27)
+
+
+### Features
+
+* **builders:** find handlers by class, endpoints by name ([1148b82](https://github.com/idetik/coretik/commit/1148b82c0e93bc629c906211158b17e635b9e88a))
+
 # [2.0.0-beta.14](https://github.com/idetik/coretik/compare/v2.0.0-beta.13...v2.0.0-beta.14) (2026-10-26)
 
 
