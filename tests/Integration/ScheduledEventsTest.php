@@ -20,11 +20,7 @@ class ScheduledEventsTest extends IntegrationTestCase
     {
         parent::set_up();
 
-        foreach (coretik()->schema('session')->getHandlers() as $handler) {
-            if ($handler instanceof ScheduledEventsHandler) {
-                $this->handler = $handler;
-            }
-        }
+        $this->handler = coretik()->schema('session')->getHandler(ScheduledEventsHandler::class);
         $this->handler->flush();
 
         $this->triggered = [];

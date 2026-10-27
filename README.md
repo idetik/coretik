@@ -447,6 +447,14 @@ Handlers were designed to be reusable, maintainable and flexible. Handlers allow
 
 Your handler have to implement `Coretik\Core\Builders\Interfaces\HandlerInterface;`
 
+The handlers of a builder are found by class (subclasses included), in the declaration order:
+
+```php
+coretik()->schema('session')->getHandler(ScheduledEventsHandler::class);                  // first one, or null
+coretik()->schema('camp')->getHandlersOf(EndpointHandler::class, fn ($handler) => /* … */ true); // array
+coretik()->schema('camp')->endpoint('inscription');                                        // post types: EndpointHandler by name
+```
+
 Let's take an example of an application with many formations belongs to categories. Each formation has many events belongs to the same categories.
 We have a formation post type, an event post type and a category taxonomy.
 I want to update the event category when I change its formation category.
@@ -546,6 +554,7 @@ PostType::make('camp')
     ->handler($registration)
     ->addToSchema();
 
+// Anywhere else: coretik()->schema('camp')->endpoint('inscription')
 $registration->url($camp);        // https://example.org/camps/ete-2027/inscription/
 $registration->isRequested();     // templates, hooks…
 $registration->value();           // null when not requested, "" without value

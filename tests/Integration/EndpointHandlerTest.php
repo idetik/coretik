@@ -28,10 +28,8 @@ class EndpointHandlerTest extends IntegrationTestCase
         $this->set_permalink_structure($structure);
         foreach (['event', 'course'] as $postType) {
             get_post_type_object($postType)->add_rewrite_rules();
-            foreach (coretik()->schema($postType)->getHandlers() as $handler) {
-                if ($handler instanceof EndpointHandler) {
-                    $handler->registerEndpoint();
-                }
+            foreach (coretik()->schema($postType)->getHandlersOf(EndpointHandler::class) as $handler) {
+                $handler->registerEndpoint();
             }
         }
         $wp_rewrite->flush_rules();
@@ -39,18 +37,22 @@ class EndpointHandlerTest extends IntegrationTestCase
 
     private function handler(string $postType, string $endpoint): EndpointHandler
     {
-        foreach (coretik()->schema($postType)->getHandlers() as $handler) {
-            if ($handler instanceof EndpointHandler && $endpoint === $handler->endpoint()) {
-                return $handler;
-            }
-        }
+        $handler = coretik()->schema($postType)->endpoint($endpoint);
+        $this->assertInstanceOf(EndpointHandler::class, $handler, sprintf('No endpoint "%s" on %s', $endpoint, $postType));
 
-        $this->fail(sprintf('No endpoint "%s" on %s', $endpoint, $postType));
+        return $handler;
     }
 
     private function post(string $postType = 'event'): int
     {
         return self::factory()->post->create(['post_type' => $postType, 'post_status' => 'publish', 'post_title' => $postType . ' ' . wp_generate_password(6, false)]);
+    }
+
+    public function testEndpointsOfThePostType(): void
+    {
+        $this->assertSame('billet', coretik()->schema('event')->endpoint('billet')?->endpoint());
+        $this->assertNotSame(coretik()->schema('event')->endpoint('inscription'), coretik()->schema('course')->endpoint('inscription'));
+        $this->assertNull(coretik()->schema('course')->endpoint('billet'));
     }
 
     public function testRulesAreAddedToThePostTypes(): void
