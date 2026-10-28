@@ -69,6 +69,15 @@ class Registry extends \SplObjectStorage
             return $this;
         }
 
+        return $this->persist();
+    }
+
+    /**
+     * Save the roles now, changed or not. Roles are synced on admin requests only: a database installed or seeded
+     * from WP-CLI has none of them until then.
+     */
+    public function persist()
+    {
         foreach ($this as $userType) {
             $userType->persist();
         }

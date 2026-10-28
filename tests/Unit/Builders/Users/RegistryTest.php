@@ -282,6 +282,17 @@ class RegistryTest extends TestCase
         $this->assertSame(2, $this->rolesSaved);
     }
 
+    public function testPersistSavesRolesWithoutDiff(): void
+    {
+        $registry = $this->syncRequest(null, new UserType('manager', 'Manager', ['custom' => ['read']]));
+        $this->assertFalse($registry->hasDiff());
+
+        $registry->persist();
+
+        $this->assertSame(2, $this->rolesSaved);
+        $this->assertFalse($registry->hasDiff());
+    }
+
     public function testSingleAssociativeCapDoesNotTriggerWarning(): void
     {
         \Brain\Monkey\Functions\when('post_type_exists')->justReturn(false);

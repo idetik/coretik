@@ -298,6 +298,8 @@ coretik()->userType('customer');            // UserType
 coretik()->schema()->postType(MyPostModel::class); // same accessors on the schema
 ```
 
+The roles of the user types are saved on admin requests, when their definitions change. A database installed from WP-CLI (seeding, deployment) has none of them until then: save them right away with `\Coretik\Core\Builders\Users\Registry::instance()->persist()`.
+
 Create & save a model :
 ```php
 $model = coretik()->schema('my_custom_post_type')->model();
