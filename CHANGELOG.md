@@ -1,3 +1,10 @@
+# [2.0.0-beta.17](https://github.com/idetik/coretik/compare/v2.0.0-beta.16...v2.0.0-beta.17) (2026-10-28)
+
+
+### Features
+
+* **roles:** Registry::persist() saves the roles outside of the admin ([0f50fce](https://github.com/idetik/coretik/commit/0f50fce8443411ddb5907a34791e71bebdae10e1))
+
 # [2.0.0-beta.16](https://github.com/idetik/coretik/compare/v2.0.0-beta.15...v2.0.0-beta.16) (2026-10-27)
 
 
