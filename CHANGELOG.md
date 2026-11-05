@@ -1,3 +1,10 @@
+# [2.0.0-beta.18](https://github.com/idetik/coretik/compare/v2.0.0-beta.17...v2.0.0-beta.18) (2026-11-05)
+
+
+### Features
+
+* Lazy forms ([48a0aa4](https://github.com/idetik/coretik/commit/48a0aa4fcb1b8d8aa94a8bfe172589b30681c6d2))
+
 # [2.0.0-beta.17](https://github.com/idetik/coretik/compare/v2.0.0-beta.16...v2.0.0-beta.17) (2026-10-28)
 
 
