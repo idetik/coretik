@@ -69,17 +69,20 @@ class App
 
         if ($this->container->has('forms') && \apply_filters('coretik/app/init/forms', true)) {
             \add_action('init', function () {
+                // Lazy: forms are built on first use (their AJAX action, or forms()->get()), not on every request
+                $lazy = (bool) \apply_filters('coretik/forms/lazy', true);
+
                 $singletons = $this->get('forms.singletons');
                 if (!empty($singletons)) {
                     foreach ($singletons as $classname) {
-                        $this->forms()->attach(new $classname());
+                        $this->forms()->attach($lazy ? $classname : new $classname());
                     }
                 }
 
                 $factories = $this->get('forms.factories');
                 if ($factories) {
                     foreach ($factories as $classname) {
-                        $this->forms()->factory(new $classname());
+                        $this->forms()->factory($lazy ? $classname : new $classname());
                     }
                 }
             });
