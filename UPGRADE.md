@@ -123,6 +123,16 @@ Query results are cached for the request. The cache is now flushed on each write
 - It keeps the 100 latest queries (`coretik/query/cache/max_entries` filter), so long running processes (imports, WP-CLI) no longer grow without limit.
 - Disable it with `add_filter('coretik/query/cache', '__return_false')`.
 
+### Lazy forms
+
+The forms declared in `forms.singletons` and `forms.factories` are no longer built on every request: in 1.x, each one was instantiated on `init`, even on pages without form. A form is now built on first use: when its AJAX action is requested, or by `forms()->get()`.
+
+- The form class needs an `ID` constant, the form id. Without it, the form is built on registration, as in 1.x.
+- Its AJAX action is `form-{ID}`. If the class overrides `wpAjaxAction()`, declare the action in an `AJAX_ACTION` constant: otherwise the request is ignored, with a `_doing_it_wrong()` notice.
+- Code in a form constructor (hooks...) only runs when the form is built: move what must run on every request out of the constructor.
+- `forms()->attach()` and `forms()->factory()` accept a class name. `forms()->isLoaded($id)` tells whether a form is built, and `forms()->get()` throws an `OutOfBoundsException` for an unknown form (1.x failed with a `TypeError`).
+- Restore the 1.x behavior with `add_filter('coretik/forms/lazy', '__return_false')`.
+
 ### Safer defaults
 
 **Scripts are no longer async by default.** `enqueueScript()`, `enqueueScriptModule()`, `enqueueModularScript()` and `enqueueNoModularScript()` of the assets loader added `async` to every script in 1.x, which could break the order of dependent scripts. Pass `$async = true` where you want it: it now uses the WordPress loading strategy (WordPress 6.3+), which keeps the dependencies order.
