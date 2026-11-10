@@ -9,6 +9,13 @@ use Coretik\Core\Query\Interfaces\QuerierInterface;
 
 class TutorModel extends UserModel
 {
+    protected function initializeModel(): void
+    {
+        $this->declareMetas(['nickname_default' => 'coretik_nickname']);
+        // Registers the DefaultMetaDataHandler of the users builder (DefaultMetaDataTest)
+        $this->metaDefinition('nickname_default')->setDefaultValue('Anonyme');
+    }
+
     public function players(): Collection|QuerierInterface
     {
         return $this->hasMany(PlayerModel::class);
