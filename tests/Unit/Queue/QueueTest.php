@@ -4,6 +4,7 @@ namespace Coretik\Tests\Unit\Queue;
 
 use Brain\Monkey\Actions;
 use Brain\Monkey\Filters;
+use Brain\Monkey\Functions;
 use Coretik\Services\Queue\Queue;
 use Coretik\Services\Queue\QueuedJob;
 use Coretik\Tests\TestCase;
@@ -17,6 +18,7 @@ class QueueTest extends TestCase
     {
         parent::setUp();
         TestJob::reset();
+        Functions\when('update_option')->justReturn(true);
         $this->store = new MemoryStore();
         $this->queue = new Queue($this->store);
     }
@@ -200,5 +202,32 @@ class QueueTest extends TestCase
 
         $this->assertNull($this->store->find($done));
         $this->assertNotNull($this->store->find($failed), 'Failed jobs are kept 30 days');
+    }
+
+    public function testWorkRecordsItsLastRun(): void
+    {
+        $calls = [];
+        Functions\when('update_option')->alias(function (...$args) use (&$calls) {
+            $calls[] = $args;
+            return true;
+        });
+
+        $this->queue->work();
+
+        $this->assertCount(1, $calls);
+        $this->assertSame(Queue::LAST_RUN_OPTION, $calls[0][0]);
+        $this->assertEqualsWithDelta(time(), $calls[0][1], 2);
+        $this->assertFalse($calls[0][2]);
+    }
+
+    public function testDeleteSkipsRunningJobs(): void
+    {
+        $pending = $this->queue->push(new RecordingJob('a'));
+        $running = $this->queue->push(new RecordingJob('b'));
+        $this->store->set($running, ['status' => QueuedJob::RUNNING]);
+
+        $this->assertTrue($this->queue->delete($pending));
+        $this->assertFalse($this->queue->delete($running));
+        $this->assertNull($this->store->find($pending));
     }
 }

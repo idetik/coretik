@@ -103,6 +103,41 @@ class MemoryStore implements StoreInterface
         return $before - count($this->jobs);
     }
 
+    public function list(array $filters = [], int $limit = 50, int $offset = 0): array
+    {
+        $jobs = array_values(array_filter($this->jobs, fn (QueuedJob $job) => $this->matches($job, $filters)));
+        usort($jobs, fn (QueuedJob $a, QueuedJob $b) => $b->id <=> $a->id);
+        return array_slice($jobs, $offset, $limit);
+    }
+
+    public function count(array $filters = []): int
+    {
+        return count(array_filter($this->jobs, fn (QueuedJob $job) => $this->matches($job, $filters)));
+    }
+
+    public function queues(): array
+    {
+        $queues = array_values(array_unique(array_map(fn (QueuedJob $job) => $job->queue, $this->jobs)));
+        sort($queues);
+        return $queues;
+    }
+
+    public function delete(int $id): bool
+    {
+        if (!isset($this->jobs[$id]) || QueuedJob::RUNNING === $this->jobs[$id]->status) {
+            return false;
+        }
+        unset($this->jobs[$id]);
+        return true;
+    }
+
+    private function matches(QueuedJob $job, array $filters): bool
+    {
+        return (empty($filters['status']) || $filters['status'] === $job->status)
+            && (empty($filters['queue']) || $filters['queue'] === $job->queue)
+            && (empty($filters['group']) || $filters['group'] === $job->group);
+    }
+
     /**
      * Test helper: change a stored job
      *

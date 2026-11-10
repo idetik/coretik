@@ -57,4 +57,29 @@ interface StoreInterface
      * @return int Number of jobs deleted
      */
     public function purge(int $doneBefore, int $failedBefore): int;
+
+    /**
+     * Jobs matching the filters, newest first
+     *
+     * @param array{status?: string, queue?: string, group?: string} $filters
+     * @return QueuedJob[]
+     */
+    public function list(array $filters = [], int $limit = 50, int $offset = 0): array;
+
+    /**
+     * @param array{status?: string, queue?: string, group?: string} $filters
+     */
+    public function count(array $filters = []): int;
+
+    /**
+     * Names of the queues with jobs
+     *
+     * @return string[]
+     */
+    public function queues(): array;
+
+    /**
+     * Deletes a job that is not running
+     */
+    public function delete(int $id): bool;
 }

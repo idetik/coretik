@@ -204,6 +204,64 @@ class DatabaseStore implements StoreInterface
         ));
     }
 
+    public function list(array $filters = [], int $limit = 50, int $offset = 0): array
+    {
+        global $wpdb;
+        $this->install();
+
+        [$where, $args] = $this->where($filters);
+        $args[] = max(1, $limit);
+        $args[] = max(0, $offset);
+        $rows = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$this->table()} {$where} ORDER BY id DESC LIMIT %d OFFSET %d", ...$args));
+
+        return array_map(fn (object $row) => $this->hydrate($row), (array)$rows);
+    }
+
+    public function count(array $filters = []): int
+    {
+        global $wpdb;
+        $this->install();
+
+        [$where, $args] = $this->where($filters);
+        $sql = "SELECT COUNT(*) FROM {$this->table()} {$where}";
+
+        return (int)$wpdb->get_var($args ? $wpdb->prepare($sql, ...$args) : $sql);
+    }
+
+    public function queues(): array
+    {
+        global $wpdb;
+        $this->install();
+
+        return array_map('strval', (array)$wpdb->get_col("SELECT DISTINCT queue FROM {$this->table()} ORDER BY queue"));
+    }
+
+    public function delete(int $id): bool
+    {
+        global $wpdb;
+        $this->install();
+
+        return 1 === $wpdb->query($wpdb->prepare("DELETE FROM {$this->table()} WHERE id = %d AND status <> %s", $id, QueuedJob::RUNNING));
+    }
+
+    /**
+     * @param array{status?: string, queue?: string, group?: string} $filters
+     * @return array{0: string, 1: array<int, string>}
+     */
+    protected function where(array $filters): array
+    {
+        $clauses = [];
+        $args = [];
+        foreach (['status' => 'status', 'queue' => 'queue', 'group' => 'job_group'] as $filter => $column) {
+            if (isset($filters[$filter]) && '' !== $filters[$filter]) {
+                $clauses[] = "{$column} = %s";
+                $args[] = (string)$filters[$filter];
+            }
+        }
+
+        return [$clauses ? 'WHERE ' . implode(' AND ', $clauses) : '', $args];
+    }
+
     /**
      * @param array<string, mixed> $data
      */

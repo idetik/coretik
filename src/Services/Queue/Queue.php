@@ -15,6 +15,7 @@ namespace Coretik\Services\Queue;
  * - A job still running after timeout() seconds (worker killed) is released and counts one attempt.
  * - Done jobs are kept 7 days, failed jobs 30 days (keepDone(), keepFailed()).
  * - sync(true) (or the filter coretik/queue/sync): jobs run when pushed, exceptions are thrown to the caller.
+ * - Back-office page under Tools (Admin), admin(false) to disable it.
  *
  * WP-Cron runs on page visits: use a system cron (wp-cron.php or `wp cron event run --due-now` every minute) so jobs
  * run on time, or `wp coretik queue work`.
@@ -27,6 +28,7 @@ class Queue
     public const DEFAULT_QUEUE = 'default';
     public const HOOK = 'coretik/queue/work';
     public const SCHEDULE = 'coretik_queue';
+    public const LAST_RUN_OPTION = 'coretik_queue_last_run';
 
     protected int $limit = 100;
     protected int $timeBudget = 45;
@@ -34,6 +36,9 @@ class Queue
     protected int $keepDone = 7 * DAY_IN_SECONDS;
     protected int $keepFailed = 30 * DAY_IN_SECONDS;
     protected ?bool $sync = null;
+
+    /** @var array<string, mixed>|false Options of the back-office page (Admin::DEFAULTS), false without page */
+    protected array|false $admin = [];
 
     public function __construct(protected StoreInterface $store)
     {
@@ -92,6 +97,17 @@ class Queue
         return $this;
     }
 
+    /**
+     * Back-office page (Admin::DEFAULTS: slug, title, capability, parent…), false to disable it
+     *
+     * @param array<string, mixed>|false $options
+     */
+    public function admin(array|false $options): self
+    {
+        $this->admin = $options;
+        return $this;
+    }
+
     public function isSync(): bool
     {
         return (bool)\apply_filters('coretik/queue/sync', $this->sync ?? false);
@@ -105,6 +121,10 @@ class Queue
         \add_filter('cron_schedules', [$this, 'schedules']);
         \add_action(static::HOOK, [$this, 'cron']);
         \did_action('init') ? $this->schedule() : \add_action('init', [$this, 'schedule']);
+
+        if (false !== $this->admin && \is_admin()) {
+            (new Admin($this, $this->admin))->hooks();
+        }
 
         if (defined('WP_CLI') && \WP_CLI && class_exists('WP_CLI')) {
             \WP_CLI::add_command('coretik queue', new Cli($this));
@@ -195,6 +215,7 @@ class Queue
         }
 
         $this->store->purge(time() - $this->keepDone, time() - $this->keepFailed);
+        \update_option(static::LAST_RUN_OPTION, time(), false);
 
         return $count;
     }
@@ -244,6 +265,23 @@ class Queue
     public function retry(?string $group = null, ?int $id = null): int
     {
         return $this->store->retry(time(), $group, $id);
+    }
+
+    /**
+     * Deletes a job that is not running
+     */
+    public function delete(int $id): bool
+    {
+        return $this->store->delete($id);
+    }
+
+    /**
+     * Timestamp of the last worker run, null when it never ran
+     */
+    public function lastRun(): ?int
+    {
+        $time = (int)\get_option(static::LAST_RUN_OPTION, 0);
+        return $time ?: null;
     }
 
     /**

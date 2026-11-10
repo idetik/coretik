@@ -652,7 +652,22 @@ coretik()->queue()->retry('newsletter-42');                                 // F
 - Hooks: `coretik/queue/pushed`, `coretik/queue/processing`, `coretik/queue/done`, `coretik/queue/retrying`, `coretik/queue/failed`.
 - WP-CLI: `wp coretik queue work [--queue=] [--limit=] [--time=]`, `wp coretik queue stats [--group=]`, `wp coretik queue retry [<id>] [--group=]`.
 
-WP-Cron runs on page visits: use a system cron (`wp-cron.php` or `wp cron event run --due-now` every minute) so the jobs run on time.
+Back-office page **Tools > File d'attente** (`manage_options`): worker health (last / next run, warning when jobs wait and the worker did not run for 5 minutes), jobs by status, filters (queue, group), last error and payload of each job, retry or delete a job, retry the failed jobs, run the worker now. Options: `->admin(['parent' => null, 'capability' => 'edit_others_posts', 'per_page' => 50, 'late_after' => 300])`, `->admin(false)` to disable it.
+
+#### Server cron
+
+WP-Cron runs on page visits by default. In production, disable it and run it every minute from the system cron, with WP-CLI (no HTTP timeout, no loopback request) and `flock` (no overlapping runs):
+
+```php
+// config/environments/production.php
+define('DISABLE_WP_CRON', true);
+```
+
+```cron
+* * * * * cd /path/to/project && flock -n /tmp/my-site-wp-cron.lock vendor/bin/wp cron event run --due-now --quiet > /dev/null 2>&1
+```
+
+Run it as the web server user (same rights on uploads and logs). Without WP-CLI, call `wp-cron.php` over HTTP instead (`curl -s https://example.org/wp/wp-cron.php > /dev/null`): a worker run lasts up to `timeBudget()` (45 s), keep it under the HTTP timeouts of the server.
 
 ### Emails viewer
 

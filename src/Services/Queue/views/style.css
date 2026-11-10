@@ -1,0 +1,91 @@
+.coretik-queue__health {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 32px;
+    margin: 16px 0 8px;
+}
+
+.coretik-queue__health dt {
+    font-weight: 600;
+}
+
+.coretik-queue__health dd {
+    margin: 0;
+    color: #50575e;
+}
+
+.coretik-queue__filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    clear: both;
+    padding: 8px 0 12px;
+}
+
+.coretik-queue__table .column-id {
+    width: 56px;
+}
+
+.coretik-queue__table .column-status {
+    width: 110px;
+}
+
+.coretik-queue__table .column-attempts {
+    width: 90px;
+}
+
+.coretik-queue__meta {
+    color: #50575e;
+    margin-top: 2px;
+}
+
+.coretik-queue__payload summary {
+    cursor: pointer;
+    color: #2271b1;
+    margin-top: 4px;
+}
+
+.coretik-queue__payload pre {
+    max-height: 240px;
+    overflow: auto;
+    background: #f6f7f7;
+    padding: 8px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.coretik-queue__status {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    background: #f0f0f1;
+    color: #1d2327;
+}
+
+.coretik-queue__status--running {
+    background: #e5f1fa;
+    color: #0a4b78;
+}
+
+.coretik-queue__status--done {
+    background: #edfaef;
+    color: #00450c;
+}
+
+.coretik-queue__status--failed {
+    background: #fcf0f1;
+    color: #8a2424;
+}
+
+.coretik-queue__error {
+    display: block;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 12px;
+}
+
+.coretik-queue__dates {
+    font-size: 12px;
+}
