@@ -1,3 +1,10 @@
+# [2.0.0-beta.20](https://github.com/idetik/coretik/compare/v2.0.0-beta.19...v2.0.0-beta.20) (2026-11-10)
+
+
+### Features
+
+* **queue:** worker health panel in the back-office page ([17a3a0a](https://github.com/idetik/coretik/commit/17a3a0ad7c9e12d8932199ed3b35222528c36e25))
+
 # [2.0.0-beta.19](https://github.com/idetik/coretik/compare/v2.0.0-beta.18...v2.0.0-beta.19) (2026-11-10)
 
 
