@@ -25,3 +25,9 @@ if (!class_exists('WP_Post')) {
         public $ID = 0;
     }
 }
+
+foreach (['MINUTE_IN_SECONDS' => 60, 'HOUR_IN_SECONDS' => 3600, 'DAY_IN_SECONDS' => 86400] as $constant => $value) {
+    if (!defined($constant)) {
+        define($constant, $value);
+    }
+}
