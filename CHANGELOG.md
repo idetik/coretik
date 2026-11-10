@@ -1,3 +1,11 @@
+# [2.0.0-beta.19](https://github.com/idetik/coretik/compare/v2.0.0-beta.18...v2.0.0-beta.19) (2026-11-10)
+
+
+### Features
+
+* **queue:** back-office page ([6ee58c5](https://github.com/idetik/coretik/commit/6ee58c5ff60b57533ddb554c7ae8e71033aa7b31))
+* **queue:** background jobs run by WP-Cron ([1c00f95](https://github.com/idetik/coretik/commit/1c00f9566929cd2718a186a4f582114afaf71636))
+
 # [2.0.0-beta.18](https://github.com/idetik/coretik/compare/v2.0.0-beta.17...v2.0.0-beta.18) (2026-11-05)
 
 
