@@ -17,6 +17,7 @@ use Coretik\Core\Schema;
  * @method mixed forms()
  * @method mixed option(string $key, mixed $default = false)
  * @method mixed menu()
+ * @method \Coretik\Services\Queue\Queue queue()
  * @property \Coretik\Core\Models\Wp\Option $option
  *
  * @phpstan-consistent-constructor
@@ -65,6 +66,10 @@ class App
 
         if ($this->container->has('notices') && \apply_filters('coretik/app/init/notices', true)) {
             \add_action('coretik/app/launched', [$this->get('notices.container'), 'listen']);
+        }
+
+        if ($this->container->has('queue') && \apply_filters('coretik/app/init/queue', true)) {
+            $this->get('queue')->listen();
         }
 
         if ($this->container->has('forms') && \apply_filters('coretik/app/init/forms', true)) {

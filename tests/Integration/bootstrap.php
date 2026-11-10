@@ -93,5 +93,8 @@ tests_add_filter('after_setup_theme', function () {
         ->addToSchema();
 
     \Coretik\Core\Builders\UserType::make('coach', 'Coach', ['read' => true])->addToSchema();
+
+    // Queue table: created before the tests, which turn CREATE TABLE into temporary tables
+    (new \Coretik\Services\Queue\DatabaseStore())->install(true);
 });
 require_once $wpTests . '/includes/bootstrap.php';

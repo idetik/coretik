@@ -608,6 +608,52 @@ add_filter('coretik/forms/blacklist', fn (array $words) => array_merge($words, [
 
 A submission flagged as spam is silently ignored: the visitor gets no error message.
 
+### Queue
+
+Background jobs, run by WP-Cron every minute: bulk emails, exports, API calls… Opt-in, declare the service:
+
+```php
+use Coretik\Services\Queue\{DatabaseStore, Queue};
+
+$container['queue'] = fn () => (new Queue(new DatabaseStore())) // Table {prefix}coretik_jobs, created on first use
+    ->limit(100)        // Optional, jobs per worker run (provider rate limits…)
+    ->timeBudget(45);   // Optional, seconds per worker run
+```
+
+A job is stored as its class and a JSON payload: keep ids and scalars in it, the job loads its models again when it runs.
+
+```php
+use Coretik\Services\Queue\{Job, ShouldQueue};
+
+class SendNewsletter extends Job implements ShouldQueue
+{
+    public function __construct(protected int $userId) {}
+
+    public function handle(): void
+    {
+        // An exception fails the attempt: retried after backoff(), until tries(), then failed() is called
+    }
+
+    public function toPayload(): array { return ['user' => $this->userId]; }
+    public static function fromPayload(array $payload): static { return new static((int)$payload['user']); }
+
+    // Optional: queue() ("default"), tries() (3), backoff(int $attempts) (1 min × attempts), failed(\Throwable $e)
+}
+
+coretik()->queue()->dispatch(new SendNewsletter($id));                     // ShouldQueue: queued, otherwise run now
+coretik()->queue()->push(new SendNewsletter($id), delay: 600, group: 'newsletter-42');
+coretik()->queue()->stats('newsletter-42');                                 // ['pending' => 12, 'running' => 1, 'done' => 30, 'failed' => 0]
+coretik()->queue()->retry('newsletter-42');                                 // Failed jobs run again
+```
+
+- Concurrent workers never run the same job; a job still running after `timeout()` (10 min, worker killed) is released and counts one attempt.
+- Done jobs are kept 7 days, failed jobs 30 days, with their last error (`keepDone()`, `keepFailed()`).
+- `sync()` or the filter `coretik/queue/sync`: jobs run when pushed (development without cron).
+- Hooks: `coretik/queue/pushed`, `coretik/queue/processing`, `coretik/queue/done`, `coretik/queue/retrying`, `coretik/queue/failed`.
+- WP-CLI: `wp coretik queue work [--queue=] [--limit=] [--time=]`, `wp coretik queue stats [--group=]`, `wp coretik queue retry [<id>] [--group=]`.
+
+WP-Cron runs on page visits: use a system cron (`wp-cron.php` or `wp cron event run --due-now` every minute) so the jobs run on time.
+
 ### Emails viewer
 
 Back-office page listing the emails of the application with their preview (envelope, HTML in desktop / mobile width) and a test sending to the current user. The theme describes its emails by implementing `Coretik\Services\Email\Viewer\Catalog`:
