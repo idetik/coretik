@@ -1,3 +1,10 @@
+# [2.0.0-beta.21](https://github.com/idetik/coretik/compare/v2.0.0-beta.20...v2.0.0-beta.21) (2026-11-10)
+
+
+### Features
+
+* **admin:** Coretik menu gathering Schéma, Emails, File d'attente ([0ab5e8d](https://github.com/idetik/coretik/commit/0ab5e8d08680ae7bcf5559c7547938b856500556))
+
 # [2.0.0-beta.20](https://github.com/idetik/coretik/compare/v2.0.0-beta.19...v2.0.0-beta.20) (2026-11-10)
 
 
