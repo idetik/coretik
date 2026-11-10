@@ -2,8 +2,10 @@
 
 namespace Coretik\Services\Queue;
 
+use Coretik\Services\Admin\Menu;
+
 /**
- * Back-office page of the queue (Tools > File d'attente by default): worker health, jobs by status, filters
+ * Back-office page of the queue (Coretik > File d'attente by default): worker health, jobs by status, filters
  * (status, queue, group), last error and payload of each job, retry / delete a job, retry the failed jobs, run the
  * worker now.
  *
@@ -18,8 +20,8 @@ class Admin
         'slug' => 'coretik-queue',
         'title' => 'File d\'attente',
         'capability' => 'manage_options',
-        // Parent menu slug, null for a top level menu
-        'parent' => 'tools.php',
+        // Parent menu slug (Coretik menu by default, 'tools.php'…), null for a top level menu
+        'parent' => Menu::SLUG,
         'icon' => 'dashicons-clock',
         'position' => 81,
         'per_page' => 50,
@@ -57,6 +59,9 @@ class Admin
 
     public function hooks(): void
     {
+        if (Menu::SLUG === $this->options['parent']) {
+            Menu::register();
+        }
         \add_action('admin_menu', [$this, 'menu']);
         foreach (['retry', 'delete', 'work'] as $action) {
             \add_action('admin_post_' . $this->action($action), [$this, $action]);

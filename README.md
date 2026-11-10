@@ -652,7 +652,7 @@ coretik()->queue()->retry('newsletter-42');                                 // F
 - Hooks: `coretik/queue/pushed`, `coretik/queue/processing`, `coretik/queue/done`, `coretik/queue/retrying`, `coretik/queue/failed`.
 - WP-CLI: `wp coretik queue work [--queue=] [--limit=] [--time=]`, `wp coretik queue stats [--group=]`, `wp coretik queue retry [<id>] [--group=]`.
 
-Back-office page **Tools > File d'attente** (`manage_options`): worker health (last / next run, warning when jobs wait and the worker did not run for 5 minutes), jobs by status, filters (queue, group), last error and payload of each job, retry or delete a job, retry the failed jobs, run the worker now. Options: `->admin(['parent' => null, 'capability' => 'edit_others_posts', 'per_page' => 50, 'late_after' => 300])`, `->admin(false)` to disable it.
+Back-office page **Coretik > File d'attente** (`manage_options`): worker health (last / next run, warning when jobs wait and the worker did not run for 5 minutes), jobs by status, filters (queue, group), last error and payload of each job, retry or delete a job, retry the failed jobs, run the worker now. Options: `->admin(['parent' => 'tools.php', 'capability' => 'edit_others_posts', 'per_page' => 50, 'late_after' => 300])`, `->admin(false)` to disable it.
 
 #### Server cron
 
@@ -668,6 +668,19 @@ define('DISABLE_WP_CRON', true);
 ```
 
 Run it as the web server user (same rights on uploads and logs). Without WP-CLI, call `wp-cron.php` over HTTP instead (`curl -s https://example.org/wp/wp-cron.php > /dev/null`): a worker run lasts up to `timeBudget()` (45 s), keep it under the HTTP timeouts of the server.
+
+### Back-office menu
+
+The back-office tools of coretik are gathered in a **Coretik** top level menu (`manage_options`): Schéma (with `WP_DEBUG`), Emails, File d'attente. The menu links to the first page the user can open. A tool can still go elsewhere with its `parent` option (`'tools.php'`, or `null` for its own top level menu).
+
+```php
+// Label, capability, icon and position of the menu
+add_filter('coretik/admin/menu', fn (array $options) => ['title' => 'Outils techniques', 'position' => 3] + $options);
+
+// A page of the project in the same menu
+\Coretik\Services\Admin\Menu::register();
+add_action('admin_menu', fn () => add_submenu_page(\Coretik\Services\Admin\Menu::SLUG, 'Imports', 'Imports', 'manage_options', 'my-imports', 'my_imports_page'));
+```
 
 ### Emails viewer
 
