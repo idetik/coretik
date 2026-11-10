@@ -37,30 +37,58 @@ $notices = [
         <div class="notice notice-success is-dismissible"><p><?= \esc_html($notices[$notice]) ?></p></div>
     <?php endif; ?>
 
-    <?php if ($health['late']) : ?>
-        <div class="notice notice-warning inline">
-            <p>
-                <strong>Le worker ne semble pas tourner :</strong>
-                <?= (int)$stats[QueuedJob::PENDING] ?> tâche(s) en attente, dernier passage <?= \esc_html($health['last'] ? Admin::date($health['last']) : 'jamais') ?>.
-                Vérifiez la tâche cron du serveur (wp-cron toutes les minutes).
-            </p>
-        </div>
-    <?php endif; ?>
+    <?php
+    if ($health['late']) {
+        [$tone, $state] = ['late', 'Le worker ne semble pas tourner'];
+    } elseif ($health['last']) {
+        [$tone, $state] = ['ok', 'Worker actif'];
+    } else {
+        [$tone, $state] = ['idle', 'Worker pas encore lancé'];
+    }
+    $moment = fn (?int $timestamp, string $empty, ?string $label = null, string $modifier = '') => $timestamp
+        ? sprintf(
+            '<strong class="coretik-queue__health-value%s"><time datetime="%s">%s</time></strong><span class="coretik-queue__health-hint">%s</span>',
+            $modifier ? ' coretik-queue__health-value--' . \esc_attr($modifier) : '',
+            \esc_attr(gmdate('c', $timestamp)),
+            \esc_html($label ?? Admin::relative($timestamp)),
+            \esc_html(($label ? 'prévu ' : '') . Admin::fullDate($timestamp))
+        )
+        : sprintf('<strong class="coretik-queue__health-value">%s</strong>', \esc_html($empty));
 
-    <dl class="coretik-queue__health">
-        <div>
-            <dt>Dernier passage</dt>
-            <dd><?= \esc_html(Admin::date($health['last'])) ?></dd>
-        </div>
-        <div>
-            <dt>Prochain passage</dt>
-            <dd><?= \esc_html($health['next'] ? Admin::date((int)$health['next']) : 'non planifié') ?></dd>
-        </div>
-        <div>
-            <dt>WP-Cron</dt>
-            <dd><?= $health['cron_disabled'] ? 'déclenché par le serveur (DISABLE_WP_CRON)' : 'déclenché par les visites et/ou le serveur' ?></dd>
-        </div>
-    </dl>
+    // Next run already due: WP-Cron runs it at the next request (or the next server cron)
+    $next = $health['next'] ? (int)$health['next'] : null;
+    $overdue = $next && $next <= time();
+    $nextLabel = !$overdue ? null : (time() - $next > (int)$admin->option('late_after') ? 'En retard' : 'Imminent');
+    ?>
+    <section class="coretik-queue__health coretik-queue__health--<?= \esc_attr($tone) ?>" aria-label="État du worker">
+        <p class="coretik-queue__health-state">
+            <span class="coretik-queue__health-dot" aria-hidden="true"></span>
+            <strong><?= \esc_html($state) ?></strong>
+            <?php if ($health['late']) : ?>
+                <span>
+                    <?= (int)$stats[QueuedJob::PENDING] ?> tâche(s) en attente.
+                    Vérifiez la tâche cron du serveur (wp-cron toutes les minutes).
+                </span>
+            <?php endif; ?>
+        </p>
+        <dl class="coretik-queue__health-grid">
+            <div class="coretik-queue__health-item">
+                <dt><span class="dashicons dashicons-backup" aria-hidden="true"></span>Dernier passage</dt>
+                <dd><?= $moment($health['last'], 'jamais') ?></dd>
+            </div>
+            <div class="coretik-queue__health-item">
+                <dt><span class="dashicons dashicons-clock" aria-hidden="true"></span>Prochain passage</dt>
+                <dd><?= $moment($next, 'non planifié', $nextLabel, 'En retard' === $nextLabel ? 'late' : '') ?></dd>
+            </div>
+            <div class="coretik-queue__health-item">
+                <dt><span class="dashicons dashicons-controls-repeat" aria-hidden="true"></span>Déclenchement</dt>
+                <dd>
+                    <strong class="coretik-queue__health-value"><?= $health['cron_disabled'] ? 'Cron serveur' : 'Visites du site' ?></strong>
+                    <span class="coretik-queue__health-hint"><?= $health['cron_disabled'] ? 'DISABLE_WP_CRON actif, toutes les minutes' : 'et tâche cron du serveur si configurée' ?></span>
+                </dd>
+            </div>
+        </dl>
+    </section>
 
     <ul class="subsubsub">
         <li>
@@ -139,7 +167,7 @@ $notices = [
                     </td>
                     <td class="column-status">
                         <span class="coretik-queue__status coretik-queue__status--<?= \esc_attr($job->status) ?>">
-                            <?= \esc_html(Admin::STATUS_LABELS[$job->status] ?? $job->status) ?>
+                            <?= \esc_html(Admin::JOB_STATUS_LABELS[$job->status] ?? $job->status) ?>
                         </span>
                     </td>
                     <td class="column-attempts"><?= (int)$job->attempts ?></td>
