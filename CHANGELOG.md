@@ -1,3 +1,10 @@
+# [2.0.0-beta.22](https://github.com/idetik/coretik/compare/v2.0.0-beta.21...v2.0.0-beta.22) (2026-11-10)
+
+
+### Bug Fixes
+
+* **models:** default meta values hooked on the builder meta type ([7651548](https://github.com/idetik/coretik/commit/7651548a74ebc8c7c12862f285cb41fce57e4d3c))
+
 # [2.0.0-beta.21](https://github.com/idetik/coretik/compare/v2.0.0-beta.20...v2.0.0-beta.21) (2026-11-10)
 
 
