@@ -2,11 +2,14 @@
 
 namespace Coretik\Services\Email\Viewer;
 
+use Coretik\Services\Admin\Menu;
+
 /**
  * Back-office page listing the emails of the application (Catalog) with their preview:
  * envelope (from, reply-to, to, subject), rendered HTML in an iframe (desktop / mobile width), test sending to oneself.
  *
- * (new Viewer(new MyCatalog()))->hooks();
+ * (new Viewer(new MyCatalog()))->hooks();                                     // Coretik > Emails
+ * (new Viewer(new MyCatalog(), ['parent' => null, 'position' => 30]))->hooks(); // Top level menu
  * (new Viewer(new MyCatalog(), ['parent' => 'tools.php', 'capability' => 'edit_others_posts']))->hooks();
  *
  * URLs: admin.php?page={slug}&mail={key}&{context fields}, the frame and the test sending through admin-post.php.
@@ -22,8 +25,8 @@ class Viewer
         'capability' => 'manage_options',
         'icon' => 'dashicons-email-alt',
         'position' => 81,
-        // Parent menu slug: submenu instead of a top level menu
-        'parent' => null,
+        // Parent menu slug (Coretik menu by default, 'tools.php'…), null for a top level menu
+        'parent' => Menu::SLUG,
     ];
 
     /**
@@ -40,6 +43,9 @@ class Viewer
 
     public function hooks(): void
     {
+        if (Menu::SLUG === $this->options['parent']) {
+            Menu::register();
+        }
         \add_action('admin_menu', [$this, 'menu']);
         \add_action('admin_post_' . $this->action('frame'), [$this, 'frame']);
         \add_action('admin_post_' . $this->action('send'), [$this, 'send']);
