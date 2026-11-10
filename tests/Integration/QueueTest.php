@@ -221,4 +221,44 @@ class QueueTest extends IntegrationTestCase
         $this->expectException(\WPDieException::class);
         (new Admin($this->queue))->page();
     }
+
+    private function adminPage(): string
+    {
+        wp_set_current_user(self::factory()->user->create(['role' => 'administrator']));
+        ob_start();
+        (new Admin($this->queue))->page();
+        return (string)ob_get_clean();
+    }
+
+    public function testAdminPageShowsTheNextRun(): void
+    {
+        wp_clear_scheduled_hook(Queue::HOOK);
+        wp_schedule_event(time() + 40, 'hourly', Queue::HOOK);
+
+        $html = $this->adminPage();
+
+        $this->assertStringContainsString('Prochain passage', $html);
+        $this->assertMatchesRegularExpression('/dans \d+ sec/', $html);
+    }
+
+    public function testDueNextRunIsImminentThenLate(): void
+    {
+        wp_clear_scheduled_hook(Queue::HOOK);
+        wp_schedule_event(time() - 30, 'hourly', Queue::HOOK);
+        $this->assertStringContainsString('Imminent', $this->adminPage());
+
+        wp_clear_scheduled_hook(Queue::HOOK);
+        wp_schedule_event(time() - HOUR_IN_SECONDS, 'hourly', Queue::HOOK);
+        $html = $this->adminPage();
+        $this->assertStringContainsString('En retard', $html);
+        $this->assertStringNotContainsString('il y a 1 heure</time></strong><span class="coretik-queue__health-hint">prévu', $html);
+    }
+
+    public function testJobStatusIsSingular(): void
+    {
+        $this->queue->push(new CountingJob('a'));
+        $this->queue->work();
+
+        $this->assertMatchesRegularExpression('/coretik-queue__status--done">\s*Terminée\s*</', $this->adminPage());
+    }
 }

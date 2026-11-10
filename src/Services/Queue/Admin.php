@@ -34,6 +34,16 @@ class Admin
         QueuedJob::FAILED => 'En échec',
     ];
 
+    /**
+     * Status of one job
+     */
+    public const JOB_STATUS_LABELS = [
+        QueuedJob::PENDING => 'En attente',
+        QueuedJob::RUNNING => 'En cours',
+        QueuedJob::DONE => 'Terminée',
+        QueuedJob::FAILED => 'En échec',
+    ];
+
     /** @var array<string, mixed> */
     protected array $options;
 
@@ -156,6 +166,35 @@ class Admin
 
         $diff = \human_time_diff($timestamp, time());
         return sprintf('%s (%s)', \wp_date('d/m/Y H:i:s', $timestamp), $timestamp > time() ? 'dans ' . $diff : 'il y a ' . $diff);
+    }
+
+    /**
+     * "il y a 3 minutes", "dans 54 secondes", "—"
+     */
+    public static function relative(?int $timestamp): string
+    {
+        if (!$timestamp) {
+            return '—';
+        }
+
+        $diff = \human_time_diff($timestamp, time());
+        return $timestamp > time() ? 'dans ' . $diff : 'il y a ' . $diff;
+    }
+
+    /**
+     * Full date for the title attributes
+     */
+    public static function fullDate(?int $timestamp): string
+    {
+        return $timestamp ? \wp_date('d/m/Y H:i:s', $timestamp) : '';
+    }
+
+    /**
+     * Page URL of the filters form (admin.php or the parent page)
+     */
+    public function formAction(): string
+    {
+        return \admin_url($this->options['parent'] && str_ends_with((string)$this->options['parent'], '.php') ? (string)$this->options['parent'] : 'admin.php');
     }
 
     protected function authorize(): void
