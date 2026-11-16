@@ -21,6 +21,7 @@ class MaxSize extends Constraint
         if (!Utils::issetValue($value)) {
             return true;
         }
-        return strlen($value) <= $this->max;
+        // Characters, not bytes: "Zoé" is 3 long (UTF-8), as the maxlength attribute of the browser
+        return \mb_strlen((string)$value) <= $this->max;
     }
 }

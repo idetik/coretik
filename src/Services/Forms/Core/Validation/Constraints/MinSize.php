@@ -21,6 +21,7 @@ class MinSize extends Constraint
         if (!Utils::issetValue($value)) {
             return true;
         }
-        return strlen($value) >= $this->min;
+        // Characters, not bytes (UTF-8)
+        return \mb_strlen((string)$value) >= $this->min;
     }
 }
