@@ -31,7 +31,7 @@ class QueryTest extends IntegrationTestCase
     public function testAjaxQueriesPublishedProductsForVisitors(): void
     {
         add_filter('wp_doing_ajax', '__return_true');
-        wp_set_current_user(0);
+        $this->logout();
 
         $this->assertSame(3, coretik()->schema('product')->query()->all()->count());
     }
@@ -39,7 +39,7 @@ class QueryTest extends IntegrationTestCase
     public function testAjaxQueriesAllStatusesForEditors(): void
     {
         add_filter('wp_doing_ajax', '__return_true');
-        wp_set_current_user(self::factory()->user->create(['role' => 'editor']));
+        $this->loginAs('editor');
 
         $this->assertSame(5, coretik()->schema('product')->query()->all()->count());
     }

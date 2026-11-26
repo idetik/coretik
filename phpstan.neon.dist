@@ -10,6 +10,14 @@ parameters:
         - src/Services/*/views/*
     scanFiles:
         - vendor/php-stubs/acf-pro-stubs/acf-pro-stubs.php
+        # WordPress test suite: base class and functions of src/Testing (not its bootstrap, which defines constants)
+        - vendor/wp-phpunit/wp-phpunit/includes/functions.php
+        - vendor/wp-phpunit/wp-phpunit/includes/mock-mailer.php
+        - vendor/wp-phpunit/wp-phpunit/includes/phpunit-adapter-testcase.php
+        - vendor/wp-phpunit/wp-phpunit/includes/abstract-testcase.php
+        - vendor/wp-phpunit/wp-phpunit/includes/testcase.php
+    scanDirectories:
+        - vendor/wp-phpunit/wp-phpunit/includes/factory
     treatPhpDocTypesAsCertain: false
     # WP_Post::__get() exposes metas and menu items properties
     universalObjectCratesClasses:

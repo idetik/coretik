@@ -24,6 +24,8 @@ composer phpstan
 
 The database settings can be changed with the `WP_TESTS_DB_HOST`, `WP_TESTS_DB_NAME`, `WP_TESTS_DB_USER` and `WP_TESTS_DB_PASSWORD` environment variables.
 
+To test a project built with coretik, see [Testing](#testing).
+
 ## Acorn
 
 coretik can be used with [Acorn](https://roots.io/acorn/) (Laravel components in WordPress, versions 5 and 6). Acorn discovers the coretik service provider, which exposes the coretik application in the Acorn container:
@@ -724,3 +726,139 @@ class MyEmails implements Catalog
 ```
 
 Options: `slug`, `title`, `capability`, `icon`, `position`, `parent` (submenu). The accent color is the CSS variable `--coretik-email-viewer-accent` on `.coretik-email-viewer`.
+
+## Testing
+
+coretik ships an integration testing kit (`Coretik\Testing`) for the projects: the WordPress test suite loads the theme and its plugins in a MySQL database emptied at each run, each test runs in a transaction rolled back afterwards. Unit tests (no WordPress) stay plain PHPUnit, with [Brain Monkey](https://github.com/Brain-WP/BrainMonkey) to mock the WordPress functions.
+
+The kit is only loaded by the tests: `Coretik\Testing\IntegrationTestCase` extends `WP_UnitTestCase`, which only exists in the WordPress test suite.
+
+### Setup
+
+```bash
+composer require --dev phpunit/phpunit:^9.6 wp-phpunit/wp-phpunit yoast/phpunit-polyfills
+```
+
+The major version of `wp-phpunit/wp-phpunit` follows the one of WordPress. Then the PHPUnit configurations, one for each suite:
+
+```xml
+<!-- phpunit.xml.dist: unit tests, bootstrap requiring vendor/autoload.php -->
+<phpunit bootstrap="tests/bootstrap.php" colors="true" failOnWarning="true" failOnRisky="true">
+    <testsuites>
+        <testsuite name="unit"><directory>tests/Unit</directory></testsuite>
+    </testsuites>
+</phpunit>
+
+<!-- phpunit-integration.xml.dist -->
+<phpunit bootstrap="tests/Integration/bootstrap.php" colors="true" failOnRisky="true">
+    <testsuites>
+        <testsuite name="integration"><directory>tests/Integration</directory></testsuite>
+    </testsuites>
+</phpunit>
+```
+
+```json
+"autoload-dev": { "psr-4": { "App\\Tests\\": "tests/" } },
+"scripts": {
+    "test": "phpunit",
+    "test:integration": "phpunit -c phpunit-integration.xml.dist"
+}
+```
+
+`tests/Integration/bootstrap.php` installs WordPress and loads the theme, as a request would:
+
+```php
+<?php
+
+require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
+
+\Coretik\Testing\Bootstrap::make(dirname(__DIR__, 2))  // Project root: relative paths are resolved from it
+    ->database('my_project_tests')                     // Default name, WP_TESTS_DB_NAME first
+    ->wordpress('web/wp')                              // ABSPATH (default: vendor/johnpbloch/wordpress-core)
+    ->content('web/app', 'web/app/plugins')            // WP_CONTENT_DIR, WP_PLUGIN_DIR
+    ->theme('my-theme')                                // Activated theme, in WP_CONTENT_DIR/themes
+    ->plugins('advanced-custom-fields-pro/acf.php')    // Loaded on muplugins_loaded, in this order
+    ->define('WP_ENV', 'testing')                      // Any other constant of wp-config.php
+    ->run();
+```
+
+| Method | |
+| --- | --- |
+| `database(string $name)` | Default database name. The database settings come from the `WP_TESTS_DB_HOST` (`127.0.0.1:3307`), `WP_TESTS_DB_NAME`, `WP_TESTS_DB_USER` (`root`) and `WP_TESTS_DB_PASSWORD` (`root`) environment variables first. Its tables are dropped at each run: the name must contain `test`, otherwise the tests stop |
+| `wordpress(string $path)` | WordPress core directory (`ABSPATH`) |
+| `content(string $path, ?string $plugins = null)` | `WP_CONTENT_DIR` and `WP_PLUGIN_DIR` (default `{content}/plugins`) |
+| `theme(string $stylesheet)` | `WP_DEFAULT_THEME`, activated by the installation |
+| `plugins(string ...$files)` | Plugins main files, relative to `WP_PLUGIN_DIR` or absolute |
+| `muPlugins(string $path)` | `WPMU_PLUGIN_DIR`. Default: none, the must-use plugins of the project (logs, monitoring, security…) are not loaded. A directory of test-only must-use plugins (fake API clients…) can be given |
+| `define(string $name, $value)` | Any constant (scalar value), overrides the defaults |
+| `on(string $hook, callable $callback, int $priority = 10)` | Callback added before WordPress loads (`tests_add_filter()`) |
+| `uploads(string\|false $path)` | Uploads directory. Default: a temporary directory, never the project one. `false`: WordPress default |
+| `queueTable(bool $install)` | Creates the [queue](#queue) table before the tests (default `true`): the tests turn `CREATE TABLE` into temporary tables |
+| `tablePrefix(string $prefix)` | Default `wptests_` |
+| `config(string $file)` | Own `wp-tests-config.php` instead of the generated configuration |
+
+Safe defaults: `WP_DEBUG`, `WP_HTTP_BLOCK_EXTERNAL` (no outgoing HTTP request: mock the APIs with the `pre_http_request` filter, or `define('WP_ACCESSIBLE_HOSTS', ...)`), no must-use plugin, uploads in a temporary directory, `example.org` domain, the PHP binary running PHPUnit for the installation. WP-Cron is disabled by the WordPress test suite (`DISABLE_WP_CRON`: do not define it again, the warning would be printed before the tests).
+
+### MySQL
+
+A MySQL server in memory (`tmpfs`), one database per project (or per branch / worktree):
+
+```bash
+docker run -d --name coretik-tests-mysql -e MYSQL_ROOT_PASSWORD=root -p 3307:3306 --tmpfs /var/lib/mysql mysql:8.4
+docker exec coretik-tests-mysql mysql -uroot -proot -e "CREATE DATABASE IF NOT EXISTS my_project_tests"
+composer test:integration
+```
+
+The data is lost when the container stops: create the database again after a Docker restart. A run stuck at `Installing...` waits for a lock held by an interrupted run: kill its connections (`SHOW PROCESSLIST`, `KILL <id>`).
+
+In CI, a `mysql:8.4` service and the `WP_TESTS_DB_*` variables.
+
+### Writing a test
+
+```php
+namespace App\Tests\Integration;
+
+use Coretik\Testing\AjaxRequests;
+use Coretik\Testing\IntegrationTestCase;
+
+class OrderTest extends IntegrationTestCase
+{
+    use AjaxRequests;
+
+    public function testConfirmationEmail(): void
+    {
+        $order = model('order');                 // Project fixtures: through the application code
+        $order->post_title = 'Order #1';
+        $order->save();
+
+        $this->admin();
+        $response = $this->ajax('order_confirm', ['order' => $order->id(), '_ajax_nonce' => wp_create_nonce('order_confirm')]);
+
+        $this->assertTrue($response['success']);
+        $this->assertSame('confirmed', $this->fresh($order)->status);
+        $this->assertSame('Votre commande', $this->lastEmail()['subject']);
+    }
+}
+```
+
+Before each test, `Coretik\Testing\IntegrationTestCase` forgets the models and queries kept in memory, resets the ACF stores and the caught emails, and saves the roles of the user types of the schema (coretik saves them on back-office requests only: a fresh test database has none of them). A project adds its own fixtures (`order()`, `customer()`…) in an abstract test case extending it.
+
+| Helper | |
+| --- | --- |
+| `newRequest()` | Forgets the models, queries and ACF values kept in memory, as a new HTTP request would: needed after a change made outside of the models (`wp_update_post()`, `update_post_meta()`…) |
+| `fresh(Model $model)` | The model loaded again from the database |
+| `persistRoles()` | Saves the roles of the schema (called by `set_up()`) |
+| `loginAs(string $role, array $args = [])`, `admin()`, `subscriber()`, `logout()` | New user of this role, logged in (`$args`: `wp_insert_user()` arguments) |
+| `sentEmails()`, `lastEmail()` | Emails caught by the test mailer (`to`, `subject`, `body`, `header`…), never sent. `lastEmail()` fails the test when none was sent |
+| `workQueue()` | Runs the jobs of the [queue](#queue) which are due, as WP-Cron does |
+
+The `Coretik\Testing\AjaxRequests` trait runs AJAX handlers as `admin-ajax.php` does:
+
+- `ajax(string $action, array $post = [])`: runs the `wp_ajax_{$action}` handlers (`wp_ajax_nopriv_{$action}` when no user is logged in) with these `$_POST` / `$_REQUEST`, and returns the JSON printed (`['success' => true, 'data' => ...]`), or `['die' => $message]` when the handler stopped with `wp_die()` without printing anything (`check_ajax_referer()` failure: `['die' => '-1']`);
+- `captureJson(callable $handler)`: the same for any handler answering with `wp_send_json*()` (admin-post, webhook endpoint…).
+
+The HTTP status is not observable under PHPUnit (headers already sent): check the payload.
+
+### Static analysis
+
+[PHPStan](https://phpstan.org) with [szepeviktor/phpstan-wordpress](https://github.com/szepeviktor/phpstan-wordpress), `php-stubs/acf-pro-stubs` for ACF and `php-stubs/wp-cli-stubs` for WP-CLI commands (the `WP_CLI` class only exists in WP-CLI). Constants defined by the configuration of the project (`WP_ENV`…) go in a stubs file of the project (`scanFiles`), with `dynamicConstantNames` for the ones which change between environments. To analyse the tests too, scan the WordPress test suite (`vendor/wp-phpunit/wp-phpunit/includes`: `functions.php`, `mock-mailer.php`, `phpunit-adapter-testcase.php`, `abstract-testcase.php`, `testcase.php`, and the `factory` directory).
