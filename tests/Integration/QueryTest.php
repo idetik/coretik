@@ -119,4 +119,18 @@ class QueryTest extends IntegrationTestCase
         update_post_meta($id, 'price', '6');
         $this->assertCount(0, coretik()->schema('product')->query()->whereMeta('price', '5')->ids());
     }
+
+    public function testOnlyIdsReturnsIntegersWithoutChangingTheQuery(): void
+    {
+        $query = coretik()->schema('product')->query()->all();
+        $expected = array_map('intval', $query->ids());
+
+        $ids = $query->onlyIds();
+
+        $this->assertSame($expected, $ids);
+        $this->assertCount(3, $ids);
+        $this->assertContainsOnly('int', $ids);
+        $this->assertInstanceOf(\WP_Post::class, $query->results()[0], 'The query still loads the posts');
+        $this->assertArrayNotHasKey('fields', array_filter($query->builder()->getParameters()));
+    }
 }

@@ -27,6 +27,24 @@ class Post extends Query
         return \max((int)$this->get()->found_posts, $this->count());
     }
 
+    /**
+     * Ids of the matching posts in one light query: no post row loaded, no meta / term cache primed, no row count
+     * (ids() loads the posts, then reads their ID). The query itself is left unchanged.
+     *
+     * @return int[]
+     */
+    public function onlyIds(): array
+    {
+        $query = clone $this;
+        $query->query = null;
+        $query->set('fields', 'ids')
+            ->set('no_found_rows', true)
+            ->set('update_post_meta_cache', false)
+            ->set('update_post_term_cache', false);
+
+        return array_map('intval', $query->results());
+    }
+
     public function getQueryArgsDefault()
     {
         return [
