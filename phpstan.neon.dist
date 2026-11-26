@@ -20,9 +20,9 @@ parameters:
           path: src/Core/Builders/Traits/Maker.php
         # Public traits for projects, unused in the package itself
         - identifier: trait.unused
-        # ACF Extended (optional)
+        # ACF Extended, WP-CLI (optional)
         - identifier: function.notFound
-          message: '#acfe_#'
+          message: '#(acfe_|WP_CLI\\Utils)#'
         # Optional dependencies, only used when available
         - identifier: class.notFound
           message: '#(WP_CLI|Freelancehunt\\Validators\\CreditCard)#'

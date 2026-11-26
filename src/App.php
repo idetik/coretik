@@ -8,6 +8,7 @@ use Coretik\Core\Builders\Taxonomy;
 use Coretik\Core\Builders\UserType;
 use Coretik\Core\Container;
 use Coretik\Core\Schema;
+use Coretik\Services\Migrations\Migrations;
 
 /**
  * Container services are reachable as methods (invokable services are called with the arguments).
@@ -18,6 +19,7 @@ use Coretik\Core\Schema;
  * @method mixed option(string $key, mixed $default = false)
  * @method mixed menu()
  * @method \Coretik\Services\Queue\Queue queue()
+ * @method \Coretik\Services\Migrations\Migrations migrations()
  * @property \Coretik\Core\Models\Wp\Option $option
  *
  * @phpstan-consistent-constructor
@@ -70,6 +72,14 @@ class App
 
         if ($this->container->has('queue') && \apply_filters('coretik/app/init/queue', true)) {
             $this->get('queue')->listen();
+        }
+
+        // A project may still declare its own "migrations" service: only coretik's one is started
+        if ($this->container->has('migrations') && \apply_filters('coretik/app/init/migrations', true)) {
+            $migrations = $this->get('migrations');
+            if ($migrations instanceof Migrations) {
+                $migrations->listen();
+            }
         }
 
         if ($this->container->has('forms') && \apply_filters('coretik/app/init/forms', true)) {

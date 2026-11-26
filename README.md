@@ -373,6 +373,17 @@ $query->count(); // Results of the current page (10 max)
 $query->total(); // Results of all pages (found_posts)
 ```
 
+#### Ids
+
+```php
+$query = coretik()->schema('my_custom_post_type')->query()->all();
+
+$query->ids();     // Loads the posts (and primes their metas and terms caches), then reads their ID
+$query->onlyIds(); // int[] in one light query: fields=ids, no row count, no meta / term cache (posts only)
+```
+
+`onlyIds()` leaves the query unchanged: use it for id lists and counts on large sets, `models()` when the models are needed.
+
 #### Others query
 See `src/Core/Query/Adapters` folder. 
 
@@ -669,9 +680,90 @@ define('DISABLE_WP_CRON', true);
 
 Run it as the web server user (same rights on uploads and logs). Without WP-CLI, call `wp-cron.php` over HTTP instead (`curl -s https://example.org/wp/wp-cron.php > /dev/null`): a worker run lasts up to `timeBudget()` (45 s), keep it under the HTTP timeouts of the server.
 
+### Migrations
+
+Data migrations and seeders of the application, run from WP-CLI (deployment), or from the back-office. Opt-in, declare the service and its migrations:
+
+```php
+use Coretik\Services\Migrations\Migrations;
+
+$container['migrations'] = fn () => (new Migrations()) // Statuses in the option coretik_migrations
+    ->add(
+        SplitAddress::class,    // Class names are built on first use (or instances)
+        InitialSeeder::class,
+    );
+    // ->admin(['parent' => 'tools.php'])  Optional, back-office page options, admin(false) to disable it
+    // ->cli('app migrate')                 Optional, WP-CLI command name, cli(false) to disable it
+```
+
+A **migration** runs once: once done, it is skipped unless forced. A **seeder** (initial settings and content, test data, cache clear…) runs each time it is asked, and never with the pending migrations. Write seeders so that they can run again.
+
+```php
+use Coretik\Services\Migrations\{Migration, MigrationErrorException, Seeder};
+
+class SplitAddress extends Migration
+{
+    const MIGRATION_KEY = 'split-address';               // wp app migrate split-address
+    const DESCRIPTION = 'Address split into street, postcode and city'; // Optional, shown in the lists
+
+    public function migrate()
+    {
+        if (!$this->ready()) {
+            // Recorded as failed with this message, still pending
+            throw new MigrationErrorException('The address fields are not declared');
+        }
+
+        // …
+        $this->log(sprintf('%d address(es) split', $count)); // Types: success (default), info, warning, error
+    }
+}
+
+class InitialSeeder extends Seeder
+{
+    const MIGRATION_KEY = 'initial-seeder';
+
+    public function migrate()
+    {
+        update_option('timezone_string', 'Europe/Paris');
+        $this->log('&#x2714; Settings');
+    }
+}
+```
+
+Any class implementing `MigrationInterface` (or `SeederInterface`) works too. Another exception than `MigrationErrorException` is recorded as failed, then thrown.
+
+Run them:
+
+```bash
+wp app migrate                      # Pending migrations, in the order they were added
+wp app migrate initial-seeder       # Some migrations or seeders, in this order
+wp app migrate split-address --force  # A migration already done, again
+wp app migrate --list               # Migrations and seeders, status of their last run
+wp app migrate --mark-done [<key>...] # Recorded as done without running (see below)
+```
+
+The command stops at the first failure with a non zero exit code, and an unknown key fails before any run: call it from the deployment scripts (`wp app migrate` after each deployment, `wp app migrate initial-seeder` after the WordPress install of a new environment).
+
+Back-office page **Coretik > Migrations** (`manage_options`): migrations and seeders with their last run, run the pending migrations, run (again) one of them, with their messages (HTML allowed). Options: `->admin(['parent' => 'tools.php', 'capability' => '…', 'title' => '…'])`.
+
+From the code:
+
+```php
+coretik()->migrations()->migrate();                 // Result[]: pending migrations, stops at the first failure
+coretik()->migrations()->run('initial-seeder');     // Result: status (done, failed, skipped), message, logs
+coretik()->migrations()->runMany(['a', 'b'], force: true);
+coretik()->migrations()->pending();                 // ['split-address']
+coretik()->migrations()->status('split-address');   // ['status' => 'done', 'ran_at' => 1764000000, 'message' => ''], null when never run
+coretik()->migrations()->reset('split-address');    // Pending again
+```
+
+- Hooks: `coretik/migrations/running` (migration), `coretik/migrations/done` (migration, Result), `coretik/migrations/failed` (migration, Result, Throwable).
+- Statuses are stored by a `StatusStoreInterface`: `new Migrations(new OptionStatusStore('my_option'))`, or your own store.
+- Existing site: migrations applied before the service was installed have no status, and would run again with `wp app migrate`. Record them once with `wp app migrate --mark-done <key>...` (or `--mark-done` alone: all the pending ones).
+
 ### Back-office menu
 
-The back-office tools of coretik are gathered in a **Coretik** top level menu (`manage_options`): Schéma (with `WP_DEBUG`), Emails, File d'attente. The menu links to the first page the user can open. A tool can still go elsewhere with its `parent` option (`'tools.php'`, or `null` for its own top level menu).
+The back-office tools of coretik are gathered in a **Coretik** top level menu (`manage_options`): Schéma (with `WP_DEBUG`), Emails, File d'attente, Migrations. The menu links to the first page the user can open. A tool can still go elsewhere with its `parent` option (`'tools.php'`, or `null` for its own top level menu).
 
 ```php
 // Label, capability, icon and position of the menu
