@@ -72,6 +72,14 @@ class App
             $this->get('queue')->listen();
         }
 
+        // Only the Coretik mailer: a project may declare its own "mailer" service
+        if ($this->container->has('mailer') && \apply_filters('coretik/app/init/mailer', true)) {
+            $mailer = $this->get('mailer');
+            if ($mailer instanceof \Coretik\Services\Email\Mailer) {
+                $mailer->hooks();
+            }
+        }
+
         if ($this->container->has('forms') && \apply_filters('coretik/app/init/forms', true)) {
             \add_action('init', function () {
                 // Lazy: forms are built on first use (their AJAX action, or forms()->get()), not on every request
