@@ -1,3 +1,84 @@
+# [2.1.0](https://github.com/idetik/coretik/compare/v2.0.0...v2.1.0) (2026-11-26)
+
+
+### Features
+
+* **migrations:** migrations and seeders service ([36e70fb](https://github.com/idetik/coretik/commit/36e70fbbf57816310f9402c840a29db472728bbf))
+* **query:** Post::onlyIds(), ids in one light query ([25b8b89](https://github.com/idetik/coretik/commit/25b8b899c7fecd447ebfd43bc86d0e9a7eeec683))
+* **testing:** integration testing kit for coretik projects ([0dd58ae](https://github.com/idetik/coretik/commit/0dd58aef56b0c6f2ea28edf4f353d40e0b9fefa5))
+
+# [2.0.0](https://github.com/idetik/coretik/compare/v1.15.2...v2.0.0) (2026-11-26)
+
+
+### Bug Fixes
+
+* **forms:** min-size / max-size count characters, not bytes ([7a3ac6a](https://github.com/idetik/coretik/commit/7a3ac6ac79bff7025242d7b904667dc1719c4620))
+* **models:** default meta values hooked on the builder meta type ([7651548](https://github.com/idetik/coretik/commit/7651548a74ebc8c7c12862f285cb41fce57e4d3c))
+* query cache returned outdated results after writes ([f43ec3a](https://github.com/idetik/coretik/commit/f43ec3aca5e0ccd19e8ed2c06c4d271caf0b5bce)), closes [#15](https://github.com/idetik/coretik/issues/15)
+* **release:** publish 2.0 prereleases as beta versions ([9806178](https://github.com/idetik/coretik/commit/9806178b010e07afee2d66e5d95d63bd590cf705))
+* **users:** roles were saved on every admin request ([1ad1679](https://github.com/idetik/coretik/commit/1ad1679ebed8c8cf8cf4e6f0cdff26fa369e53a3))
+
+
+### chore
+
+* **deps:** update dependencies to their latest versions ([6fabc2d](https://github.com/idetik/coretik/commit/6fabc2d6783f982c31e641fad619bd9759c327ae))
+
+
+* feat!: safer defaults for scripts loading and the schema viewer ([03b3532](https://github.com/idetik/coretik/commit/03b35325700ce0bda2ba4fa10cf6540cfe3389c6))
+* feat!: model events no longer register WordPress hooks ([72f38d5](https://github.com/idetik/coretik/commit/72f38d556cd3e5da3b80bd748ab8fd67b53fa656)), closes [#16](https://github.com/idetik/coretik/issues/16)
+* feat!: complete interfaces, fail loudly on unknown methods, empty PHPStan baseline ([89aac12](https://github.com/idetik/coretik/commit/89aac12067ee9f264cc01e2fff18828b63751951))
+* fix!: date metas use the WordPress date format ([948e964](https://github.com/idetik/coretik/commit/948e9647a012c9fda524613093846933f0ac14d3))
+* feat!: require PHP 8.2, illuminate/collections 11 or 12 and Carbon 3 ([b0c6b0b](https://github.com/idetik/coretik/commit/b0c6b0bb74d3c0ca110343ad784befd9d3a3ebd0))
+
+
+### Features
+
+* **admin:** Coretik menu gathering Schéma, Emails, File d'attente ([0ab5e8d](https://github.com/idetik/coretik/commit/0ab5e8d08680ae7bcf5559c7547938b856500556))
+* **builders:** find handlers by class, endpoints by name ([1148b82](https://github.com/idetik/coretik/commit/1148b82c0e93bc629c906211158b17e635b9e88a))
+* coretik() helper and Acorn compatibility ([2742886](https://github.com/idetik/coretik/commit/2742886f0679d42a78ec31f243b6e8dd8e1cc9e9))
+* **email:** add a back-office viewer of the application emails ([973306e](https://github.com/idetik/coretik/commit/973306e9fcbfd88e5dfc65c24ed81c052173bcf8))
+* Lazy forms ([48a0aa4](https://github.com/idetik/coretik/commit/48a0aa4fcb1b8d8aa94a8bfe172589b30681c6d2))
+* **models:** add belongsToMany relationship through a pivot post type ([da86505](https://github.com/idetik/coretik/commit/da865055e1ab96a7f1530c0fc94e6bc1bd1bc639))
+* **models:** add hasManyThrough, hasOneThrough and belongsToThrough relationships ([9f318c4](https://github.com/idetik/coretik/commit/9f318c48f6d1d66046e64d262b7e0c7af00db2fe))
+* **models:** add quiet meta updates ([85628af](https://github.com/idetik/coretik/commit/85628af4515937ffa6b658f82300469592d23041))
+* **models:** add ScheduledEventsHandler to trigger model events at a date ([f5acda5](https://github.com/idetik/coretik/commit/f5acda5b8f6201f576838764b465885bc6f0fd25))
+* **models:** add ShadowTaxonomyHandler for a second post to post relationship ([d505633](https://github.com/idetik/coretik/commit/d5056331cc03aa703d53576614415e09bda09d90))
+* **models:** endpoint handler with template, 404s and rules flush ([96a1c4f](https://github.com/idetik/coretik/commit/96a1c4f4dfa79f17843aee8774f283d4c4198c73))
+* **queue:** back-office page ([6ee58c5](https://github.com/idetik/coretik/commit/6ee58c5ff60b57533ddb554c7ae8e71033aa7b31))
+* **queue:** background jobs run by WP-Cron ([1c00f95](https://github.com/idetik/coretik/commit/1c00f9566929cd2718a186a4f582114afaf71636))
+* **queue:** worker health panel in the back-office page ([17a3a0a](https://github.com/idetik/coretik/commit/17a3a0ad7c9e12d8932199ed3b35222528c36e25))
+* relations diagram in the schema viewer ([586e8a1](https://github.com/idetik/coretik/commit/586e8a1a61d1f4130d73a0dc7d01edaed41ec538))
+* **roles:** Registry::persist() saves the roles outside of the admin ([0f50fce](https://github.com/idetik/coretik/commit/0f50fce8443411ddb5907a34791e71bebdae10e1))
+* **schema:** typed builders accessors ([ee58995](https://github.com/idetik/coretik/commit/ee58995ede1ecc18af95693c7cd9276b979733e6))
+* show shadow taxonomies in the schema viewer ([44572a9](https://github.com/idetik/coretik/commit/44572a963a17929ce4217ffc4d8af978fd078f2c))
+
+
+### Performance Improvements
+
+* skip queries that cannot return any post ([7b97605](https://github.com/idetik/coretik/commit/7b9760527b9762f0160fd34c3c32d6a69011b6f7))
+
+
+### BREAKING CHANGES
+
+* **deps:** pelago/emogrifier ^8.2 requires sabberworm/php-css-parser ^9 and drops Symfony 4.4 and 6.0 to 6.2 components.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+* scripts enqueued with the assets loader are no longer async by default; the schema viewer is disabled without WP_DEBUG.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+* the protected hookName() and getInternalId() methods are removed; the Actions trait no longer uses the Hooks trait itself (models only).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+* interfaces declare new methods; unknown methods on App, builders and queries throw a BadMethodCallException; Query methods set/childOf/all/limit/in/notIn/not/whereMeta/whereTax have typed signatures; parent() returns ?Model.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+* date metas are stored as Y-m-d H:i:s instead of Y-m-d H:i:s.u.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+* PHP 8.2 is required; illuminate/collections ^11 || ^12 and nesbot/carbon ^3 replace ^10 and ^2. Carbon 3 diffIn*() methods return signed floats.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
 # [2.0.0-beta.23](https://github.com/idetik/coretik/compare/v2.0.0-beta.22...v2.0.0-beta.23) (2026-11-26)
 
 

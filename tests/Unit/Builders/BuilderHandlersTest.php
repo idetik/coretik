@@ -78,4 +78,3 @@ class BuilderHandlersTest extends TestCase
         $this->assertNull($builder->getHandler($this->otherHandler()::class));
     }
 }
-
