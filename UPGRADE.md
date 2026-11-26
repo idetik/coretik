@@ -2,15 +2,15 @@
 
 ## From 1.x to 2.0
 
-2.0 is released as prereleases first (`2.0.0-beta.N`). To try one in a project:
-
 ```json
 "require": {
-    "idetik/coretik": "^2.0@beta"
+    "idetik/coretik": "^2.0"
 }
 ```
 
-Then run `composer update idetik/coretik -W`.
+Then run `composer update idetik/coretik -W`. Projects that followed the prereleases (`^2.0@beta`) only have to change the constraint: 2.0.0 contains every `2.0.0-beta.N` change, and the breaking changes below are the same.
+
+New in 2.0, opt-in (no change needed to upgrade): background queue run by WP-Cron, back-office email viewer, `Coretik` admin menu, `hasManyThrough` / `belongsToMany` / shadow taxonomy relationships, `ScheduledEventsHandler`, quiet meta updates, `Registry::persist()`. See the [changelog](CHANGELOG.md).
 
 ### Requirements
 
