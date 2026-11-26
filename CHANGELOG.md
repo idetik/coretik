@@ -1,3 +1,12 @@
+# [2.1.0](https://github.com/idetik/coretik/compare/v2.0.0...v2.1.0) (2026-11-26)
+
+
+### Features
+
+* **migrations:** migrations and seeders service ([36e70fb](https://github.com/idetik/coretik/commit/36e70fbbf57816310f9402c840a29db472728bbf))
+* **query:** Post::onlyIds(), ids in one light query ([25b8b89](https://github.com/idetik/coretik/commit/25b8b899c7fecd447ebfd43bc86d0e9a7eeec683))
+* **testing:** integration testing kit for coretik projects ([0dd58ae](https://github.com/idetik/coretik/commit/0dd58aef56b0c6f2ea28edf4f353d40e0b9fefa5))
+
 # [2.0.0](https://github.com/idetik/coretik/compare/v1.15.2...v2.0.0) (2026-11-26)
 
 
