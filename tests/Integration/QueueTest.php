@@ -9,7 +9,7 @@ use Coretik\Services\Queue\QueuedJob;
 use Coretik\Tests\Integration\Fixtures\CountingJob;
 
 /**
- * Queue on the table {prefix}coretik_jobs (created by tests/Integration/bootstrap.php)
+ * Queue on the table {prefix}coretik_jobs (created before the tests by Coretik\Testing\Bootstrap)
  */
 class QueueTest extends IntegrationTestCase
 {
@@ -178,7 +178,7 @@ class QueueTest extends IntegrationTestCase
 
     public function testAdminPageListsTheJobs(): void
     {
-        wp_set_current_user(self::factory()->user->create(['role' => 'administrator']));
+        $this->admin();
         $this->queue->push(new CountingJob('broken', 5), 0, 'camp-email-1-abc');
         $this->queue->push(new CountingJob('later'), HOUR_IN_SECONDS, 'other');
         foreach (range(1, 3) as $attempt) {
@@ -203,7 +203,7 @@ class QueueTest extends IntegrationTestCase
 
     public function testAdminPageWarnsWhenTheWorkerIsLate(): void
     {
-        wp_set_current_user(self::factory()->user->create(['role' => 'administrator']));
+        $this->admin();
         update_option(Queue::LAST_RUN_OPTION, time() - HOUR_IN_SECONDS, false);
         $this->queue->push(new CountingJob('waiting'));
 
@@ -216,7 +216,7 @@ class QueueTest extends IntegrationTestCase
 
     public function testAdminPageNeedsTheCapability(): void
     {
-        wp_set_current_user(self::factory()->user->create(['role' => 'editor']));
+        $this->loginAs('editor');
 
         $this->expectException(\WPDieException::class);
         (new Admin($this->queue))->page();
@@ -224,7 +224,7 @@ class QueueTest extends IntegrationTestCase
 
     private function adminPage(): string
     {
-        wp_set_current_user(self::factory()->user->create(['role' => 'administrator']));
+        $this->admin();
         ob_start();
         (new Admin($this->queue))->page();
         return (string)ob_get_clean();

@@ -25,7 +25,7 @@ class AdminMenuTest extends IntegrationTestCase
         $menu = $submenu = $_wp_submenu_nopriv = $_registered_pages = [];
         // Schema viewer hooked by App::init() (WP_DEBUG): each test adds its own tools (hooks restored after the test)
         remove_all_actions('admin_menu');
-        wp_set_current_user(self::factory()->user->create(['role' => 'administrator']));
+        $this->admin();
     }
 
     private function catalog(): Catalog
