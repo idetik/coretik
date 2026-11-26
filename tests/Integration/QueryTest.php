@@ -31,7 +31,7 @@ class QueryTest extends IntegrationTestCase
     public function testAjaxQueriesPublishedProductsForVisitors(): void
     {
         add_filter('wp_doing_ajax', '__return_true');
-        wp_set_current_user(0);
+        $this->logout();
 
         $this->assertSame(3, coretik()->schema('product')->query()->all()->count());
     }
@@ -39,7 +39,7 @@ class QueryTest extends IntegrationTestCase
     public function testAjaxQueriesAllStatusesForEditors(): void
     {
         add_filter('wp_doing_ajax', '__return_true');
-        wp_set_current_user(self::factory()->user->create(['role' => 'editor']));
+        $this->loginAs('editor');
 
         $this->assertSame(5, coretik()->schema('product')->query()->all()->count());
     }
@@ -118,5 +118,19 @@ class QueryTest extends IntegrationTestCase
         $this->assertCount(1, coretik()->schema('product')->query()->whereMeta('price', '5')->ids());
         update_post_meta($id, 'price', '6');
         $this->assertCount(0, coretik()->schema('product')->query()->whereMeta('price', '5')->ids());
+    }
+
+    public function testOnlyIdsReturnsIntegersWithoutChangingTheQuery(): void
+    {
+        $query = coretik()->schema('product')->query()->all();
+        $expected = array_map('intval', $query->ids());
+
+        $ids = $query->onlyIds();
+
+        $this->assertSame($expected, $ids);
+        $this->assertCount(3, $ids);
+        $this->assertContainsOnly('int', $ids);
+        $this->assertInstanceOf(\WP_Post::class, $query->results()[0], 'The query still loads the posts');
+        $this->assertArrayNotHasKey('fields', array_filter($query->builder()->getParameters()));
     }
 }

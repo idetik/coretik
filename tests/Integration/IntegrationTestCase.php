@@ -2,18 +2,9 @@
 
 namespace Coretik\Tests\Integration;
 
-use Coretik\Core\Builders\BuilderModelable;
-use Coretik\Core\Query\QueryCache;
-
 /**
- * WordPress rolls back the database after each test: coretik static caches are reset too.
+ * Coretik own integration tests: the testing kit shipped to the projects (Coretik\Testing)
  */
-abstract class IntegrationTestCase extends \WP_UnitTestCase
+abstract class IntegrationTestCase extends \Coretik\Testing\IntegrationTestCase
 {
-    public function set_up(): void
-    {
-        parent::set_up();
-        (new \ReflectionProperty(BuilderModelable::class, 'models'))->setValue(null, []);
-        (new \ReflectionProperty(QueryCache::class, 'instance'))->setValue(null, null);
-    }
 }
