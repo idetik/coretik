@@ -12,7 +12,15 @@ require_once $wpTests . '/includes/functions.php';
 
 // Boot coretik and declare the fixtures, as a theme would do (pluggable functions are needed)
 tests_add_filter('after_setup_theme', function () {
-    \Coretik\App::run([]);
+    // Forms: JSON form and tunnel fixtures (FormsTest), registered lazily as the themes do
+    \Coretik\App::run([
+        'forms' => fn () => new \Coretik\Services\Forms\Core\Handler(),
+        'forms.factories' => [
+            \Coretik\Tests\Integration\Fixtures\Forms\SignupTunnel::class,
+            \Coretik\Tests\Integration\Fixtures\Forms\ContactJsonForm::class,
+        ],
+        'forms.fetcher' => fn () => new \Coretik\Services\Forms\Fetcher(['signup']),
+    ]);
 
     \Coretik\Core\Builders\PostType::make('product')
         ->setSingularName('Product')
