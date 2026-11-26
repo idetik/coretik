@@ -20,6 +20,9 @@ composer test:integration
 
 # Static analysis
 composer phpstan
+
+# Forms scripts (node:test + jsdom)
+npm ci && npm run test:js
 ```
 
 The database settings can be changed with the `WP_TESTS_DB_HOST`, `WP_TESTS_DB_NAME`, `WP_TESTS_DB_USER` and `WP_TESTS_DB_PASSWORD` environment variables.
@@ -607,6 +610,172 @@ add_filter('coretik/forms/blacklist', fn (array $words) => array_merge($words, [
 ```
 
 A submission flagged as spam is silently ignored: the visitor gets no error message.
+
+### JSON forms and tunnel forms
+
+Opt-in layer on top of `AsyncForm`: forms answering JSON (errors per field, global messages, values, redirect) and multi-step forms ("tunnels": one server validation per step, navigation, summary), driven by dependency-free ES modules shipped in `src/Services/Forms/scripts`.
+
+Declare the forms service and register the forms lazily (an `ID` constant is enough, their AJAX action is `form-{ID}`):
+
+```php
+use Coretik\Services\Forms\Core\Handler;
+
+$container['forms'] = fn () => new Handler();
+$container['forms.factories'] = [Newsletter::class, Registration::class];
+```
+
+#### JSON form
+
+```php
+use Coretik\Services\Forms\JsonForm;
+
+class Newsletter extends JsonForm
+{
+    const ID = 'newsletter'; // template: templates/forms/newsletter.php
+
+    public function getRules(): array
+    {
+        return ['email' => ['name' => 'Email', 'constraints' => ['required' => true, 'email' => true]]];
+    }
+
+    protected function isValidContext(): bool
+    {
+        return true;
+    }
+
+    protected function run(): void
+    {
+        subscribe($this->getValues()['email']);
+        // Optional: $this->setSuccessTpl('<p>…</p>') (server HTML), or $this->redirectTo($url)
+    }
+}
+```
+
+`run()` may throw a `Coretik\Services\Forms\Core\Exception`: its message is displayed as a global error. The template opens and closes the form with the default parts (`<form data-form>`, form id, nonce, honeypot and the containers filled by the scripts), and wraps each field in a `[data-field="{rule key}"]` element:
+
+```php
+<?php $form->viewPart('parts/json-form-open', ['class' => 'my-form']); ?>
+    <div data-field="email">
+        <input type="email" name="<?= esc_attr($form->fieldName('email')) ?>">
+    </div>
+    <button type="submit">OK</button>
+<?php $form->viewPart('parts/json-form-close'); ?>
+```
+
+A field shown on condition (client side only: check it again server side, e.g. `required-if-fields-equals`): `data-conditional-field='[{"field":"kind","value":"pro"}]'` (first level OR, nested array AND; operators `= != > < >= <= contains not-contains in not-in`).
+
+#### Tunnel form
+
+```php
+use Coretik\Services\Forms\Tunnel\FormStep;
+use Coretik\Services\Forms\Tunnel\Step\SummaryStep;
+use Coretik\Services\Forms\Tunnel\TunnelForm;
+use Coretik\Services\Forms\Enums\RgpdDataCategory;
+
+class ContactStep extends FormStep
+{
+    const STEP_NAME = 'contact'; // template: templates/forms/steps/contact.php ($step, $form)
+    public string $title = 'Contact';
+
+    public function getRules(): array
+    {
+        return ['email' => [
+            'name' => 'Email',
+            'constraints' => ['required' => true, 'email' => true],
+            'rgpd' => ['category' => RgpdDataCategory::CONTACT_DATA, 'private' => true],
+        ]];
+    }
+
+    // Optional: non blocking warnings once the step is valid
+    public function notices(): array
+    {
+        return [];
+    }
+}
+
+class Registration extends TunnelForm
+{
+    const ID = 'registration';
+
+    protected function buildSteps(): void
+    {
+        $this->addStep(ContactStep::make($this))->addStep(SummaryStep::make($this));
+    }
+
+    protected function isValidContext(): bool
+    {
+        return true;
+    }
+
+    protected function run(): void
+    {
+        $values = $this->getValues();   // [field => value]
+        $byStep = $this->payload();     // [['title' => …, 'payload' => [field => value]], …], e.g. for an email
+    }
+}
+
+coretik()->forms()->get('registration')->view();
+```
+
+A step depends on the previous one: it is only valid when the previous steps are (`withDependencies()` to change it). The tunnel is rendered by `templates/forms/{ID}.php`, else `templates/forms/tunnel-form.php`, else the Coretik default views. Every default view can be overridden by a file of the same path in the theme (`templates/forms/`): `tunnel-form`, `parts/json-form-open`, `parts/json-form-close`, `parts/tunnel-timeline`, `parts/tunnel-steps`, `parts/tunnel-actions`, `steps/summary`, `fields/spam`. The default views use the `block-form*` CSS classes and are not styled.
+
+Hooks: `coretik/forms/tunnel/valid_step_submitted`, `coretik/forms/tunnel/valid_form_submitted`. The rate limit (`coretik/forms/rate_limit`) only counts the final submissions of a tunnel. `getRgpdDataCategories()` lists the categories of personal data collected (`'rgpd' => ['category' => …]`), e.g. for the information notice.
+
+#### JSON answer
+
+```json
+{ "success": true, "data": {
+  "valid": false,
+  "errors":   [{ "field": "email", "messages": ["…"], "step": 0 }],
+  "values":   [{ "field": "email", "label": "Email", "private": true, "value": "…", "step": 0 }],
+  "messages": ["Global error"],
+  "notices":  ["Non blocking warning"],
+  "redirect_url": "https://…",
+  "data":     { "successTpl": "<p>Server HTML</p>" }
+} }
+```
+
+`step` is 0-based server side, `data-step` is 1-based in the DOM. Messages, values and errors are inserted as plain text by the scripts, only `successTpl` is HTML: it must never hold unescaped user input.
+
+#### Scripts
+
+Coretik is installed in `vendor/`, often out of the web root (Bedrock): the scripts are not enqueued by Coretik but imported from the theme build (rollup, vite, webpack…), which transpiles, bundles and lets the theme extend the classes. Nothing is loaded unless imported.
+
+```js
+// rollup: @rollup/plugin-alias { find: '@coretik/forms', replacement: '<root>/vendor/idetik/coretik/src/Services/Forms/scripts/index.js' }
+import Forms, { FieldFactory, AbstractField } from '@coretik/forms';
+
+Forms.configure({
+    ajaxUrl: window.AppData.ajax_url, // when a form has no data-ajax-endpoint
+    messages: { networkError: 'Something went wrong.', next: 'Next', submit: 'Send', stepTitle: 'Step {index} / {total}' },
+});
+Forms.init(document); // [data-form] and [data-form-tunnel], call it again on a fragment loaded through AJAX
+
+// Custom field type
+FieldFactory.register((dom) => dom.matches('[data-field-type="map"]'), class MapField extends AbstractField {});
+
+// Events dispatched on the <form>: submitting, submitting-success, submitting-error, submitted,
+// stepChange, validating-step, step-is-valid, step-is-invalid, step-validated
+Forms.container.get('form-registration-…').onSuccess((form) => {});
+```
+
+The default messages are French. State CSS classes to style: `form-is-loading`, `form-is-success`, `form-error`, `form-error--visible`, `form-notice--visible`, `shake`, `btn--loading`, `btn--error`, `btn--success`, `fade-in--from-{left,right}`, `fade-out--to-{left,right}`, `block-form-step--{current,valid,selectable,has-error,loading}`.
+
+#### Render a form through AJAX (modal)
+
+```php
+use Coretik\Services\Forms\Fetcher;
+
+$container['forms.fetcher'] = fn () => new Fetcher(['registration']); // public action: allowed forms only
+add_action('init', fn () => coretik()->get('forms.fetcher')->listen());
+```
+
+```js
+Forms.fetch('registration').then(({ form }) => {
+    container.innerHTML = form; // the modals of the Coretik modals service are appended to #modals-container
+    Forms.init(container);
+});
+```
 
 ### Queue
 
