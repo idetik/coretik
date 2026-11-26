@@ -1,3 +1,10 @@
+# [2.0.0-beta.23](https://github.com/idetik/coretik/compare/v2.0.0-beta.22...v2.0.0-beta.23) (2026-11-26)
+
+
+### Bug Fixes
+
+* **forms:** min-size / max-size count characters, not bytes ([7a3ac6a](https://github.com/idetik/coretik/commit/7a3ac6ac79bff7025242d7b904667dc1719c4620))
+
 # [2.0.0-beta.22](https://github.com/idetik/coretik/compare/v2.0.0-beta.21...v2.0.0-beta.22) (2026-11-10)
 
 
