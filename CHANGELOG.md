@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/idetik/coretik/compare/v2.1.0...v2.2.0) (2026-11-26)
+
+
+### Features
+
+* **email:** application mailer, mail classes, queued sending and mail catalog ([49c0354](https://github.com/idetik/coretik/commit/49c0354428e6dbbee8c316cf4a07377749ba9b2e))
+
 # [2.1.0](https://github.com/idetik/coretik/compare/v2.0.0...v2.1.0) (2026-11-26)
 
 
