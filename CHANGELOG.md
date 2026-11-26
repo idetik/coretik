@@ -1,3 +1,11 @@
+# [2.3.0](https://github.com/idetik/coretik/compare/v2.2.0...v2.3.0) (2026-11-26)
+
+
+### Features
+
+* **forms:** JSON forms and tunnel forms ([d491c0a](https://github.com/idetik/coretik/commit/d491c0ae955f09e2edfa968ae22804572c33da22))
+* **forms:** scripts of the JSON and tunnel forms ([b3efa18](https://github.com/idetik/coretik/commit/b3efa18653bbaa88eebb19f6ef712f2144260fdc))
+
 # [2.2.0](https://github.com/idetik/coretik/compare/v2.1.0...v2.2.0) (2026-11-26)
 
 
