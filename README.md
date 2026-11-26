@@ -819,6 +819,115 @@ class MyEmails implements Catalog
 
 Options: `slug`, `title`, `capability`, `icon`, `position`, `parent` (submenu). The accent color is the CSS variable `--coretik-email-viewer-accent` on `.coretik-email-viewer`.
 
+### Mailer
+
+Application emails as classes, sent now or in the background by the [queue](#queue), in the layout of the `Email` service. Opt-in, declare the services:
+
+```php
+use Coretik\Services\Email\{Builder, Email, Mailer};
+
+$container['email'] = $container->factory(function ($container) {   // A new email for each sending
+    $builder = (new Builder())->setBasePath('templates/emails/layout')->setStylesheetPath(get_theme_file_path('dist/email.css'));
+    return new Email($builder, 'templates/emails');
+});
+
+$container['mailer'] = fn ($container) => (new Mailer(fn () => $container->get('email')))
+    ->from('noreply@example.org', 'Mon site')                           // Optional: noreply@{domain}, site name by default
+    ->replyTo(['name' => 'Support', 'email' => 'support@example.org']); // Optional
+    // ->useQueue(false)             The "queue" service is used when declared: false to always send now
+    // ->deliverability(false)       Text version and envelope sender of the HTML emails, on by default
+```
+
+`App` calls `hooks()` (filter `coretik/app/init/mailer`): the WordPress default sender (`wordpress@…`) is replaced by `from()`, every HTML email gets its text version (`multipart/alternative`) and its envelope sender (`Return-Path` = From, for SPF / DMARC alignment), and the emails viewer is registered when declared (`viewer()`). A `mailer` service which is not a `Coretik\Services\Email\Mailer` is left alone.
+
+#### Declare a mail
+
+One class per email, extending `Coretik\Services\Email\Mail`. The template (`templates/emails/order/confirmation.php`) receives `data()` and `$email`.
+
+```php
+use Coretik\Services\Email\{Email, Mail, QueueableMail};
+
+class OrderConfirmation extends Mail implements QueueableMail
+{
+    public function __construct(protected Order $order) {}
+
+    public function key(): string { return 'order.confirmation'; }      // Hooks, logs, viewer
+    public function to(): string|array { return ['name' => $this->order->customerName(), 'email' => $this->order->email]; }
+    public function subject(): string { return sprintf('Commande n° %s', $this->order->number); }
+    protected function template(): string { return 'order/confirmation'; }
+    public function data(): array { return ['order' => $this->order]; }
+
+    // Optional: cc(), bcc(), replyTo(), title(), attachments(), headers(), label() (the subject by default)
+
+    // Last touch on the composed email: slots of the project layout (AppEmail extends Email)
+    public function configure(Email $email): void { $email instanceof AppEmail && $email->setPreheader('Merci pour votre commande'); }
+
+    // Sent, or failed (after the last attempt when queued): history of a model…
+    public function delivered(bool $sent, ?int $actor = null): void
+    {
+        $this->order->log($sent ? 'Confirmation envoyée' : 'Échec de la confirmation', $actor);
+    }
+
+    // QueueableMail: ids and scalars, the job rebuilds the mail (null: object deleted, the job fails without sending)
+    public function toPayload(): array { return ['order' => $this->order->id()]; }
+    public static function fromPayload(array $payload): ?static
+    {
+        $order = Order::find((int)$payload['order']);
+        return $order ? new static($order) : null;
+    }
+}
+```
+
+A recipient is an address, `['name' => …, 'email' => …]`, `"Name <address>"` or a list of them; names are cleaned for the headers. `Mail::formatText()` turns a text typed in the back-office into HTML (paragraphs, `**bold**`, sanitized).
+
+#### Send
+
+```php
+coretik()->mailer()->send(new OrderConfirmation($order));                    // Now: true when sent
+coretik()->mailer()->queue(new OrderConfirmation($order), 'orders-2026-11');  // Background: job id
+coretik()->mailer()->queue($mail, group: 'newsletter-42', delay: 600);
+coretik()->queue()->stats('newsletter-42');                                   // Follow a batch
+coretik()->mailer()->render($mail);                                           // HTML, CSS inlined (preview)
+coretik()->mailer()->compose($mail);                                          // The Email, ready to send
+```
+
+- `queue()` pushes a `Coretik\Services\Email\SendMail` job (queue `mail`, 3 attempts, 1 then 2 minutes apart), with the current user as actor. A failed attempt is retried silently; the sending is recorded once sent, or after the last attempt. Without queue, or in sync mode, the mail is sent now.
+- The job sends with the `mailer` service of the app (filter `coretik/mail/mailer` to give another one).
+- A mail without recipient is neither sent nor recorded.
+- Hooks: `coretik/mail/headers` (filter: headers, mail), `coretik/mail/sent` and `coretik/mail/failed` (actions: mail, Email or null, actor id or null), `coretik/mail/queue` (filter: the queue, or null to send now).
+
+WordPress core emails in the same layout: `coreEmail()` replaces subject, message and headers, WordPress keeps its recipient.
+
+```php
+add_filter('password_change_email', fn ($email, $user) => coretik()->mailer()->coreEmail($email, new PasswordChanged(get_userdata($user['ID']))), 10, 2);
+```
+
+#### Emails viewer of the mails
+
+`Coretik\Services\Email\Viewer\MailCatalog` fills the [emails viewer](#emails-viewer) with the mails: each entry has a sample builder, which makes the mail from the context (sample data). Previews go through `compose()`, test sendings through `Mailer::test()` (recipient replaced, no copies, subject prefixed, nothing recorded).
+
+```php
+use Coretik\Services\Email\Viewer\MailCatalog;
+
+$container['mailer'] = fn ($container) => (new Mailer(fn () => $container->get('email')))
+    ->viewer(function (MailCatalog $catalog) {
+        $catalog
+            ->group('Compte')
+            ->add('account.password_reset', 'Mot de passe oublié', fn (array $context) => new PasswordReset($context['user'], '#'),
+                'Lien de réinitialisation du mot de passe.', 'Automatique : mot de passe oublié')
+            ->group('Commandes')
+            // null: preview unavailable for this context
+            ->add('order.confirmation', 'Confirmation', fn (array $context) => $context['order'] ? new OrderConfirmation($context['order']) : null)
+            // Optional: ['user' => current user] by default, no toolbar fields
+            ->withContext(
+                fn (array $query) => ['user' => wp_get_current_user(), 'order' => Order::find((int)($query['order'] ?? 0)) ?? Order::latest()],
+                fn (array $context) => sprintf('<label>Commande <input name="order" value="%d"></label>', $context['order']?->id())
+            );
+    }, ['capability' => 'edit_others_posts']); // Viewer options
+```
+
+Bigger catalogs extend `MailCatalog`: `register()` declares the entries (called once, on first use), `context()` and `contextFields()` choose the samples; pass the instance to `viewer()`, or to `new Viewer()` yourself.
+
 ## Testing
 
 coretik ships an integration testing kit (`Coretik\Testing`) for the projects: the WordPress test suite loads the theme and its plugins in a MySQL database emptied at each run, each test runs in a transaction rolled back afterwards. Unit tests (no WordPress) stay plain PHPUnit, with [Brain Monkey](https://github.com/Brain-WP/BrainMonkey) to mock the WordPress functions.
