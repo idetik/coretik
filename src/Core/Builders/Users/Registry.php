@@ -2,6 +2,11 @@
 
 namespace Coretik\Core\Builders\Users;
 
+// Registries stored before 1.13.7 are serialized objects with a "prev" property
+/**
+ * @phpstan-consistent-constructor
+ */
+#[\AllowDynamicProperties]
 class Registry extends \SplObjectStorage
 {
     const OPTION_KEY = 'app_users_registry';
@@ -9,10 +14,6 @@ class Registry extends \SplObjectStorage
 
     private static $instance;
 
-    /**
-     * @deprecated Kept to unserialize registries stored before 1.13.7 (serialized objects)
-     */
-    private $prev;
 
     public static function hooks()
     {
@@ -38,7 +39,7 @@ class Registry extends \SplObjectStorage
         }
 
         if (!\wp_verify_nonce($_GET['_wpnonce'] ?? '', static::QUERY_VAR_FLUSH)) {
-            app()->notices()->warning(\sprintf(
+            coretik()->notices()->warning(\sprintf(
                 'Regenerate roles & capabilities? <a href="%s">Confirm</a>',
                 \esc_url(static::flushUrl())
             ));
@@ -59,22 +60,47 @@ class Registry extends \SplObjectStorage
         return md5(serialize($o));
     }
 
+    /**
+     * Save the roles if their definitions, or the post types and taxonomies they depend on, changed.
+     */
+    public function sync()
+    {
+        if (!$this->hasDiff()) {
+            return $this;
+        }
+
+        return $this->persist();
+    }
+
+    /**
+     * Save the roles now, changed or not. Roles are synced on admin requests only: a database installed or seeded
+     * from WP-CLI has none of them until then.
+     */
+    public function persist()
+    {
+        foreach ($this as $userType) {
+            $userType->persist();
+        }
+
+        return $this->save();
+    }
+
     public function save()
     {
         $previous = $this->storedRoleNames();
         \update_option(static::OPTION_KEY, $this->toArray(), false);
         CacheBuster::set($this->hash());
         $this->cleanup($previous);
-        app()->notices()->success('Roles & capabilities updated.');
+        coretik()->notices()->success('Roles & capabilities updated.');
         return $this;
     }
 
     public static function instance()
     {
-        if (empty(static::$instance)) {
-            static::$instance = new static();
+        if (empty(self::$instance)) {
+            self::$instance = new static();
         }
-        return static::$instance;
+        return self::$instance;
     }
 
     /**
@@ -143,7 +169,7 @@ class Registry extends \SplObjectStorage
         if ($stored instanceof \SplObjectStorage) {
             $names = [];
             foreach ($stored as $userType) {
-                if (\is_object($userType) && \method_exists($userType, 'getName')) {
+                if (\method_exists($userType, 'getName')) {
                     $names[] = $userType->getName();
                 }
             }

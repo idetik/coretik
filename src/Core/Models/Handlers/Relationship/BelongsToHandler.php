@@ -6,7 +6,10 @@ use Coretik\Core\Builders\Handler;
 use Coretik\Core\Builders\Interfaces\BuilderInterface;
 use Coretik\Core\Models\Interfaces\ModelInterface;
 
-class BelongsToHandler extends Handler
+/**
+ * @phpstan-consistent-constructor
+ */
+class BelongsToHandler extends Handler implements BelongsToRelationInterface
 {
     private $belongsToBuilder;
     private $pivot;
@@ -26,7 +29,7 @@ class BelongsToHandler extends Handler
 
     public function setBelongsToBuilder(string|BuilderInterface|ModelInterface $belongsTo): self
     {
-        $this->belongsToBuilder = app()->schema()->resolve($belongsTo);
+        $this->belongsToBuilder = coretik()->schema()->resolve($belongsTo);
         return $this;
     }
 
@@ -38,6 +41,22 @@ class BelongsToHandler extends Handler
     {
         $this->pivot = $pivot;
         return $this;
+    }
+
+    /**
+     * The builder this one belongs to, null when it is not set
+     */
+    public function belongsToBuilder(): ?BuilderInterface
+    {
+        return $this->belongsToBuilder;
+    }
+
+    /**
+     * The meta key containing the parent id, or the callable returning it
+     */
+    public function pivot(): string|callable
+    {
+        return $this->pivot;
     }
 
     public function actions(): void
@@ -99,9 +118,18 @@ class BelongsToHandler extends Handler
             }
         }
 
-        $model->setParentId(
-            $belongsToId
-        );
+        // A user is the post author, other objects are the post parent: both are indexed columns
+        if (!empty($this->belongsToBuilder) && 'user' === $this->belongsToBuilder->getType()) {
+            if ((int)$model->post_author === $belongsToId) {
+                return;
+            }
+            $model->post_author = $belongsToId;
+        } else {
+            if ($model->parentId() === $belongsToId) {
+                return;
+            }
+            $model->setParentId($belongsToId);
+        }
 
         $this->pause(fn () => $model->save());
     }

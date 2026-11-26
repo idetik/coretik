@@ -24,6 +24,16 @@ composer phpstan
 
 The database settings can be changed with the `WP_TESTS_DB_HOST`, `WP_TESTS_DB_NAME`, `WP_TESTS_DB_USER` and `WP_TESTS_DB_PASSWORD` environment variables.
 
+## Acorn
+
+coretik can be used with [Acorn](https://roots.io/acorn/) (Laravel components in WordPress, versions 5 and 6). Acorn discovers the coretik service provider, which exposes the coretik application in the Acorn container:
+
+```php
+app('coretik')->schema('product'); // same as coretik()->schema('product')
+```
+
+With Acorn, `app()` is the Laravel helper: use `coretik()` to reach the coretik application.
+
 ## Get started
 
 ### Dependency Injection Container
@@ -146,14 +156,14 @@ class MyPostModel extends PostModel
     }
 }
 
-$postSchema = app()->schema('post');
+$postSchema = coretik()->schema('post');
 $postSchema->factory(MyPostModel::class);
 ```
 
 #### Usage
 
 ```php
-$models = app()->schema('post')->query()->models();
+$models = coretik()->schema('post')->query()->models();
 
 foreach ($models as $model) {
     echo $model->foo(); // 'bar'
@@ -275,13 +285,24 @@ class MyPostModel extends PostModel
     }
 }
 
-$postSchema = app()->schema('my_custom_post_type');
+$postSchema = coretik()->schema('my_custom_post_type');
 $postSchema->factory(MyPostModel::class);
 ```
 
+`coretik()->schema($name)` returns a `BuilderInterface` (or `null`): typed builders of the application, by name or model class, throw a `ContainerValueNotFoundException` when missing (built-in ones such as `post` or `category`: `schema($name)`):
+
+```php
+coretik()->postType('my_custom_post_type'); // PostType: endpoint(), handlers…
+coretik()->taxonomy('my_taxonomy');         // Taxonomy
+coretik()->userType('customer');            // UserType
+coretik()->schema()->postType(MyPostModel::class); // same accessors on the schema
+```
+
+The roles of the user types are saved on admin requests, when their definitions change. A database installed from WP-CLI (seeding, deployment) has none of them until then: save them right away with `\Coretik\Core\Builders\Users\Registry::instance()->persist()`.
+
 Create & save a model :
 ```php
-$model = app()->schema('my_custom_post_type')->model();
+$model = coretik()->schema('my_custom_post_type')->model();
 $model->post_title = 'Mr Bar Foo';
 $model->post_status = 'publish';
 $model->ma_meta_a = 'Foo';
@@ -296,7 +317,7 @@ $modelId = $model->id();
 Use a model :
 
 ```php
-$myModel = app()->schema('my_custom_post_type')->model($modelId);
+$myModel = coretik()->schema('my_custom_post_type')->model($modelId);
 
 echo $myModel->foo(); // foo
 echo $myModel->ma_meta_a; // ['Foo']
@@ -305,6 +326,16 @@ echo $myModel->ma_meta_b; // bar
 echo $myModel->group()->title(); // Groupe 1
 $myModel->attributes()->each(fn ($attributeModel) => echo $attributeModel->title() . ', '); // smart, tall, 
 ```
+
+Update metas quietly, without saving the model (no `saving` / `updating` / `saved` events, no `wp_update_post()` nor `save_post` hooks), for data the model updates on its own (sync state, counters, logs…):
+
+```php
+$myModel->updateMetaQuietly('ma_meta_a', ['Foo', 'Baz']); // local or database key
+$myModel->updateMetasQuietly(['ma_meta_a' => ['Foo'], 'other_bdd_field_name' => 'qux']); // all keys checked first
+$myModel->deleteMetaQuietly('ma_meta_a');
+```
+
+Values are stored as given (a collection as an array). A value assigned before (`$myModel->ma_meta_a = …`) is dropped: reads go back to the database and a later `save()` won't write it again. Protected metas and unsaved models are rejected (`LogicException`).
 
 
 ### Queries
@@ -327,7 +358,7 @@ add_filter('coretik/query/post/default_status', function ($status, string $post_
 ```
 
 ```php
-$models = app()->schema('my_custom_post_type')->query()->models();
+$models = coretik()->schema('my_custom_post_type')->query()->models();
 
 foreach ($models as $model) {
     echo $model->title();
@@ -336,7 +367,7 @@ foreach ($models as $model) {
 #### Count
 
 ```php
-$query = app()->schema('my_custom_post_type')->query()->limit(10);
+$query = coretik()->schema('my_custom_post_type')->query()->limit(10);
 
 $query->count(); // Results of the current page (10 max)
 $query->total(); // Results of all pages (found_posts)
@@ -348,7 +379,7 @@ See `src/Core/Query/Adapters` folder.
 #### Where clauses
 
 ```php
-$query = app()->schema('my_custom_post_type')->query();
+$query = coretik()->schema('my_custom_post_type')->query();
 
 $query->where('post_parent', 100);       // Query parameter, same as set('post_parent', 100)
 $query->whereMeta('price', 50, '>');     // Meta query
@@ -401,14 +432,14 @@ class MyPostQuery enxtends PostQuery
     }
 }
 
-$postSchema = app()->schema('my_custom_post_type');
+$postSchema = coretik()->schema('my_custom_post_type');
 $postSchema->querier(MyPostQuery::class);
 ```
 
 #### Usage
 
 ```php
-$result = app()
+$result = coretik()
             ->schema('my_custom_post_type')
                 ->query()
                     ->ordered()
@@ -426,6 +457,14 @@ echo $result->title(); // Mr Bar Foo
 Handlers were designed to be reusable, maintainable and flexible. Handlers allow us to hook anythings about a post type or taxonomy, and give us the capability to modify the default workflow as you want.
 
 Your handler have to implement `Coretik\Core\Builders\Interfaces\HandlerInterface;`
+
+The handlers of a builder are found by class (subclasses included), in the declaration order:
+
+```php
+coretik()->schema('session')->getHandler(ScheduledEventsHandler::class);                  // first one, or null
+coretik()->schema('camp')->getHandlersOf(EndpointHandler::class, fn ($handler) => /* … */ true); // array
+coretik()->schema('camp')->endpoint('inscription');                                        // post types: EndpointHandler by name
+```
 
 Let's take an example of an application with many formations belongs to categories. Each formation has many events belongs to the same categories.
 We have a formation post type, an event post type and a category taxonomy.
@@ -473,6 +512,69 @@ class FormationCategoryOnChangeHandler implements HandlerInterface
 
 ```
 
+#### Scheduled events
+
+`ScheduledEventsHandler` triggers a model event at a date read on the model (a meta, an ACF field…), with WP-Cron. One event per post and model event, rescheduled when the post, its metas or its status change; past or empty dates and inactive posts (trash, auto-draft, archive) have no event.
+
+```php
+use Coretik\Core\Models\Handlers\ScheduledEventsHandler;
+
+PostType::make('camp')
+    ->factory(Camp::class)
+    ->handler(
+        ScheduledEventsHandler::make()
+            ->at('registrationsOpened', fn (Camp $camp) => $camp->opens_at) // DateTimeInterface, timestamp, date string (site timezone) or null
+            ->at('registrationsClosed', fn (Camp $camp) => $camp->closes_at)
+            ->when(fn (Camp $camp, string $event, \DateTimeInterface $date) => $camp->isEffective($event)) // Optional last check when it runs
+    )
+    ->addToSchema();
+
+// Listen like any model event (the date is given in $args['date']): in the model initializeModel()…
+$this->on('registrationsOpened', fn (Camp $camp) => $camp->notifyFamilies());
+// … or for every camp
+\add_action('coretik/model/camp/registrationsOpened', fn (Camp $camp, array $args) => /* … */ null, 10, 2);
+```
+
+When it runs, the date is read again: the model event is only triggered if it is still due.
+
+Existing posts are synced once when the declared events change (first deploy, new event), by batches of `syncBatchSize()` posts (200), without meta query. Call `syncAll()` after an import or a database restore. `syncEvery('daily')` makes the sync recurring: opt-in, as it reads every post of the type.
+
+WP-Cron runs on page visits: use a system cron to run the events on time.
+
+
+#### Endpoints
+
+`EndpointHandler` adds an endpoint to the single pages of a post type: `/{slug}/{post}/{endpoint}/` (`?{endpoint}=1` without pretty permalinks).
+
+```php
+use Coretik\Core\Models\Handlers\EndpointHandler;
+
+$registration = EndpointHandler::make('inscription', function (Camp $camp, string $value) {
+    // template_redirect, priority 0 (before redirect_canonical()): guard, redirection, data loading…
+    if (!$camp->isOpen()) {
+        wp_safe_redirect(get_permalink($camp->id()));
+        exit;
+    }
+})
+    ->template('camp-registration.php') // Optional, locate_template(): the single template otherwise
+    ->noIndex()                         // Optional, noindex robots meta
+    ->hideAdminBar()                    // Optional
+    ->acceptsValue();                   // Optional, /inscription/{value}/ (404 otherwise)
+
+PostType::make('camp')
+    ->handler($registration)
+    ->addToSchema();
+
+// Anywhere else: coretik()->schema('camp')->endpoint('inscription')
+$registration->url($camp);        // https://example.org/camps/ete-2027/inscription/
+$registration->isRequested();     // templates, hooks…
+$registration->value();           // null when not requested, "" without value
+```
+
+The endpoint requested anywhere else (posts and most post types share the `EP_PERMALINK` mask, archives…) is a 404: it never duplicates a page. To only add the rules to one post type, give it its own mask (`rewrite.ep_mask`) and pass it to `setMask()`. Several post types can declare the same endpoint.
+
+The rewrite rules are flushed once when an endpoint is missing from them (first deploy, new endpoint).
+
 
 ### Macros
 
@@ -485,7 +587,7 @@ PostType::make('my_custom_post_type')
     ->attach('myMacroA', fn ($input) => 'my_custom_post_type : ' . $input) // Optional, you can attach all callables you want
     ->addToSchema();
 
-echo app()->schema('my_custom_post_type')->myMacroA('foo'); // my_custom_post_type : foo
+echo coretik()->schema('my_custom_post_type')->myMacroA('foo'); // my_custom_post_type : foo
 ```
 
 ### Forms anti-spam
@@ -505,3 +607,120 @@ add_filter('coretik/forms/blacklist', fn (array $words) => array_merge($words, [
 ```
 
 A submission flagged as spam is silently ignored: the visitor gets no error message.
+
+### Queue
+
+Background jobs, run by WP-Cron every minute: bulk emails, exports, API calls… Opt-in, declare the service:
+
+```php
+use Coretik\Services\Queue\{DatabaseStore, Queue};
+
+$container['queue'] = fn () => (new Queue(new DatabaseStore())) // Table {prefix}coretik_jobs, created on first use
+    ->limit(100)        // Optional, jobs per worker run (provider rate limits…)
+    ->timeBudget(45);   // Optional, seconds per worker run
+```
+
+A job is stored as its class and a JSON payload: keep ids and scalars in it, the job loads its models again when it runs.
+
+```php
+use Coretik\Services\Queue\{Job, ShouldQueue};
+
+class SendNewsletter extends Job implements ShouldQueue
+{
+    public function __construct(protected int $userId) {}
+
+    public function handle(): void
+    {
+        // An exception fails the attempt: retried after backoff(), until tries(), then failed() is called
+    }
+
+    public function toPayload(): array { return ['user' => $this->userId]; }
+    public static function fromPayload(array $payload): static { return new static((int)$payload['user']); }
+
+    // Optional: queue() ("default"), tries() (3), backoff(int $attempts) (1 min × attempts), failed(\Throwable $e)
+}
+
+coretik()->queue()->dispatch(new SendNewsletter($id));                     // ShouldQueue: queued, otherwise run now
+coretik()->queue()->push(new SendNewsletter($id), delay: 600, group: 'newsletter-42');
+coretik()->queue()->stats('newsletter-42');                                 // ['pending' => 12, 'running' => 1, 'done' => 30, 'failed' => 0]
+coretik()->queue()->retry('newsletter-42');                                 // Failed jobs run again
+```
+
+- Concurrent workers never run the same job; a job still running after `timeout()` (10 min, worker killed) is released and counts one attempt.
+- Done jobs are kept 7 days, failed jobs 30 days, with their last error (`keepDone()`, `keepFailed()`).
+- `sync()` or the filter `coretik/queue/sync`: jobs run when pushed (development without cron).
+- Hooks: `coretik/queue/pushed`, `coretik/queue/processing`, `coretik/queue/done`, `coretik/queue/retrying`, `coretik/queue/failed`.
+- WP-CLI: `wp coretik queue work [--queue=] [--limit=] [--time=]`, `wp coretik queue stats [--group=]`, `wp coretik queue retry [<id>] [--group=]`.
+
+Back-office page **Coretik > File d'attente** (`manage_options`): worker health (last / next run, warning when jobs wait and the worker did not run for 5 minutes), jobs by status, filters (queue, group), last error and payload of each job, retry or delete a job, retry the failed jobs, run the worker now. Options: `->admin(['parent' => 'tools.php', 'capability' => 'edit_others_posts', 'per_page' => 50, 'late_after' => 300])`, `->admin(false)` to disable it.
+
+#### Server cron
+
+WP-Cron runs on page visits by default. In production, disable it and run it every minute from the system cron, with WP-CLI (no HTTP timeout, no loopback request) and `flock` (no overlapping runs):
+
+```php
+// config/environments/production.php
+define('DISABLE_WP_CRON', true);
+```
+
+```cron
+* * * * * cd /path/to/project && flock -n /tmp/my-site-wp-cron.lock vendor/bin/wp cron event run --due-now --quiet > /dev/null 2>&1
+```
+
+Run it as the web server user (same rights on uploads and logs). Without WP-CLI, call `wp-cron.php` over HTTP instead (`curl -s https://example.org/wp/wp-cron.php > /dev/null`): a worker run lasts up to `timeBudget()` (45 s), keep it under the HTTP timeouts of the server.
+
+### Back-office menu
+
+The back-office tools of coretik are gathered in a **Coretik** top level menu (`manage_options`): Schéma (with `WP_DEBUG`), Emails, File d'attente. The menu links to the first page the user can open. A tool can still go elsewhere with its `parent` option (`'tools.php'`, or `null` for its own top level menu).
+
+```php
+// Label, capability, icon and position of the menu
+add_filter('coretik/admin/menu', fn (array $options) => ['title' => 'Outils techniques', 'position' => 3] + $options);
+
+// A page of the project in the same menu
+\Coretik\Services\Admin\Menu::register();
+add_action('admin_menu', fn () => add_submenu_page(\Coretik\Services\Admin\Menu::SLUG, 'Imports', 'Imports', 'manage_options', 'my-imports', 'my_imports_page'));
+```
+
+### Emails viewer
+
+Back-office page listing the emails of the application with their preview (envelope, HTML in desktop / mobile width) and a test sending to the current user. The theme describes its emails by implementing `Coretik\Services\Email\Viewer\Catalog`:
+
+```php
+use Coretik\Services\Email\Viewer\{Catalog, Entry, Preview, Viewer};
+
+class MyEmails implements Catalog
+{
+    public function entries(): array
+    {
+        return [new Entry('order.confirmation', 'Confirmation de commande', 'Commandes', 'Envoyé après le paiement', 'Automatique')];
+    }
+
+    // Sample data, from the query string (fields of contextFields())
+    public function context(array $query): array
+    {
+        return ['order' => (int)($query['order'] ?? 0) ?: latest_order_id()];
+    }
+
+    public function contextFields(array $context): string
+    {
+        return sprintf('<label>Commande <input name="order" value="%d"></label>', $context['order']);
+    }
+
+    public function preview(string $key, array $context): ?Preview
+    {
+        $email = coretik()->email()->setSubject('Votre commande')->useTemplate('order/confirmation', $context);
+        return Preview::fromEmail($email); // CSS inlined (Email::render())
+    }
+
+    // Test only: no side effects (history, tokens…)
+    public function sendTest(string $key, array $context, string $to): bool
+    {
+        return (bool)coretik()->email()->setTo($to)->setSubject('[Test] Votre commande')->useTemplate('order/confirmation', $context)->send();
+    }
+}
+
+(new Viewer(new MyEmails(), ['slug' => 'app-emails', 'capability' => 'manage_options']))->hooks();
+```
+
+Options: `slug`, `title`, `capability`, `icon`, `position`, `parent` (submenu). The accent color is the CSS variable `--coretik-email-viewer-accent` on `.coretik-email-viewer`.

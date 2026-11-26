@@ -64,7 +64,7 @@ class WPPostAdapter extends WPAdapter implements MetableAdapterInterface, CRUDIn
     public function delete(bool $force_delete = false)
     {
         $delete = \wp_delete_post($this->model->id(), $force_delete);
-        if (empty($delete) || false === $delete) {
+        if (empty($delete)) {
             throw new \RuntimeException("Deleting post: failure - {$this->model->id()}");
         }
     }

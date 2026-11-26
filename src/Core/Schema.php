@@ -9,8 +9,10 @@ use Coretik\Core\Models\Handlers\Guard;
 use Coretik\Core\Builders\{
     PostType,
     PostTypeBuiltIn,
+    Taxonomy,
     TaxonomyBuiltIn,
     User,
+    UserType,
     Comment,
 };
 use Coretik\Core\Builders\Interfaces\{
@@ -152,10 +154,13 @@ class Schema implements ContainerInterface
         return isset($this->objects[$offset]);
     }
 
-    public function get(string $offset, $type = null)
+    /**
+     * A builder by name (and type), null when it does not exist. See modelable() to get a modelable builder or an exception.
+     */
+    public function get(string $offset, $type = null): ?BuilderInterface
     {
         if (!empty($type)) {
-            return $this->objects[$type]->get($offset) ?? null;
+            return isset($this->objects[$type]) ? ($this->objects[$type]->get($offset) ?? $this->getByModelClass($offset, $type)) : null;
         }
 
         foreach ($this->objects as $type => $data) {
@@ -163,15 +168,100 @@ class Schema implements ContainerInterface
                 return $data->get($offset);
             }
         }
-        return null;
+        return $this->getByModelClass($offset);
+    }
+
+    /**
+     * The builder whose factory is the given model class (e.g. Registration::class), null when none or several match
+     */
+    protected function getByModelClass(string $class, ?string $type = null): ?BuilderInterface
+    {
+        if (!\str_contains($class, '\\')) {
+            return null;
+        }
+
+        $class = \ltrim($class, '\\');
+        $found = [];
+        foreach ($this->objects as $objectType => $data) {
+            if (!empty($type) && $type !== $objectType) {
+                continue;
+            }
+            foreach ($data as $builder) {
+                if ($builder instanceof BuilderInterface && $builder instanceof ModelableInterface && \method_exists($builder, 'modelClass') && $class === $builder->modelClass()) {
+                    $found[] = $builder;
+                }
+            }
+        }
+
+        // Ambiguous when the same model class is the factory of several builders
+        return 1 === \count($found) ? $found[0] : null;
+    }
+
+    /**
+     * A modelable builder (post type, taxonomy, user, comment).
+     *
+     * @throws ContainerValueNotFoundException when the builder does not exist or is not modelable
+     */
+    public function modelable(string $name, ?string $type = null): BuilderInterface&ModelableInterface
+    {
+        $builder = $this->get($name, $type);
+        if (!$builder instanceof ModelableInterface) {
+            throw new ContainerValueNotFoundException(\sprintf('No modelable builder "%s" in the schema.', $name));
+        }
+        return $builder;
+    }
+
+    /**
+     * A post type declared by the application (PostType::make()), by name or model class. Built-in ones: get('post').
+     *
+     * @throws ContainerValueNotFoundException
+     */
+    public function postType(string $name): PostType
+    {
+        return $this->expect($name, 'post', PostType::class, 'post type');
+    }
+
+    /**
+     * A taxonomy declared by the application (Taxonomy::make()), by name or model class. Built-in ones: get('category').
+     *
+     * @throws ContainerValueNotFoundException
+     */
+    public function taxonomy(string $name): Taxonomy
+    {
+        return $this->expect($name, 'taxonomy', Taxonomy::class, 'taxonomy');
+    }
+
+    /**
+     * A user type declared by the application (UserType::make()), by name or model class
+     *
+     * @throws ContainerValueNotFoundException
+     */
+    public function userType(string $name): UserType
+    {
+        return $this->expect($name, 'user', UserType::class, 'user type');
+    }
+
+    /**
+     * @template T of BuilderInterface
+     * @param class-string<T> $class
+     * @return T
+     * @throws ContainerValueNotFoundException
+     */
+    protected function expect(string $name, string $type, string $class, string $label): BuilderInterface
+    {
+        $builder = $this->get($name, $type);
+        if (!$builder instanceof $class) {
+            throw new ContainerValueNotFoundException(\sprintf('No %s "%s" declared in the schema.', $label, $name));
+        }
+        return $builder;
     }
 
     /**
      * @param string $type in 'post', 'user', 'status', ...etc
      */
-    public function type(string $type)
+    public function type(string $type): BuilderCollection
     {
-        return $this->objects[$type];
+        return $this->objects[$type] ?? new BuilderCollection();
     }
 
     public function toArray()
@@ -197,7 +287,7 @@ class Schema implements ContainerInterface
             return $builder;
         }
 
-        if (!empty(($object = app()->schema()->get($builder)))) {
+        if (!empty(($object = coretik()->schema()->get($builder)))) {
             return $object;
         }
 

@@ -61,7 +61,7 @@ abstract class Handler implements HandlerInterface
     /**
      * Execute actions silently by pausing this handler
      * @param callable $callback
-     * @return Handler
+     * @return static
      */
     public function pause(callable $callback): static
     {

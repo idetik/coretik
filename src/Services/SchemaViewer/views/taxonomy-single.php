@@ -4,9 +4,9 @@ use Coretik\Core\Utils\Str;
 
 $args = $builder->args();
 
-$modalArgs = app()->modals()->factory(function ($data) {
+$modalArgs = coretik()->modals()->factory(function ($data) {
     $array = [];
-    $table = app()->get('ux.table');
+    $table = coretik()->get('ux.table');
     foreach ($data['args'] as $key => $value) {
         $format = '';
         if (is_object($value)) {
@@ -51,7 +51,7 @@ $modalArgs = app()->modals()->factory(function ($data) {
             <b>Object types</b>: 
             <?php
             foreach ($builder->getObjectTypes() as $post_type_name) {
-                printf('<a href="%s">%s</a>&nbsp;', '#' . $post_type_name, app()->schema($post_type_name)->args()->get('labels')['singular']);
+                printf('<a href="%s">%s</a>&nbsp;', '#' . $post_type_name, coretik()->schema($post_type_name)->args()->get('labels')['singular']);
             }
             ?>
         </li>
@@ -61,10 +61,10 @@ $modalArgs = app()->modals()->factory(function ($data) {
                 <li><b>Metas</b>: 
                     <?php
                     $model = $builder->model();
-                    $table = app()->get('ux.table');
+                    $table = coretik()->get('ux.table');
                     $table->setColumns(['Nom', 'Clé (meta_key)', ''])->setData(array_map(function ($def) {
 
-                        $modal = app()->modals()->factory(function ($args) {
+                        $modal = coretik()->modals()->factory(function ($args) {
                             include 'meta-definition.php';
                         }, ['def' => $def]);
 

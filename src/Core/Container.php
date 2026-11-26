@@ -111,20 +111,6 @@ class Container extends PimpleContainer implements ContainerInterface
         }
     }
 
-    /**
-     * Tests whether an exception needs to be recast for compliance with psr/container.  This will be if the
-     * exception was thrown by Pimple.
-     *
-     * @param InvalidArgumentException $exception
-     *
-     * @return bool
-     */
-    private function exceptionThrownByContainer(InvalidArgumentException $exception)
-    {
-        $trace = $exception->getTrace()[0];
-
-        return $trace['class'] === PimpleContainer::class && $trace['function'] === 'offsetGet';
-    }
 
     /**
      * Returns true if the container can return an entry for the given identifier.

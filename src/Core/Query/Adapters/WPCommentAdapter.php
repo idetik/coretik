@@ -6,6 +6,11 @@ use Coretik\Core\Query\Interfaces\MetaClauseInterface;
 use Coretik\Core\Query\Interfaces\WhereClauseInterface;
 use Coretik\Core\Utils\Arr;
 
+/**
+ * Query parameters are dynamic properties (see PARAMETERS)
+ *
+ * @property array $meta_query
+ */
 class WPCommentAdapter extends WPAdapter
 {
     use Metable;

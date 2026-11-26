@@ -8,4 +8,5 @@ interface Handlable
     public function isRunnable();
     public function process();
     public function getRules(): array;
+    public function setConfigIfNotDefined(ConfigInterface $config): self;
 }

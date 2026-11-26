@@ -2,11 +2,18 @@
 
 namespace Coretik\Core\Models\Wp;
 
+use Coretik\Core\Models\Interfaces\AcfFieldsInterface;
 use Coretik\Core\Models\Traits\AcfFields;
 use Coretik\Core\Models\Traits\Relationships;
 use Coretik\Core\Models\Adapters\WPCommentAdapter;
 
-class CommentModel extends WPModel
+/**
+ * WordPress fields, read and written through __get() / __set()
+ *
+ * @property int $comment_parent
+ * @property int $comment_post_ID
+ */
+class CommentModel extends WPModel implements AcfFieldsInterface
 {
     use AcfFields;
     use Relationships;
@@ -66,7 +73,7 @@ class CommentModel extends WPModel
 
     public function date(string $format = 'j M Y, G\hi'): string
     {
-        return \date_i18n($format, \get_comment_date('U', $this->id()));
+        return \date_i18n($format, (int)\get_comment_date('U', $this->id()));
     }
 
     public function content(): string

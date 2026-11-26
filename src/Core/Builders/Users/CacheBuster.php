@@ -8,11 +8,11 @@ class CacheBuster
 
     public static function get(): string
     {
-        return app()->option(static::CACHE_KEY, '');
+        return coretik()->option(static::CACHE_KEY, '');
     }
 
     public static function set(string $hash)
     {
-        app()->option->set(static::CACHE_KEY, $hash, true);
+        coretik()->option->set(static::CACHE_KEY, $hash, true);
     }
 }

@@ -10,10 +10,10 @@ foreach ($models as $i => $model) :
         <ul class="hidden schema-data__tab" id="<?= $id ?>">
             <li><b>Metas</b>: 
                 <?php
-                $table = app()->get('ux.table');
+                $table = coretik()->get('ux.table');
                 $table->setColumns(['Nom', 'Clé (meta_key)', ''])->setData(array_map(function ($def) {
 
-                    $modal = app()->modals()->factory(function ($args) {
+                    $modal = coretik()->modals()->factory(function ($args) {
                         include 'meta-definition.php';
                     }, ['def' => $def]);
 

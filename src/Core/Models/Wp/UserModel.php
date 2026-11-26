@@ -2,12 +2,15 @@
 
 namespace Coretik\Core\Models\Wp;
 
+use Coretik\Core\Models\Interfaces\AcfFieldsInterface;
 use Coretik\Core\Models\Traits\AcfFields;
+use Coretik\Core\Models\Traits\Relationships;
 use Coretik\Core\Models\Adapters\WPUserAdapter;
 
-class UserModel extends WPModel
+class UserModel extends WPModel implements AcfFieldsInterface
 {
     use AcfFields;
+    use Relationships;
 
     public function __construct($initializer = null)
     {

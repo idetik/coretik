@@ -14,6 +14,7 @@ abstract class WPAdapter implements QueryBuilderInterface
     abstract protected function resolveWhere(WhereClauseInterface $where, $relation);
     abstract public function addContext(array $values, string $opt = 'in', string $context = '');
     abstract public function childOf(int|array $values): self;
+    abstract public function limit(int $number): self;
 
     public function __construct(array $defaultArgs = [])
     {

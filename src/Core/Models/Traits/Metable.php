@@ -10,6 +10,7 @@ use Coretik\Core\Models\Interfaces\MetableAdapterInterface;
 use Coretik\Core\Models\MetaDefinition;
 use Coretik\Core\Models\Exceptions\UndefinedMetaKeyException;
 use Carbon\Carbon;
+use Carbon\Exceptions\InvalidFormatException;
 use DateTimeInterface;
 
 /**
@@ -49,10 +50,7 @@ trait Metable
 
         $meta = new MetaDefinition($local_key, $meta_key);
         $meta->on('set_default_value', function () {
-            $builder = app()->schema()->resolve($this);
-            if (!$builder) {
-                return;
-            }
+            $builder = coretik()->schema()->resolve($this);
 
             if ($builder->hasHandlerClassName(DefaultMetaDataHandler::class)) {
                 return;
@@ -64,10 +62,7 @@ trait Metable
         });
 
         $meta->on('protect', function () {
-            $builder = app()->schema()->resolve($this);
-            if (!$builder) {
-                return;
-            }
+            $builder = coretik()->schema()->resolve($this);
 
             if ($builder->hasHandlerClassName(Guard::class)) {
                 return;
@@ -101,7 +96,7 @@ trait Metable
     }
 
     /**
-     * @param mixed $local_key : string or array of string
+     * @param mixed $key local or meta key
      */
     public function metaDefinition($key)
     {
@@ -114,7 +109,7 @@ trait Metable
     }
 
     /**
-     * @param string $local_key Check if local key exists
+     * @param string $key local or meta key
      */
     public function hasMeta(string $key)
     {
@@ -177,6 +172,94 @@ trait Metable
             return $raw ? $value : $this->castMeta($key, $value);
         } catch (UndefinedMetaKeyException $e) {
             return $this->metaDefaultValue($key, $default);
+        }
+    }
+
+    /**
+     * Write a meta now, without saving the model: no saving / updating / saved events, no wp_update_post()
+     * (so no save_post hooks). For data the model updates on its own: sync state, counters, logs…
+     * The value is stored as given (a collection as an array). A value assigned before (__set) is dropped:
+     * reads go back to the database and a later save() won't write it again.
+     *
+     * @param string $key local or meta key
+     * @throws \LogicException model not saved yet, or protected meta
+     * @throws UndefinedMetaKeyException undeclared meta
+     */
+    public function updateMetaQuietly(string $key, $value): static
+    {
+        return $this->updateMetasQuietly([$key => $value]);
+    }
+
+    /**
+     * @param array<string, mixed> $values [local or meta key => value], all keys are checked before writing
+     * @see updateMetaQuietly()
+     */
+    public function updateMetasQuietly(array $values): static
+    {
+        $keys = $this->quietMetaKeys(\array_keys($values));
+
+        $this->persist(function () use ($values, $keys) {
+            foreach ($keys as $key => $metaKey) {
+                $value = $values[$key];
+                $this->adapter->updateMeta($metaKey, $value instanceof \Illuminate\Support\Collection ? $value->all() : $value);
+                $this->forgetMetaValue($key);
+            }
+        });
+
+        return $this;
+    }
+
+    /**
+     * Delete a meta now, without saving the model, nothing to do when it doesn't exist
+     *
+     * @param string $key local or meta key
+     * @see updateMetaQuietly()
+     */
+    public function deleteMetaQuietly(string $key): static
+    {
+        $metaKey = $this->quietMetaKeys([$key])[$key];
+        $missing = new \stdClass();
+
+        $this->persist(function () use ($key, $metaKey, $missing) {
+            if ($missing !== $this->adapter->meta($metaKey, $missing, true)) {
+                $this->adapter->deleteMeta($metaKey);
+            }
+            $this->forgetMetaValue($key);
+        });
+
+        return $this;
+    }
+
+    /**
+     * Meta keys of a quiet write, checked first
+     *
+     * @return array<string, string> [given key => meta key]
+     */
+    protected function quietMetaKeys(array $keys): array
+    {
+        if (empty($this->id)) {
+            throw new \LogicException(\sprintf('%s: quiet meta writes need a saved model, use save().', static::class));
+        }
+
+        $metaKeys = [];
+        foreach ($keys as $key) {
+            $metaKeys[$key] = $this->resolveMetaKey($key);
+            if ($this->isProtectedMeta($key)) {
+                throw new \LogicException(\sprintf('%s: meta "%s" is protected.', static::class, $key));
+            }
+        }
+
+        return $metaKeys;
+    }
+
+    /**
+     * Drop a value assigned with __set() (dynamic property), so that meta() reads the database again
+     */
+    protected function forgetMetaValue(string $key): void
+    {
+        $local = $this->resolveLocalKey($key);
+        if (\property_exists($this, $local) && !(new \ReflectionProperty($this, $local))->isDefault()) {
+            unset($this->$local);
         }
     }
 
@@ -320,17 +403,15 @@ trait Metable
             return Carbon::instance(Carbon::createFromFormat('Y-m-d', $value)->startOfDay());
         }
 
-        $format = $this->getDateFormat();
-
-        // https://bugs.php.net/bug.php?id=75577
-        if (version_compare(PHP_VERSION, '7.3.0-dev', '<')) {
-            $format = str_replace('.v', '.u', $format);
-        }
-
         // Finally, we will just assume this date is in the format used by default on
         // the database connection and use that format to create the Carbon object
         // that is returned back out to the developers after we convert it here.
-        return Carbon::createFromFormat($format, $value);
+        try {
+            return Carbon::createFromFormat($this->getDateFormat(), $value);
+        } catch (InvalidFormatException $e) {
+            // Other formats, e.g. dates stored with microseconds before 2.0
+            return Carbon::parse($value);
+        }
     }
 
     /**
@@ -373,8 +454,11 @@ trait Metable
         return $this->asDateTime($value)->getTimestamp();
     }
 
+    /**
+     * WordPress database date format (post_date…)
+     */
     protected function getDateFormat()
     {
-        return 'Y-m-d H:i:s.u';
+        return 'Y-m-d H:i:s';
     }
 }

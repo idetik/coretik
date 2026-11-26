@@ -7,4 +7,5 @@ interface WhereClauseInterface
     public function key(): string;
     public function value();
     public function compare(): string;
+    public function toArray(): array;
 }

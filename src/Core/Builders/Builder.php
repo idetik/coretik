@@ -83,10 +83,48 @@ abstract class Builder implements BuilderInterface
         return $this->handlers;
     }
 
+    /**
+     * Handlers of a class (subclasses included) in the declaration order, those $where agrees with
+     *
+     * @template T of HandlerInterface
+     * @param class-string<T> $class
+     * @param null|callable(T): bool $where
+     * @return T[]
+     */
+    public function getHandlersOf(string $class, ?callable $where = null): array
+    {
+        $handlers = [];
+        foreach ($this->handlers as $handler) {
+            if ($handler instanceof $class && (!$where || $where($handler))) {
+                $handlers[] = $handler;
+            }
+        }
+
+        return $handlers;
+    }
+
+    /**
+     * First handler of a class (subclasses included) $where agrees with, null when none
+     *
+     * @template T of HandlerInterface
+     * @param class-string<T> $class
+     * @param null|callable(T): bool $where
+     * @return T|null
+     */
+    public function getHandler(string $class, ?callable $where = null): ?HandlerInterface
+    {
+        return $this->getHandlersOf($class, $where)[0] ?? null;
+    }
+
+    /**
+     * Call a service attached with attach() (macro)
+     */
     public function __call($method, $args = [])
     {
-        if ($this->services->has($method)) {
-            return \call_user_func($this->services->get($method), ...$args);
+        if (!$this->services->has($method)) {
+            throw new \BadMethodCallException(\sprintf('Call to undefined method %s::%s(): attach() a service first', static::class, $method));
         }
+
+        return \call_user_func($this->services->get($method), ...$args);
     }
 }

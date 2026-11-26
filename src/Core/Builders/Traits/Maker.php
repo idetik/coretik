@@ -16,7 +16,7 @@ trait Maker
 
     public function addToSchema($schema = null): self
     {
-        $schema = $schema ?? \app()->schema();
+        $schema = $schema ?? \coretik()->schema();
         $schema->register($this);
         return $this;
     }

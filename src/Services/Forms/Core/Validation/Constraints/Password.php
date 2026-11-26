@@ -70,12 +70,12 @@ class Password extends Constraint
 
     private function minChar($value, $min)
     {
-        return strlen($value) >= intval($min);
+        return \mb_strlen((string)$value) >= intval($min);
     }
 
     private function maxChar($value, $max)
     {
-        return strlen($value) <= intval($max);
+        return \mb_strlen((string)$value) <= intval($max);
     }
 
     private function leastOneNumber($value)

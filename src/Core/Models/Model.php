@@ -96,7 +96,7 @@ abstract class Model implements ModelInterface
         return $args;
     }
 
-    public function create(): self
+    public function create(): static
     {
         // Not allowed, already exists
         if (!empty($this->id())) {
@@ -141,6 +141,15 @@ abstract class Model implements ModelInterface
         $this->trigger('deleting');
         $this->persist(fn () => $this->adapter->delete(true));
         $this->trigger('deleted');
+    }
+
+    /**
+     * Every model event also fires coretik/model/{name}/{event} (e.g. coretik/model/product/saved),
+     * to listen to all models of a type.
+     */
+    protected function globalHookName(string $hook_name): ?string
+    {
+        return 'coretik/model/' . $this->name() . '/' . $hook_name;
     }
 
     /**

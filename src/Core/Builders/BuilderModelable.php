@@ -57,6 +57,14 @@ abstract class BuilderModelable extends Builder implements ModelableInterface
         return isset($this->factory);
     }
 
+    /**
+     * The model class name given to factory(), null without factory or with a callable factory
+     */
+    public function modelClass(): ?string
+    {
+        return $this->hasFactory() ? $this->factory->modelClass() : null;
+    }
+
     public function hasQuerier(): bool
     {
         return isset($this->querier);

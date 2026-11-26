@@ -1,7 +1,7 @@
 <?php
-$modalArgs = app()->modals()->factory(function () use ($builder) {
+$modalArgs = coretik()->modals()->factory(function () use ($builder) {
     $array = [];
-    $table = app()->get('ux.table');
+    $table = coretik()->get('ux.table');
     foreach ($builder->getCaps(true) as $key => $value) {
         $format = '';
         if (is_array($value)) {
@@ -44,10 +44,10 @@ $modalArgs = app()->modals()->factory(function () use ($builder) {
                 <li><b>Metas</b>: 
                     <?php
                     $model = $builder->model();
-                    $table = app()->get('ux.table');
+                    $table = coretik()->get('ux.table');
                     $table->setColumns(['Nom', 'Clé (meta_key)', ''])->setData(array_map(function ($def) {
 
-                        $modal = app()->modals()->factory(function ($args) {
+                        $modal = coretik()->modals()->factory(function ($args) {
                             include 'meta-definition.php';
                         }, ['def' => $def]);
 

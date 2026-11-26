@@ -35,7 +35,8 @@ class TriggerModelHooksHandlerTest extends TestCase
 
     private function hookName(string $event): string
     {
-        return (new \ReflectionMethod(Model::class, 'hookName'))->invoke($this->model, $event);
+        // Global hook fired for every model event
+        return 'coretik/model/product/' . $event;
     }
 
     /**

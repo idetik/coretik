@@ -12,6 +12,7 @@ use Coretik\Core\Builders\PostType\{
     Labels
 };
 use Coretik\Core\Builders\Traits\Registrable;
+use Coretik\Core\Models\Handlers\EndpointHandler;
 use Coretik\Core\Query\Post as Query;
 
 use function Globalis\WP\Cubi\is_frontend;
@@ -93,6 +94,14 @@ final class PostType extends BuilderModelable implements RegistrableInterface, T
     public function taxonomies(): array
     {
         return $this->args->get('taxonomies');
+    }
+
+    /**
+     * Endpoint declared on the post type (EndpointHandler), null when none: ->endpoint('inscription')->url($model)
+     */
+    public function endpoint(string $name): ?EndpointHandler
+    {
+        return $this->getHandler(EndpointHandler::class, fn (EndpointHandler $handler) => $name === $handler->endpoint());
     }
 
     public function registerAction(): void

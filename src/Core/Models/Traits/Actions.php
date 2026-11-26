@@ -5,15 +5,13 @@ namespace Coretik\Core\Models\Traits;
 use Coretik\Core\Actions as CoreActions;
 
 /**
- * To be used by Coretik Model.
+ * To be used by Coretik Model (requires its Hooks trait).
  *
  * Provide a callable [$this, 'getActions']
  *  - arrayof ['actionName' => @param \Coretik\Core\Actions\ActionInterface]
  */
 trait Actions
 {
-    use Hooks;
-
     protected function initializeActions(): void
     {
         $this->on('launch_actions', function () {

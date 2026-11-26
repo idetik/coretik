@@ -2,21 +2,26 @@
 
 namespace Coretik\Services\SchemaViewer;
 
+use Coretik\Services\Admin\Menu;
+
 class SchemaViewer
 {
     const VIEWS = __DIR__ . '/views/';
     const STYLES = __DIR__ . '/dist/style.css';
 
+    /**
+     * Coretik > Schéma (admin_menu)
+     */
     public static function init()
     {
-        \add_menu_page(
+        Menu::register();
+        \add_submenu_page(
+            Menu::SLUG,
             'Schéma',
             'Schéma',
             'manage_options',
             'app-schema-viewer',
-            [static::class, 'optionPage'],
-            'dashicons-admin-generic',
-            100
+            [static::class, 'optionPage']
         );
         add_action('admin_enqueue_scripts', [static::class, 'styles']);
         add_action('admin_enqueue_scripts', [static::class, 'scripts']);

@@ -51,7 +51,7 @@ class WPUserAdapter extends WPAdapter implements MetableAdapterInterface, CRUDIn
     public function delete(int $reassign = 0)
     {
         $delete = \wp_delete_user($this->model->id(), $reassign ?: null);
-        if (empty($delete) || false === $delete) {
+        if (empty($delete)) {
             throw new \RuntimeException("Deleting post: failure - {$this->model->id()}");
         }
         return true;

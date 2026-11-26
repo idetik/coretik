@@ -40,8 +40,8 @@ class Container implements SplSubject, ArrayAccess, IteratorAggregate
     {
         if (\is_user_logged_in()) {
             $this->setStorage(new UserConnection((int) \get_current_user_id()));
-        } elseif (app()->has('session')) {
-            $this->setStorage(new SessionConnection(app()->get('session')));
+        } elseif (coretik()->has('session')) {
+            $this->setStorage(new SessionConnection(coretik()->get('session')));
         }
         $this->notices = $this->storage->get()->getArrayCopy();
         $this->initialized = true;
@@ -60,10 +60,21 @@ class Container implements SplSubject, ArrayAccess, IteratorAggregate
 
     public function listen(): void
     {
+        // Pluggable functions (is_user_logged_in…) are not loaded yet when coretik boots from a mu-plugin
+        if (!$this->pluggableLoaded()) {
+            \add_action('init', [$this, 'listen'], 0);
+            return;
+        }
+
         if (!$this->initialized) {
             $this->initialize();
         }
         $this->notify();
+    }
+
+    protected function pluggableLoaded(): bool
+    {
+        return \function_exists('is_user_logged_in');
     }
 
     public function attach(\SplObserver $observer): void
@@ -108,7 +119,7 @@ class Container implements SplSubject, ArrayAccess, IteratorAggregate
         return $this->notices[$offset] ?? null;
     }
 
-    public function getIterator(): Traversable
+    public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->notices);
     }

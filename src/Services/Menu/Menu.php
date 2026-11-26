@@ -5,6 +5,9 @@ namespace Coretik\Services\Menu;
 use Globalis\WP\Cubi\TransientCache\NavMenu;
 use Coretik\Services\Menu\Walkers\Aria;
 
+/**
+ * @phpstan-consistent-constructor
+ */
 class Menu
 {
     protected array $menus;

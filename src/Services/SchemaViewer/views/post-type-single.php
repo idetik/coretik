@@ -4,9 +4,9 @@ use Coretik\Core\Utils\Str;
 
 $args = $builder->args();
 
-$modalArgs = app()->modals()->factory(function ($data) {
+$modalArgs = coretik()->modals()->factory(function ($data) {
     $array = [];
-    $table = app()->get('ux.table');
+    $table = coretik()->get('ux.table');
     foreach ($data['args'] as $key => $value) {
         $format = '';
 
@@ -70,7 +70,7 @@ $modalArgs = app()->modals()->factory(function ($data) {
             <b>Taxonomies</b>: 
             <?php
             foreach ($builder->taxonomies() as $taxonomy_name) {
-                printf('<a href="%s">%s</a>&nbsp;', '#' . $taxonomy_name, app()->schema($taxonomy_name)->args()->get('labels')['singular']);
+                printf('<a href="%s">%s</a>&nbsp;', '#' . $taxonomy_name, coretik()->schema($taxonomy_name)->args()->get('labels')['singular']);
             }
             ?>
         </li>

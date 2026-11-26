@@ -23,7 +23,7 @@ trait Observers
 
     public function notify()
     {
-        foreach (static::$observers as $observer) {
+        foreach ($this->observers as $observer) {
             $observer->update($this);
         }
     }

@@ -55,3 +55,26 @@ code {
 code.block {
     display: block;
 }
+/* Shadow taxonomies (ShadowTaxonomyHandler) */
+.schema-data--shadow {
+    border: 1px dashed #8c8f94;
+    border-radius: 4px;
+    margin-bottom: 1em;
+    opacity: .85;
+}
+.schema-data--shadow .schema-data__title {
+    cursor: default;
+}
+.schema-badge {
+    display: inline-block;
+    margin-left: .5em;
+    padding: 0 .5em;
+    border-radius: 3px;
+    background: #50575e;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 18px;
+    text-transform: uppercase;
+    vertical-align: middle;
+}
